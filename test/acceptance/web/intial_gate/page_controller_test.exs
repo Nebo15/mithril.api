@@ -12,7 +12,7 @@ defmodule Trump.Web.Controllers.PageAcceptanceTest do
     # This assertion checks our API struct that is described in Nebo #15 API Manifest.
     assert %{
       "meta" => %{
-        "url" => "http://localhost:4000/page",
+        "url" => _,
         "type" => "object",
         "request_id" => _,
         "code" => 200
