@@ -1,6 +1,8 @@
 # Trump
 
-**TODO: Add description**
+> Trump will make sure that there is always a secure wall around you, and only authorized citizens will pass, by any means.
+
+Trump is oAuth server that stores users, their credentials and exchanges them into access tokens. It's
 
 ## Installation
 

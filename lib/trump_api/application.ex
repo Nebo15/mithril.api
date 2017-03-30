@@ -2,8 +2,8 @@ defmodule Trump do
   @moduledoc """
   This is an entry point of trump_api application.
   """
-
   use Application
+  alias Trump.Web.Endpoint
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -15,7 +15,7 @@ defmodule Trump do
       # Start the Ecto repository
       supervisor(Trump.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Trump.Web.Endpoint, []),
+      supervisor(Endpoint, []),
       # Starts a worker by calling: Trump.Worker.start_link(arg1, arg2, arg3)
       # worker(Trump.Worker, [arg1, arg2, arg3]),
     ]
@@ -29,7 +29,7 @@ defmodule Trump do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    Trump.Web.Endpoint.config_change(changed, removed)
+    Endpoint.config_change(changed, removed)
     :ok
   end
 end

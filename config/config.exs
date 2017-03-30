@@ -25,7 +25,8 @@ use Mix.Config
 #     :var_name, "${ENV_VAR_NAME}"
 
 config :trump_api,
-  ecto_repos: [Trump.Repo]
+  ecto_repos: [Trump.Repo],
+  namespace: Trump.Web
 
 # Configure your database
 config :trump_api, Trump.Repo,
@@ -37,11 +38,6 @@ config :trump_api, Trump.Repo,
   port: {:system, :integer, "DB_PORT", 5432}
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-
-# General application configuration
-
-config :trump_api,
-  namespace: Trump.Web
 
 # Configures the endpoint
 config :trump_api, Trump.Web.Endpoint,

@@ -7,8 +7,6 @@ use Mix.Config
 # config :logger,
 #   compile_time_purge_level: :info
 
-
-
 # Configure your database
 config :trump_api, Trump.Repo,
   adapter: Ecto.Adapters.Postgres,
