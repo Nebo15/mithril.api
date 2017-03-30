@@ -15,11 +15,12 @@ otp_release:
 env:
   global:
     - MIX_ENV=test
-    - DOCKER_HUB_ACCOUNT=place_your_account_name_here
+    - DOCKER_HUB_ACCOUNT=nebo15
     - MAIN_BRANCHES="master develop staging" # Branches on which you want version to be incremented
     - RELEASE_BRANCH="master"
     # Docker and GitHub credentials
-    # - secure: "..."
+    - secure: "M05WoifaMn7WATnIP0UwvzbcC6SVqlCTknNumIlHQVvGQByQjq9UCFYj4AMVAvKxUPJOZdkyWLJuBz/O0ltCzmmtTqW+oZAunvZ9aEv0Q9IbX4VC9rXJcdvrSu9CaOlhJ7NNQ/bnb44gJKYHM8nOkakU+v4ZCj1PGBbODs7Assbw396kMC1i5bc8HJXu+1VwU612XS01DramtKun4+aSFTJOgqo0Pc1dEyafBBEr9yBsHlVnYo7TOQaxGA47qBvZe1mMzpQrMcaHX8O9wUGLkmZjLU2mbwpRJdQv1LGVV0ur+52pvdvH5GEeLRnOxsi0LRNv00t0DgFaoLYJgzAi0guL7grgmoQjLAh4Fz2i7K9AZwVX9xL1+1yrWkMUWob/W8GKo6oQUuWXKJvC/STrAisThV9gydm2oK3Fc56nh2cqEtTNmZltcS8sBqk0zGaH1BhW5mEqNS1QEg/TodYtpoMRhtsBrDQrAM8V/m/F8Ikx5MXjCUOaq40y1Ikw2NxScosgSOL6FVkSv0Tk2hDYSUr9nVXa5+aIFMlKy4/JpBbNhCoJd8NulAH7kUi7W7Cs4drPUukA6Ybsd8J38QCXifk1d+99AVQr5Tea9/FYNrYGLG+bwP6GBRY2hfSAb9uHLqfSegbkSB2/22kNn7VXPkXsAk//hYIpXVYWn4/VonY="
+    - secure: "dybmbp9F/2jDI6oalufcOXqCCz1A9InRQoKF1Sbwg6EvODegBcin12oeuILXrMWyycJMVN5N9qKt0MBlsaml0VU9kPxXLkYRjHM27ie+GBsCFCawcFzoCjvPW04pTqH0jyGYmpc2xxS6yNobBKRQ7ZdrzLw0TEa4DBuvQh+VVttycOUwGqqEoYo/QpjCVe3fds0bIDgkpXpD0A88KmN83nyIoCkeNgtiKi1WwcquzizomH+EfRshGM6rQsGXdPG0jncgoKKPsLd2BREMVm+NP+y6Ps67KRzUVEkwdYlT7+3xjF48tvBAqBa8B5j5Bn1DIBlvjsCAeqHnOt5bZ+ZT0Rj1HoJ+Efk5Z15+9yGgbGUHBSE2Lfh6oKyNKHo78B/WhwGj1JLV65R2qd9HoBSNNVeVM/jsFgKmiYO2vORQ8G13i6BVGotTooPhbWX8wf2N6zAdBfuNKEhPez3zzwL0bx33fBbrDNCDX0ZNa/r/4CuvYYKhWctgYxGOv3qcF5i6kttvYwlesUZ87bK+ESoM75eUrcprVgRJbssuxs2JV1Bb6GyV+rEX138Y+O9GuqYBu/H7UEyQVfKP4eZyXSqXjVyhitWnjO7+CvLMGenPqGgoPIb5tea3zL4YoMGQ/zHg2J3Cr44kt1lwPd6YQXwIdiBmbNnHSdEj4rb2tdqBif8="
 branches:
   # Releases are generated automatically, stop infinite build loop
   except:
@@ -29,14 +30,12 @@ before_install:
   - sudo ./bin/ci/init-db.sh
 script:
   # Increment version in mix.exs
-  # Uncomment this if you want to increment patch version on each Travis build.
-  # - ./bin/ci/version-increment.sh
+  - ./bin/ci/version-increment.sh
   # Install dependencies
   - mix deps.get
   # Run all tests except pending ones
   - mix test --exclude pending --trace
   # Submit code coverage report to Coveralls
-  # Add --pro if you using private repo.
   - mix coveralls.travis --exclude pending
   # Run static code analysis
   - mix credo --strict
@@ -60,31 +59,6 @@ script:
   - "CONTAINER_HTTP_HOST=localhost CONTAINER_HTTP_PORT=4000 mix test test/acceptance"
 after_failure:
   - docker logs trump_api --details --since 5h
-# Also you can
-# - automatically build images and push them to Docker Hub;
-# - create new git tag with build version and GitHub release on it.
-#
-# 1, Encrypt your docker user name and password and add to environment variables:
-#
-#   $ travis encrypt DOCKER_USERNAME=sample_username DOCKER_PASSWORD=strong_password
-#
-# More info: https://docs.travis-ci.com/user/encryption-keys/
-#
-# 2. Add env "DOCKER_HUB_ACCOUNT=org_name" to set Hub's organization or account that will hold images.
-# Sample:
-#
-#   env:
-#     global:
-#       - DOCKER_HUB_ACCOUNT=org_name # Docker Hub Account or Organization that will hold images
-#       - secure: "encrypeted_credentials" # Encrypted credentials to login into Docker Hub
-#
-# 3. Uncomment following lines:
-#
-# after_success:
-#   # Submit Docker container to Docker Hub and create GitHub Release by pushing tag with changelog
-#   - ./bin/ci/push.sh
-#
-# 4. If you are using public Travis-CI version it doesn't support deploy keys, so you will need to add a user-token to
-# push script manually.
-# 5. If you use Heroku Container Engine, you can auto-deploy changes:
-#   - ./bin/ci/deploy.sh
+after_success:
+  # Submit Docker container to Docker Hub and create GitHub Release by pushing tag with changelog
+  - ./bin/ci/push.sh
