@@ -1,4 +1,6 @@
 defmodule Trump.Web.UserController do
+  @moduledoc false
+
   use Trump.Web, :controller
 
   alias Trump.Web.UserAPI

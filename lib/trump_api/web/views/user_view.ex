@@ -1,4 +1,6 @@
 defmodule Trump.Web.UserView do
+  @moduledoc false
+
   use Trump.Web, :view
   alias Trump.Web.UserView
 
