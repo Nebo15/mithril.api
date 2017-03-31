@@ -26,7 +26,7 @@ use Mix.Config
 
 config :trump_api,
   ecto_repos: [Trump.Repo],
-  namespace: Trump.Web
+  namespace: Trump
 
 # Configure your database
 config :trump_api, Trump.Repo,

@@ -20,6 +20,7 @@ defmodule Trump.Web do
     quote do
       use Phoenix.Controller, namespace: Trump.Web
       import Plug.Conn
+      import Trump.Web.Router.Helpers
     end
   end
 
@@ -28,6 +29,12 @@ defmodule Trump.Web do
       # Import convenience functions from controllers
       import Phoenix.View
       import Phoenix.Controller, only: [view_module: 1]
+      import Trump.Web.Router.Helpers
+
+      @view_resource String.to_atom(Phoenix.Naming.resource_name(__MODULE__, "View"))
+
+      @doc "The resource name, as an atom, for this view"
+      def __resource__, do: @view_resource
     end
   end
 
