@@ -1,5 +1,5 @@
 defmodule Trump.Web.UserAPITest do
-  use Trump.Web.DataCase
+  use Trump.DataCase
 
   alias Trump.Web.UserAPI
   alias Trump.Web.UserAPI.User
