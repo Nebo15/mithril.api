@@ -24,6 +24,6 @@ defmodule Trump.Web.Router do
   scope "/", Trump.Web do
     pipe_through :api
 
-    get "/page", PageController, :index
+    resources "/users", UserController, except: [:new, :edit]
   end
 end
