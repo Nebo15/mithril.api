@@ -9,7 +9,7 @@ defmodule Trump.Web.UserControllerTest do
   @invalid_attrs %{email: nil, password: nil, scopes: nil}
 
   def fixture(:user) do
-    {:ok, user} = Web.UserAPI.create_user(@create_attrs)
+    {:ok, user} = UserAPI.create_user(@create_attrs)
     user
   end
 

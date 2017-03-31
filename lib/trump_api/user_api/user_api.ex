@@ -4,7 +4,7 @@ defmodule Trump.Web.UserAPI do
   """
 
   import Ecto.{Query, Changeset}, warn: false
-  alias Trump.Web.Repo
+  alias Trump.Repo
 
   alias Trump.Web.UserAPI.User
 
