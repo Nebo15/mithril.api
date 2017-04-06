@@ -26,7 +26,5 @@ defmodule Trump.Web.Router do
 
     resources "/users", UserController, except: [:new, :edit]
     resources "/tokens", TokenController, except: [:new, :edit]
-    # resources "/clients", ClientController, except: [:new, :edit]
-    # resources "/apps", AppController, except: [:new, :edit]
   end
 end
