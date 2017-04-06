@@ -1,4 +1,4 @@
-defmodule Trump.Web.Repo.Migrations.CreateTrump.Web.UserAPI.User do
+defmodule Trump.Repo.Migrations.CreateUser do
   use Ecto.Migration
 
   def change do
