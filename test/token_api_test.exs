@@ -4,9 +4,26 @@ defmodule Trump.TokenAPITest do
   alias Trump.TokenAPI
   alias Trump.TokenAPI.Token
 
-  @create_attrs %{details: %{}, expires_at: 42, name: "some name", value: "some value"}
-  @update_attrs %{details: %{}, expires_at: 43, name: "some updated name", value: "some updated value"}
-  @invalid_attrs %{details: nil, expires_at: nil, name: nil, value: nil}
+  @create_attrs %{
+    details: %{},
+    expires_at: 42,
+    name: "some name",
+    value: "some value"
+  }
+
+  @update_attrs %{
+    details: %{},
+    expires_at: 43,
+    name: "some updated name",
+    value: "some updated value"
+  }
+
+  @invalid_attrs %{
+    details: nil,
+    expires_at: nil,
+    name: nil,
+    value: nil
+  }
 
   def fixture(:token, attrs \\ @create_attrs) do
     {:ok, token} = TokenAPI.create_token(attrs)
