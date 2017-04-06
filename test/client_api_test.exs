@@ -4,9 +4,29 @@ defmodule Trump.ClientAPITest do
   alias Trump.ClientAPI
   alias Trump.ClientAPI.Client
 
-  @create_attrs %{name: "some name", priv_settings: %{}, redirect_uri: "some redirect_uri", secret: "some secret", settings: %{}}
-  @update_attrs %{name: "some updated name", priv_settings: %{}, redirect_uri: "some updated redirect_uri", secret: "some updated secret", settings: %{}}
-  @invalid_attrs %{name: nil, priv_settings: nil, redirect_uri: nil, secret: nil, settings: nil}
+  @create_attrs %{
+    name: "some name",
+    priv_settings: %{},
+    redirect_uri: "some redirect_uri",
+    secret: "some secret",
+    settings: %{}
+  }
+
+  @update_attrs %{
+    name: "some updated name",
+    priv_settings: %{},
+    redirect_uri: "some updated redirect_uri",
+    secret: "some updated secret",
+    settings: %{}
+  }
+
+  @invalid_attrs %{
+    name: nil,
+    priv_settings: nil,
+    redirect_uri: nil,
+    secret: nil,
+    settings: nil
+  }
 
   def fixture(:client, attrs \\ @create_attrs) do
     {:ok, client} = ClientAPI.create_client(attrs)
