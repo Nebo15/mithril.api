@@ -43,24 +43,33 @@ Trump consists of two main parts:
 + Request (application/json)
 
     + Attributes
+
         + One of
+
             + token (object)
+
                 + `grant_type`: `authorization_code` (string, fixed)
                 + client_id (string, required)
                 + client_secret (string, required)
                 + redirect_uri (string, required)
                 + code (string, required)
+
             + token (object)
+
                 + `grant_type`: `client_credentials` (string, fixed)
                 + client_id (string, required)
                 + client_secret (string, required)
+
             + token (object)
+
                 + `grant_type`: `password` (string, fixed)
                 + client_id (string, required)
                 + email (string, required)
                 + password (string, required)
                 + scope (string, required)
+
             + token (object)
+
                 + `grant_type`: `refresh_token` (string, fixed)
                 + client_id (string, required)
                 + client_secret (string, required)
