@@ -1,0 +1,67 @@
+FORMAT: 1A
+HOST: https://trump.herokuapp.com/
+
+# Trump
+
+Trump -  – Auth & Role management system
+
+Trump is known fo:
+
+1. implementing OAuth2 flow (e.g. issuing tokens),
+2. token verification service,
+3. role management.
+
+Trump consists of two main parts:
+
+- [REST API back-end](https://github.com/Nebo15/trump.api),
+- [Management UI](https://github.com/Nebo15/trump.web).
+
+## Use Cases
+
+- Issuing / revoking OAuth2 tokens,
+- Answering a question "can a given token request a service?",
+- Managing users / tokens / clients / user roles.
+
+## Tokens [/tokens]
+
+### Get a token [GET /tokens]
+
++ Request
+
+  + Headers
+
+            Accept-Charset: utf-8
+            Content-Type: application/json
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + data (Token)
+
+### Create a token [POST]
+
++ Request (application/json)
+
+    + Attributes (Token)
+
++ Response 201 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (Token)
+
+# Data Structures
+
+## Token (object)
+
++ id (string) - internal token ID
++ name (string) - name of token
++ value (string) - value of token
++ expires_at (string) - the datetime in ISO8601 format
++ details (object) - some token specifics
++ user_id (number) - ID of token bearer
