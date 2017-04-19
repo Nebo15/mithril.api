@@ -24,17 +24,21 @@ Trump consists of two main parts:
 
 ## Tokens [/tokens]
 
-### Get a token [GET /tokens]
+### Get a token [GET /tokens{id}]
 
-+ Request
++ Request (application/json)
 
-  + Headers
+    + Headers
 
-            Accept-Charset: utf-8
-            Content-Type: application/json
             Authentication: Bearer <token_value>
 
 + Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
 
         + data (Token)
 
@@ -85,6 +89,64 @@ Trump consists of two main parts:
 
         + data (Token)
 
+## Apps [/apps]
+
+### Get apps [GET /apps]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[App])
+
+### Get app [GET /apps{id}]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (App)
+
+### Authorize an app [GET /apps/authorize]
+
++ Request (application/json)
+
+    + Attributes
+
+        + client_id (string)
+        + redirect_uri (string)
+        + scope (string)
+
++ Response 201 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (Token)
+
 # Data Structures
 
 ## Token (object)
@@ -95,3 +157,10 @@ Trump consists of two main parts:
 + expires_at (string) - the datetime in ISO8601 format
 + details (object) - some token specifics
 + user_id (number) - ID of token bearer
+
+## App (object)
+
++ id (string) - internal app ID
++ user_id (string) - a UUID string, ID of the user
++ client_id (string) - a UUID string, ID of the client
++ scope (string) - scope, in a coma-delimited format
