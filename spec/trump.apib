@@ -147,6 +147,24 @@ Trump consists of two main parts:
 
         + data (Token)
 
+### De-authorize an app [DELETE /apps/:id]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 204 (number)
+
+        + data (object)
+
 # Data Structures
 
 ## Token (object)
