@@ -289,6 +289,309 @@ Trump consists of two main parts:
 
         + data (User)
 
+### Logout a user [DELETE /users/logout]
+
++ Request (application/json)
+
+    + Headers
+
+            Cookies: SessionID
+
+    + Attributes
+
+        + user (object)
+
+            + email (string)
+            + password (string)
+
++ Response 201 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (User)
+
+### Get user data [GET /users/me]
+
++ Request (application/json)
+
+    + Headers
+
+            Cookies: SessionID
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (User)
+
+### Confirm user [GET /users/confirm]
+
++ Request (application/json)
+
+    + Attributes
+
+        + confirmation_token (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (User)
+
+### Recover password [GET /users/recover_password]
+
++ Request (application/json)
+
+    + Attributes
+
+        + user (object)
+
+            + email (string)
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Cookies: SessionID
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (object)
+
+### Reset password [GET /users/reset_password]
+
++ Request (application/json)
+
+    + Attributes
+
+        + user (object)
+
+            + password (string)
+            + reset_token (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (object)
+
+            + message: Password updated! (string)
+
+### Change password [GET /users/change_password]
+
++ Request (application/json)
+
+    + Attributes
+
+        + user (object)
+
+            + password (string)
+            + old_password (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (object)
+
+            + message: Password updated! (string)
+
+## Roles [/admin/roles]
+
+### Get roles [GET /admin/roles]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[Role])
+
+### Get role [GET /admin/roles/{id}]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Role)
+
+### Create role [POST /admin/roles]
+
++ Request (application/json)
+
+    + Attributes
+
+        + role (object)
+
+            + name (string)
+            + scopes (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Role)
+
+### Update role [PATCH /admin/roles/{id}]
+
++ Request (application/json)
+
+    + Attributes
+
+        + role (object)
+
+            + name (string)
+            + scopes (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Role)
+
+### Delete role [DELETE /admin/roles/{id}]
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 204 (number)
+
+        + data (object)
+
+## Client types [/admin/client_types]
+
+### Get client types [GET /admin/client_types]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[Client Type])
+
+### Get client type [GET /admin/client_types/{id}]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Client Type)
+
+### Create client type [POST /admin/client_types]
+
++ Request (application/json)
+
+    + Attributes
+
+        + client_type (object)
+
+            + name (string)
+            + scopes (string)
+
++ Response 201 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (Client Type)
+
+### Update client type [PATCH /admin/client_types/{id}]
+
++ Request (application/json)
+
+    + Attributes
+
+        + client_type (object)
+
+            + name (string)
+            + scopes (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Client Type)
+
+### Delete client type [DELETE /admin/client_types/{id}]
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 204 (number)
+
+        + data (object)
+
 # Data Structures
 
 ## Token (object)
@@ -324,3 +627,15 @@ Trump consists of two main parts:
 + password (string) - user password
 + settings (object) - user settings
 + priv_settings (object) - user priv settings
+
+## Role (object)
+
++ id (string) - internal role ID, a UUID string
++ name (string) - role title
++ scopes (string) - list of scopes, coma-separated
+
+## Client Type (object)
+
++ id (string) - internal client type ID, a UUID string
++ name (string) - client type title
++ scopes (string) - list of scopes, coma-separated
