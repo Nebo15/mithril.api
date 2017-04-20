@@ -592,6 +592,92 @@ Trump consists of two main parts:
 
         + data (object)
 
+## Tokens [/admin/tokens]
+
+### Get tokens [GET /admin/tokens]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[Token])
+
+### Get token [GET /admin/tokens/{id}]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Token)
+
+### Create token [POST /admin/tokens]
+
++ Request (application/json)
+
+    + Attributes
+
+        + token (object)
+
+            + name (string)
+            + scopes (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Token)
+
+### Update token [PATCH /admin/tokens/{id}]
+
++ Request (application/json)
+
+    + Attributes
+
+        + token (object)
+
+            + name (string)
+            + scopes (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Token)
+
+### Delete token [DELETE /admin/tokens/{id}]
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 204 (number)
+
+        + data (object)
+
 # Data Structures
 
 ## Token (object)
