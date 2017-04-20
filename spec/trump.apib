@@ -249,16 +249,49 @@ Trump consists of two main parts:
 
         + data (object)
 
-## Users [GET /users]
+## Users [/users]
 
 ### Register a user [POST /users/register]
 
 + Request (application/json)
 
+    + Attributes
+
+        + user (object)
+
+            + email (string)
+            + password (string)
+
 + Response 201 (application/json)
 
-### Register a user [POST /users/login]
+  + Attributes
 
+        + meta
+
+            + code: 201 (number)
+
+        + data (User)
+
+### Login a user [POST /users/login]
+
++ Request (application/json)
+
+    + Attributes
+
+        + user (object)
+
+            + email (string)
+            + password (string)
+
++ Response 201 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (User)
 
 # Data Structures
 
