@@ -3,7 +3,7 @@ HOST: https://trump.herokuapp.com/
 
 # Trump
 
-Trump -  – Auth & Role management system
+Trump – Auth & Role management system
 
 Trump is known fo:
 
@@ -127,7 +127,7 @@ Trump consists of two main parts:
 
         + data (App)
 
-### Authorize an app [GET /apps/authorize]
+### Authorize an app [POST /apps/authorize]
 
 + Request (application/json)
 
@@ -165,9 +165,9 @@ Trump consists of two main parts:
 
         + data (object)
 
-## Clients [/clients]
+## Clients [/admin/clients]
 
-### Get clients [GET /clients]
+### Get clients [GET /admin/clients]
 
 + Request (application/json)
 
@@ -185,13 +185,9 @@ Trump consists of two main parts:
 
         + data (array[Client])
 
-### Get client [GET /client/{id}]
+### Get client [GET /admin/client/{id}]
 
 + Request (application/json)
-
-    + Headers
-
-            Authentication: Bearer <token_value>
 
 + Response 200 (application/json)
 
@@ -203,13 +199,9 @@ Trump consists of two main parts:
 
         + data (Client)
 
-### Create a client [POST /clients]
+### Create a client [POST /admin/clients]
 
 + Request (application/json)
-
-    + Headers
-
-            Authentication: Bearer <token_value>
 
     + Attributes
 
@@ -231,7 +223,7 @@ Trump consists of two main parts:
 
         + data (Client)
 
-### Delete a client [DELETE /clients/{id}]
+### Delete a client [DELETE /admin/clients/{id}]
 
 + Request (application/json)
 
@@ -284,6 +276,10 @@ Trump consists of two main parts:
             + password (string)
 
 + Response 201 (application/json)
+
+    + Headers
+
+            Cookies: SessionID
 
     + Attributes
 
