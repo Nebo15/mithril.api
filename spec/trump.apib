@@ -678,6 +678,93 @@ Trump consists of two main parts:
 
         + data (object)
 
+## Users [/admin/users]
+
+### Get users [GET /admin/users]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[User])
+
+### Get user [GET /admin/users/{id}]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (User)
+
+### Create user [POST /admin/users]
+
++ Request (application/json)
+
+    + Attributes
+
+        + user (object)
+
+            + name (string)
+            + scopes (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (User)
+
+### Update user [PATCH /admin/users/{id}]
+
++ Request (application/json)
+
+    + Attributes
+
+        + user (object)
+
+            + name (string)
+            + scopes (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (User)
+
+### Delete user [DELETE /admin/users/{id}]
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 204 (number)
+
+        + data (object)
+
+
 # Data Structures
 
 ## Token (object)
