@@ -165,82 +165,6 @@ Trump consists of two main parts:
 
         + data (object)
 
-## Clients [/admin/clients]
-
-### Get clients [GET /admin/clients]
-
-+ Request (application/json)
-
-    + Headers
-
-            Authentication: Bearer <token_value>
-
-+ Response 200 (application/json)
-
-    + Attributes
-
-        + meta
-
-            + code: 200 (number)
-
-        + data (array[Client])
-
-### Get client [GET /admin/client/{id}]
-
-+ Request (application/json)
-
-+ Response 200 (application/json)
-
-    + Attributes
-
-        + meta
-
-            + code: 200 (number)
-
-        + data (Client)
-
-### Create a client [POST /admin/clients]
-
-+ Request (application/json)
-
-    + Attributes
-
-        + client (object)
-
-            + name (string)
-            + secret (string)
-            + redirect_uri (string)
-            + settings (object)
-            + priv_settings (object)
-
-+ Response 201 (application/json)
-
-    + Attributes
-
-        + meta
-
-            + code: 201 (number)
-
-        + data (Client)
-
-### Delete a client [DELETE /admin/clients/{id}]
-
-+ Request (application/json)
-
-    + Headers
-
-            Authentication: Bearer <token_value>
-
-+ Response 204 (application/json)
-
-    + Attributes
-
-        + meta
-
-            + code: 204 (number)
-
-        + data (object)
-
 ## Users [/users]
 
 ### Register a user [POST /users/register]
@@ -420,7 +344,7 @@ Trump consists of two main parts:
 
             + message: Password updated! (string)
 
-## Roles [/admin/roles]
+## Admin: Roles [/admin/roles]
 
 ### Get roles [GET /admin/roles]
 
@@ -506,7 +430,7 @@ Trump consists of two main parts:
 
         + data (object)
 
-## Client types [/admin/client_types]
+## Admin: Client types [/admin/client_types]
 
 ### Get client types [GET /admin/client_types]
 
@@ -592,7 +516,7 @@ Trump consists of two main parts:
 
         + data (object)
 
-## Tokens [/admin/tokens]
+## Admin: Tokens [/admin/tokens]
 
 ### Get tokens [GET /admin/tokens]
 
@@ -678,7 +602,7 @@ Trump consists of two main parts:
 
         + data (object)
 
-## Users [/admin/users]
+## Admin: Users [/admin/users]
 
 ### Get users [GET /admin/users]
 
@@ -764,6 +688,81 @@ Trump consists of two main parts:
 
         + data (object)
 
+## Admin: Clients [/admin/clients]
+
+### Get clients [GET /admin/clients]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[Client])
+
+### Get client [GET /admin/client/{id}]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Client)
+
+### Create a client [POST /admin/clients]
+
++ Request (application/json)
+
+    + Attributes
+
+        + client (object)
+
+            + name (string)
+            + secret (string)
+            + redirect_uri (string)
+            + settings (object)
+            + priv_settings (object)
+
++ Response 201 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (Client)
+
+### Delete a client [DELETE /admin/clients/{id}]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
++ Response 204 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 204 (number)
+
+        + data (object)
 
 # Data Structures
 
