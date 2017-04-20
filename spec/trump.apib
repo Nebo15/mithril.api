@@ -249,11 +249,22 @@ Trump consists of two main parts:
 
         + data (object)
 
+## Users [GET /users]
+
+### Register a user [POST /users/register]
+
++ Request (application/json)
+
++ Response 201 (application/json)
+
+### Register a user [POST /users/login]
+
+
 # Data Structures
 
 ## Token (object)
 
-+ id (string) - internal token ID
++ id (string) - internal token ID, a UUID string
 + name (string) - name of token
 + value (string) - value of token
 + expires_at (string) - the datetime in ISO8601 format
@@ -276,3 +287,11 @@ Trump consists of two main parts:
 + settings (object) - client settings
 + priv_settings (object) - client private settings
 + user_id - owner-user internal ID, a UUID string
+
+## User (object)
+
++ id (string) - internal user ID, a UUID string
++ email (string) - user email
++ password (string) - user password
++ settings (object) - user settings
++ priv_settings (object) - user priv settings
