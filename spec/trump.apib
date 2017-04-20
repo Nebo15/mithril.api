@@ -688,6 +688,57 @@ Trump consists of two main parts:
 
         + data (object)
 
+## Admin: User roles [/admin/users/{user_id}/roles]
+
+### Get user roles [GET /admin/users/{user_id}/roles]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[User Role])
+
+### Create user role [POST /admin/users/{user_id}/roles]
+
++ Request (application/json)
+
+    + Attributes
+
+        + user_role (object)
+
+            + client_id (string)
+            + role_id (string)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (User Role)
+
+### Delete user role [DELETE /admin/users/{user_id}/roles/{user_role_id}]
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 204 (number)
+
+        + data (object)
+
 ## Admin: Clients [/admin/clients]
 
 ### Get clients [GET /admin/clients]
@@ -811,3 +862,10 @@ Trump consists of two main parts:
 + id (string) - internal client type ID, a UUID string
 + name (string) - client type title
 + scopes (string) - list of scopes, coma-separated
+
+## User Role (object)
+
++ id (string) - internal user tole ID, a UUID string
++ user_id (string) - user ID, a UUID string
++ role_id (string) - role ID, a UUID string
++ client_id (string) - client ID, a UUID string
