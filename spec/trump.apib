@@ -147,7 +147,27 @@ Trump consists of two main parts:
 
         + data (Token)
 
-### De-authorize an app [DELETE /apps/:id]
+### De-authorize an app [DELETE /apps/{id}]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
++ Response 204 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 204 (number)
+
+        + data (object)
+
+## Clients [/clients]
+
+### Get clients [GET /clients]
 
 + Request (application/json)
 
@@ -156,6 +176,70 @@ Trump consists of two main parts:
             Authentication: Bearer <token_value>
 
 + Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[Client])
+
+### Get client [GET /client/{id}]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (Client)
+
+### Create a client [POST /clients]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
+    + Attributes
+
+        + client (object)
+
+            + name (string)
+            + secret (string)
+            + redirect_uri (string)
+            + settings (object)
+            + priv_settings (object)
+
++ Response 201 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (Client)
+
+### Delete a client [DELETE /clients/{id}]
+
++ Request (application/json)
+
+    + Headers
+
+            Authentication: Bearer <token_value>
+
++ Response 204 (application/json)
 
     + Attributes
 
@@ -178,7 +262,17 @@ Trump consists of two main parts:
 
 ## App (object)
 
-+ id (string) - internal app ID
-+ user_id (string) - a UUID string, ID of the user
-+ client_id (string) - a UUID string, ID of the client
++ id (string) - internal app ID, a UUID string
++ user_id (string) - internal user ID, a UUID string
++ client_id (string) - internal client ID, a UUID string
 + scope (string) - scope, in a coma-delimited format
+
+## Client (object)
+
++ id (string) - internal client ID, a UUID string
++ name (string) - client name
++ secret (string) - client secret
++ redirect_uri (string) - client redirect url
++ settings (object) - client settings
++ priv_settings (object) - client private settings
++ user_id - owner-user internal ID, a UUID string
