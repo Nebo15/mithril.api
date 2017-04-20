@@ -1,0 +1,52 @@
+[roles]
+id       | UUID        | NOT NULL
+name     | TEXT        | NOT NULL
+scopes   | TEXT        | NOT NULL
+
+[users]
+id       | UUID        | NOT NULL
+email    | TEXT        | NOT NULL
+password | TEXT        | NOT NULL
+party_id | TEXT
+
+[invites]
+id         | UUID     | NOT NULL
+email      | TEXT     | NOT NULL
+data       | JSON     | NOT NULL
+expires_at | DATETIME | NOT NULL
+
+[user_scopes]
+name       | TEXT        | NOT NULL
+context    | TEXT        | NOT NULL
+user_id    | VARCHAR(36) | NOT NULL
+role_id    | TEXT        | NOT NULL
+
+[clients]
+id           | UUID        | NOT NULL
+name         | TEXT        | NOT NULL
+secret       | TEXT        | NOT NULL
+redirect_url | TEXT        | NOT NULL
+
+[tokens]
+id            | UUID        | NOT NULL
+name          | TEXT        | NOT NULL
+value         | TEXT        | NOT NULL
+expires_at    | DATETIME    | NOT NULL
+details       | JSON
+user_id       | VARCHAR(36) | NOT NULL
+client_id     | VARCHAR(36) | NOT NULL
+scopes        | TEXT        | NOT NULL
+context       | TEXT
+
+(auth)
+users
+invites
+roles
+user_scopes
+clients
+tokens
+
+users 1--* user_scopes
+users 1--* tokens
+clients 1--* tokens
+roles 1--* user_scopes
