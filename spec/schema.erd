@@ -1,10 +1,3 @@
-[roles]
-id          | uuid    | not null
-name        | varchar | not null
-scopes      | varchar | not null
-inserted_at | timestamp | not null
-updated_at  | timestamp | not null
-
 [users]
 id          | uuid      | not null
 email       | varchar   | not null
@@ -14,13 +7,13 @@ inserted_at | timestamp | not null
 updated_at  | timestamp | not null
 
 [clients]
-id            | uuid    | not null
-name          | varchar | not null
-secret        | varchar | not null
-redirect_uri  | varchar | not null
+id            | uuid      | not null
+name          | varchar   | not null
+secret        | varchar   | not null
+redirect_uri  | varchar   | not null
 settings      | jsonb
 priv_settings | jsonb
-user_id       | uuid    | not null
+user_id       | uuid      | not null
 inserted_at   | timestamp | not null
 updated_at    | timestamp | not null
 
@@ -42,22 +35,48 @@ client_id   | uuid      | not null
 inserted_at | timestamp | not null
 updated_at  | timestamp | not null
 
-[user_scopes]
+[roles]
+id          | uuid      | not null
 name        | varchar   | not null
-convarchar  | varchar   | not null
-user_id     | varchar   | not null
-role_id     | varchar   | not null
+scopes      | varchar   | not null
 inserted_at | timestamp | not null
 updated_at  | timestamp | not null
 
+[user_roles]
+id          | uuid      | not null
+user_id     | uuid      | not null
+client_id   | uuid      | not null
+role_id     | uuid      | not null
+inserted_at | timestamp | not null
+updated_at  | timestamp | not null
+
+[client_types]
+id          | uuid      | not null
+name        | varchar   | not null
+scopes      | varchar   | not null
+inserted_at | timestamp | not null
+updated_at  | timestamp | not null
+
+[client_client_types]
+id             | uuid      | not null
+client_id      | uuid      | not null
+client_type_id | uuid      | not null
+inserted_at    | timestamp | not null
+updated_at     | timestamp | not null
+
 (auth)
 users
-roles
-user_scopes
 clients
 tokens
+apps
+roles
+user_roles
+client_types
+client_client_types
 
-users 1--* user_scopes
-users 1--* tokens
-clients 1--* tokens
-roles 1--* user_scopes
+users        1--* tokens
+users        1--* apps
+users        1--* user_roles
+roles        1--* user_roles
+client_types 1--* client_client_types
+clients      1--* client_client_types
