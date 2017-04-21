@@ -25,6 +25,7 @@ echo $login_result | jq
 # 2. Frontend shows user a "An application application requested an access on behalf of your account. Continue?". User clicks "Yes":
 
 set code_result (curl -s -b /tmp/cookie.txt -X POST -H 'Content-Type: application/json' -d "{\"app\":{\"client_id\":\"$client_id\", \"scope\":\"read,write\", \"redirect_uri\":\"$client_redirect_uri\"}}" 'http://localhost:4000/oauth/apps/authorize')
+echo $code_result | jq
 
 # 3. Front-end redirects browser to redirect_uri, providing the following as GET params: state,
 
@@ -49,6 +50,6 @@ set payload (
      }'
 )
 
-curl -s -X POST -H 'Content-Type: application/json' -H "Authentication: Bearer $code" -d $payload 'http://localhost:4000/oauth/tokens'
-# set token_result ()
-# echo $token_result | jq
+set tokens_result (curl -s -X POST -H 'Content-Type: application/json' -H "Authentication: Bearer $code" -d $payload 'http://localhost:4000/oauth/tokens')
+
+echo $tokens_result | jq
