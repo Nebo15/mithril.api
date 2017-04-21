@@ -1,1 +1,3 @@
-curl 
+#/bin/sh
+
+set -e
