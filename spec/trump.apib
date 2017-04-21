@@ -815,6 +815,46 @@ Trump consists of two main parts:
 
         + data (object)
 
+## Admin: Parties [/admin/parties]
+
+### Add role to partie's users [POST /admin/parties/:party_id/add_role]
+
++ Request (application/json)
+
+    + Attributes
+
+        + role (string, required)
+        + client_id  (string, required)
+
++ Response 201 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 201 (number)
+
+        + data (array[User Role])
+
+### Revoke role from partie's users [POST /admin/parties/:party_id/revoke_role]
+
++ Request (application/json)
+
+    + Attributes
+
+        + role (string, required)
+        + client_id (string, required)
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + meta
+
+            + code: 200 (number)
+
+        + data (array[User Role])
+
 # Data Structures
 
 ## Token (object)
