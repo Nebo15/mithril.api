@@ -21,6 +21,14 @@ defmodule Trump.Web.Router do
     # plug :allow_jsonp
   end
 
+  scope "/", Shield do
+    pipe_through :api
+
+    post "/apps/authorize", AppController,   :authorize
+    post "/tokens",         TokenController, :create
+    post "/users/login",    UserController,  :login
+  end
+
   scope "/admin", Trump.Web do
     pipe_through :api
 
