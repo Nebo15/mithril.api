@@ -6,10 +6,12 @@ defmodule Trump.Repo.Migrations.CreateUser do
       add :id, :uuid, primary_key: true
       add :email, :string
       add :password, :string
-      add :scopes, {:array, :string}
+      add :settings, :jsonb
+      add :priv_settings, :jsonb
 
       timestamps()
     end
+    create unique_index(:users, [:email])
 
   end
 end
