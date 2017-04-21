@@ -25,14 +25,30 @@ echo $login_result | jq
 # 2. Frontend shows user a "An application application requested an access on behalf of your account. Continue?". User clicks "Yes":
 
 set code_result (curl -s -b /tmp/cookie.txt -X POST -H 'Content-Type: application/json' -d "{\"app\":{\"client_id\":\"$client_id\", \"scope\":\"read,write\", \"redirect_uri\":\"$client_redirect_uri\"}}" 'http://localhost:4000/oauth/apps/authorize')
-echo $code_result | jq
 
 # 3. Front-end redirects browser to redirect_uri, providing the following as GET params: state,
 
 # 4. Client exchanges the code for access/secret token pair
 
-set code (echo $code_result | jq -r '.token.value')
+set payload (
+  jq --monochrome-output \
+     --compact-output \
+     --null-input \
+     --arg code (echo $code_result | jq -r '.token.value') \
+     --arg client_id $client_id \
+     --arg client_secret $client_secret \
+     --arg client_redirect_uri $client_redirect_uri \
+     '{
+       "token": {
+         "grant_type": "authorization_code",
+         "client_id": $client_id,
+         "client_secret": $client_secret,
+         "code": $code,
+         "redirect_uri": $client_redirect_uri
+       }
+     }'
+)
 
-curl -s -X POST -H 'Content-Type: application/json' -H "Authentication: Bearer $code" -d "{\"token\":{}}" 'http://localhost:4000/oauth/tokens'
+curl -s -X POST -H 'Content-Type: application/json' -H "Authentication: Bearer $code" -d $payload 'http://localhost:4000/oauth/tokens'
 # set token_result ()
 # echo $token_result | jq
