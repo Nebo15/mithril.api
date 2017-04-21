@@ -89,3 +89,4 @@ users        1--* user_roles
 roles        1--+ user_roles
 client_types 1--* client_client_types
 clients      1--* client_client_types
+clients      1--0 apps
