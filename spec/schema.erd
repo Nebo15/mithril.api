@@ -85,8 +85,8 @@ user_extensions
 users        1--+ user_extensions
 users        1--* tokens
 users        1--* apps
-users        1--* user_roles
-roles        1--+ user_roles
+users        1--+ user_roles
+roles        1--* user_roles
 client_types 1--* client_client_types
 clients      1--* client_client_types
-clients      1--0 apps
+clients      1--* apps
