@@ -3,7 +3,7 @@ use Mix.Config
 config :shield,
   confirmable: false,
   otp_check: false,
-  hooks: Shield.Hook.Default,
+  hooks: Trump.Web.AuthHooks,
   views: %{
     changeset: Shield.ChangesetView,
     error: Shield.ErrorView,

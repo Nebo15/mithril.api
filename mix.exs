@@ -27,7 +27,7 @@ defmodule Trump.Mixfile do
     [extra_applications: [:logger, :confex, :runtime_tools, :ecto, :postgrex,
                           :cowboy, :httpoison, :poison,
                           :phoenix, :multiverse,
-                          :eview, :phoenix_ecto],
+                          :eview, :phoenix_ecto, :shield],
      mod: {Trump, []}]
   end
 
