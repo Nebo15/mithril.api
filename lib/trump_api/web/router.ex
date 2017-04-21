@@ -21,7 +21,7 @@ defmodule Trump.Web.Router do
     # plug :allow_jsonp
   end
 
-  scope "/", Shield do
+  scope "/oauth", as: :oauth2, alias: Shield do
     pipe_through :api
 
     post "/apps/authorize", AppController,   :authorize
