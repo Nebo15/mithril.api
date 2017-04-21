@@ -4,9 +4,9 @@ defmodule Trump.Web.UserAPITest do
   alias Trump.Web.UserAPI
   alias Trump.Web.UserAPI.User
 
-  @create_attrs %{email: "some email", password: "some password", scopes: []}
-  @update_attrs %{email: "some updated email", password: "some updated password", scopes: []}
-  @invalid_attrs %{email: nil, password: nil, scopes: nil}
+  @create_attrs %{email: "some email", password: "some password", settings: %{}}
+  @update_attrs %{email: "some updated email", password: "some updated password", settings: %{}}
+  @invalid_attrs %{email: nil, password: nil, settings: nil}
 
   def fixture(:user, attrs \\ @create_attrs) do
     {:ok, user} = UserAPI.create_user(attrs)
@@ -27,7 +27,7 @@ defmodule Trump.Web.UserAPITest do
     assert {:ok, %User{} = user} = UserAPI.create_user(@create_attrs)
     assert user.email == "some email"
     assert user.password == "some password"
-    assert user.scopes == []
+    assert user.settings == %{}
   end
 
   test "create_user/1 with invalid data returns error changeset" do
@@ -40,7 +40,7 @@ defmodule Trump.Web.UserAPITest do
     assert %User{} = user
     assert user.email == "some updated email"
     assert user.password == "some updated password"
-    assert user.scopes == []
+    assert user.settings == %{}
   end
 
   test "update_user/2 with invalid data returns error changeset" do

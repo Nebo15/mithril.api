@@ -36,7 +36,7 @@ defmodule Trump.Web.UserAPI do
 
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :password, :scopes])
-    |> validate_required([:email, :password, :scopes])
+    |> cast(attrs, [:email, :password, :settings])
+    |> validate_required([:email, :password, :settings])
   end
 end

@@ -4,9 +4,9 @@ defmodule Trump.Web.UserControllerTest do
   alias Trump.Web.UserAPI
   alias Trump.Web.UserAPI.User
 
-  @create_attrs %{email: "some email", password: "some password", scopes: []}
-  @update_attrs %{email: "some updated email", password: "some updated password", scopes: []}
-  @invalid_attrs %{email: nil, password: nil, scopes: nil}
+  @create_attrs %{email: "some email", password: "some password", settings: %{}}
+  @update_attrs %{email: "some updated email", password: "some updated password", settings: %{}}
+  @invalid_attrs %{email: nil, password: nil, settings: nil}
 
   def fixture(:user) do
     {:ok, user} = UserAPI.create_user(@create_attrs)
@@ -31,7 +31,7 @@ defmodule Trump.Web.UserControllerTest do
       "id" => id,
       "email" => "some email",
       "password" => "some password",
-      "scopes" => [],
+      "settings" => %{},
       "type" => "user"}
   end
 
@@ -50,7 +50,7 @@ defmodule Trump.Web.UserControllerTest do
       "id" => id,
       "email" => "some updated email",
       "password" => "some updated password",
-      "scopes" => [],
+      "settings" => %{},
       "type" => "user"}
   end
 
