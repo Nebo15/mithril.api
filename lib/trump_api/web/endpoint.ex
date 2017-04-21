@@ -13,7 +13,7 @@ defmodule Trump.Web.Endpoint do
   plug EView.Plugs.Idempotency
   plug Plug.Logger
 
-  plug EView
+  # plug EView
 
   plug Plug.Parsers,
     parsers: [:json],
