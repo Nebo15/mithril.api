@@ -21,7 +21,7 @@ defmodule Trump.Web.Router do
     # plug :allow_jsonp
   end
 
-  scope "/api", Trump.Web do
+  scope "/admin", Trump.Web do
     pipe_through :api
 
     resources "/users", UserController, except: [:new, :edit]
