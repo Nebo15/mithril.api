@@ -1,46 +1,57 @@
 [roles]
-id       | UUID        | NOT NULL
-name     | TEXT        | NOT NULL
-scopes   | TEXT        | NOT NULL
+id          | uuid    | not null
+name        | varchar | not null
+scopes      | varchar | not null
+inserted_at | timestamp | not null
+updated_at  | timestamp | not null
 
 [users]
-id       | UUID        | NOT NULL
-email    | TEXT        | NOT NULL
-password | TEXT        | NOT NULL
-party_id | TEXT
-
-[invites]
-id         | UUID     | NOT NULL
-email      | TEXT     | NOT NULL
-data       | JSON     | NOT NULL
-expires_at | DATETIME | NOT NULL
-
-[user_scopes]
-name       | TEXT        | NOT NULL
-context    | TEXT        | NOT NULL
-user_id    | VARCHAR(36) | NOT NULL
-role_id    | TEXT        | NOT NULL
+id          | uuid      | not null
+email       | varchar   | not null
+password    | varchar   | not null
+scopes      | varchar   | not null
+inserted_at | timestamp | not null
+updated_at  | timestamp | not null
 
 [clients]
-id           | UUID        | NOT NULL
-name         | TEXT        | NOT NULL
-secret       | TEXT        | NOT NULL
-redirect_url | TEXT        | NOT NULL
+id            | uuid    | not null
+name          | varchar | not null
+secret        | varchar | not null
+redirect_uri  | varchar | not null
+settings      | jsonb
+priv_settings | jsonb
+user_id       | uuid    | not null
+inserted_at   | timestamp | not null
+updated_at    | timestamp | not null
 
 [tokens]
-id            | UUID        | NOT NULL
-name          | TEXT        | NOT NULL
-value         | TEXT        | NOT NULL
-expires_at    | DATETIME    | NOT NULL
-details       | JSON
-user_id       | VARCHAR(36) | NOT NULL
-client_id     | VARCHAR(36) | NOT NULL
-scopes        | TEXT        | NOT NULL
-context       | TEXT
+id          | uuid      | not null
+name        | varchar   | not null
+value       | varchar   | not null
+expires_at  | datetime  | not null
+details     | jsonb
+user_id     | uuid      | not null
+inserted_at | timestamp | not null
+updated_at  | timestamp | not null
+
+[apps]
+id          | uuid      | not null
+scope       | varchar   | not null
+user_id     | uuid      | not null
+client_id   | uuid      | not null
+inserted_at | timestamp | not null
+updated_at  | timestamp | not null
+
+[user_scopes]
+name        | varchar   | not null
+convarchar  | varchar   | not null
+user_id     | varchar   | not null
+role_id     | varchar   | not null
+inserted_at | timestamp | not null
+updated_at  | timestamp | not null
 
 (auth)
 users
-invites
 roles
 user_scopes
 clients
