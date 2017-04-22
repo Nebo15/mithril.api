@@ -44,7 +44,7 @@ echo $login_result | jq
 
 # 2. Frontend shows user a "An application application requested an access on behalf of your account. Continue?". User clicks "Yes":
 
-set password_token (echo $login_result | jq -r '.data.token.value')
+set password_token (echo $login_result | jq -r '.value')
 
 set payload (
   jq --monochrome-output \
@@ -72,7 +72,7 @@ set payload (
   jq --monochrome-output \
      --compact-output \
      --null-input \
-     --arg code (echo $code_result | jq -r '.data.token.value') \
+     --arg code (echo $code_result | jq -r '.token.value') \
      --arg client_id $client_id \
      --arg client_secret $client_secret \
      --arg client_redirect_uri $client_redirect_uri \
