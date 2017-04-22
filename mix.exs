@@ -27,7 +27,7 @@ defmodule Trump.Mixfile do
     [extra_applications: [:logger, :confex, :runtime_tools, :ecto, :postgrex,
                           :cowboy, :httpoison, :poison,
                           :phoenix, :multiverse,
-                          :eview, :phoenix_ecto, :shield],
+                          :eview, :phoenix_ecto],
      mod: {Trump, []}]
   end
 
@@ -60,7 +60,7 @@ defmodule Trump.Mixfile do
      {:multiverse, "~> 0.4.3"},
      {:eview, "~> 0.10.1"},
      {:phoenix_ecto, "~> 3.2"},
-     {:shield, github: "gmile/shield", branch: "update-to-newer-phoenix"},
+     {:authable, ">= 0.0.0"},
      {:benchfella, ">= 0.3.4", only: [:dev, :test]},
      {:ex_doc, ">= 0.15.0", only: [:dev, :test]},
      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},

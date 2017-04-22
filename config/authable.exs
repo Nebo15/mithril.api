@@ -1,24 +1,5 @@
 use Mix.Config
 
-config :shield,
-  confirmable: false,
-  otp_check: false,
-  hooks: Trump.Web.AuthHooks,
-  views: %{
-    changeset: Shield.ChangesetView,
-    error: Shield.ErrorView,
-    app: Shield.AppView,
-    client: Shield.ClientView,
-    token: Shield.TokenView,
-    user: Shield.UserView
-  },
-  cors_origins: "http://localhost:4200, *",
-  front_end: %{
-    base: "http://localhost:4200",
-    confirmation_path: "/users/confirm?confirmation_token={{confirmation_token}}",
-    reset_password_path: "/users/reset-password?reset_token={{reset_token}}"
-  }
-
 config :authable,
   ecto_repos: [Authable.Repo],
   repo: Authable.Repo,
