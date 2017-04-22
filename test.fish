@@ -1,3 +1,5 @@
+# 0. Preparation
+
 set user_id (uuidgen)
 set user_email 'test@user.com'
 set user_password 'pass1234'
@@ -17,14 +19,49 @@ psql trump_api_dev -c "insert into clients (id, name, secret, redirect_uri, inse
 
 # 1. Login user
 
-set login_result (curl -s -c /tmp/cookie.txt -X POST -H 'Content-Type: application/json' -d "{\"user\":{\"email\":\"$user_email\",\"password\":\"$user_password\"}}" 'http://localhost:4000/oauth/users/login')
+set payload (
+  jq --monochrome-output \
+     --compact-output \
+     --null-input \
+     --arg client_id $client_id \
+     --arg user_email $user_email \
+     --arg user_password $user_password \
+     '{
+       "token": {
+         "grant_type": "password",
+         "email": $user_email,
+         "password": $user_password,
+         "client_id": $client_id,
+         "scope": "session,read,write"
+       }
+     }'
+)
+
+set login_result (curl -s -X POST -H 'Content-Type: application/json' -d $payload 'http://localhost:4000/oauth/tokens')
 echo $login_result | jq
 
-# Session is now set on frontend.
+# Front-end is now able to issue an app authentication call.
 
 # 2. Frontend shows user a "An application application requested an access on behalf of your account. Continue?". User clicks "Yes":
 
-set code_result (curl -s -b /tmp/cookie.txt -X POST -H 'Content-Type: application/json' -d "{\"app\":{\"client_id\":\"$client_id\", \"scope\":\"read,write\", \"redirect_uri\":\"$client_redirect_uri\"}}" 'http://localhost:4000/oauth/apps/authorize')
+set password_token (echo $login_result | jq -r '.data.token.value')
+
+set payload (
+  jq --monochrome-output \
+     --compact-output \
+     --null-input \
+     --arg client_id $client_id \
+     --arg client_redirect_uri $client_redirect_uri \
+     '{
+       "app": {
+         "client_id": $client_id,
+         "redirect_uri": $client_redirect_uri,
+         "scope": "read,write"
+       }
+     }'
+)
+
+set code_result (curl -s -X POST -H 'Content-Type: application/json' -H "Authorization: Bearer $password_token" -d $payload 'http://localhost:4000/oauth/apps/authorize')
 echo $code_result | jq
 
 # 3. Front-end redirects browser to redirect_uri, providing the following as GET params: state,
@@ -35,7 +72,7 @@ set payload (
   jq --monochrome-output \
      --compact-output \
      --null-input \
-     --arg code (echo $code_result | jq -r '.token.value') \
+     --arg code (echo $code_result | jq -r '.data.token.value') \
      --arg client_id $client_id \
      --arg client_secret $client_secret \
      --arg client_redirect_uri $client_redirect_uri \
