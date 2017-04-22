@@ -72,7 +72,7 @@ set payload (
   jq --monochrome-output \
      --compact-output \
      --null-input \
-     --arg code (echo $code_result | jq -r '.token.value') \
+     --arg code (echo $code_result | jq -r '.value') \
      --arg client_id $client_id \
      --arg client_secret $client_secret \
      --arg client_redirect_uri $client_redirect_uri \
