@@ -1,80 +1,771 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: https://trump.herokuapp.com/
 
-# Trump - oAuth 2.0 compatible Open Authentication Provider
+# Trump
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+Trump – authentication and role management service.
 
-## Questions Collection [/questions]
+Trump is known for:
 
-### List All Questions [GET]
+1. Implementing OAuth2 flow (e.g. issuing tokens);
+2. Token verification service;
+3. Role management.
 
-+ Response 200 (application/json)
+Trump consists of two main parts:
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+- [REST API back-end](https://github.com/Nebo15/trump.api),
+- [Management UI](https://github.com/Nebo15/trump.web).
 
-### Create a New Question [POST]
+## Use Cases
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+- Issuing / revoking OAuth2 tokens,
+- Answering a question "can a given token request a service?",
+- Managing users / tokens / clients / user roles.
+
+## Authorization Flows
+
+### oAuth
+
+1. Client UI: redirects user to Login UI with `client_id`, `redirect_uri` and `response_type=code` query params;
+2. Login UI: completes [Session]() auth flow with `apps:create` scope;
+3. Login UI: renders page with Approval (which lists requested scopes);
+4. User: approves scopes;
+5. Login UI: sends `POST /apps` request and redirects user to location returned in `Location` header;
+6. Client: exchanges `code` from query parameters to an `access_token` by sending `POST /tokens` request with `grant_type=authorization_code`.
+7. Client Back-End: stores `refresh_token` (in back-end!) and sends `access_token` to Client UI;
+8. Client UI: stores `access_token` (in local storage, cookie, etc.) and makes all future requests with `Auhtorization: Bearer <access_token>` header.
+
+Notes:
+- If User alredy has approval with sufficient scopes, steps 3-5 are skipped.
+- If User already has approval with insufficient scopes, all steps are required, but Login UI MAY render page that shows only newly added scopes.
+
+When `access_token` expires, Client repeats steps 6-8 but via `grant_type=refresh_token`.
+
+### Session
+
+If user does not have session stored in browser cookie, or session is expired, or scopes is insufficient:
+
+1. Login UI: render form with email/password;
+2. User: input and submit data;
+3. Login UI: send request `POST /tokens` with `grant_type=password`;
+4. Auth Server: generates `session_token` and returns it;
+5. Login UI: stores `session_token` in Cookie and/or Local Storage.
+
+If user has valid session token (can be checked by sending `GET /tokens/{id}/user` request), he is already logged in.
+
+`session_token` is used in all internal services.
+
+## Urgent Data
+
+Endpoint `GET /tokens/:id/user` returns `urgent` field that allows Clients to:
+1. Retrieve Token expiration;
+2. Retrieve User Roles (for a specific Client token was issued for).
+
+This data MAY be used to pro-actively react on scopes or roles chanes, and to renew token before it expires.
+
+## Accessing resources owned by user
+
+By-default, only certain endpoints are exposed to the Internet (configured in Annon gateway) so users can authenticate and manage resources that is owned by them.
+This endpoints MUST expect headers with current API consumer (User) ID and scopes, and limit access based on this headers. Example:
+
+```
++ Headers
+        X-Consumer-ID: user-1380df72-275a-11e7-93ae-92361f002671
+        X-Consumer-Scopes: apps:create
+        X-Consumer-Token-ID: access_token-1380df72-275a-11e7-93ae-92361f002671
+        Authorization: Bearer <access_token>
+```
+
+List of endpoints that is safe to be public and MUST be protected by additional authentication / data filtering mechanisms:
+
+| Resource  | Action          | Endpoint                                    | Scopes        | Description |
+| --------- | --------------- | ------------------------------------------- | ------------- | ----------- |
+| Tokens    | Create          | `POST /tokens`                              | N/A           | Create authentication token. |
+| Users     | Get by Token    | `GET /tokens/{token_id}/user`               | `user:read`   | Allows authenticated user to get information about hemself. |
+| Users     | Request Password Recovery | `POST /password_recovery_requests`| N/A           | Used to recover forgotten password withoit authentication. | 
+| Users     | Reset Password  | `PATCH /users/{id}/actions/reset_password`  | N/A           | Used to reset forgotten password withoit authentication. |
+| Users     | Change Password | `PATCH /users/{id}/actions/change_password` | `user:update` | Used by user to change their credentials. |
+| Approvals | Authorize       | `POST /apps`                                | `apps:create` | Used by User to approve Client access to hes data. First step in oAuth flow. Scopes is set in session token created with `grant_type=password`. |
+| Approvals | Get Approvals   | `GET /apps{?client_ids}`                    | `apps:read`   | Used by user to see list of Approvals that he authorized. **Returning list is forse-filtered for owner**. |
+| Approvals | Delete          | `DELETE /apps/{id}`                         | `apps:delete` | Used by user to de-authorize Client from accessing hes data. **Can delete only owned Approvals**. |
+
+## Tokens [/tokens]
+
+### Get a Token by ID [GET /tokens/{id}]
+
++ Parameters
+    + id: `token-1380dcd4-275a-11e7-93ae-92361f002671` (string, required)
 
 + Request (application/json)
 
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`Token_Response`)
+
+### Create a Token [POST]
+
++ Request (application/json)
+    + Attributes
+        + One of
+            + token (object)
+                + `grant_type`: `authorization_code` (string, fixed)
+                + client_id (string, required)
+                + client_secret (string, required)
+                + redirect_uri (string, required)
+                + code (string, required)
+
+            + token (object)
+                + `grant_type`: `client_credentials` (string, fixed)
+                + client_id (string, required)
+                + client_secret (string, required)
+
+            + token (object)
+                + `grant_type`: `password` (string, fixed)
+                + client_id (string, required)
+                + username (string, required)
+                + password (string, required)
+                + scope (string, required)
+
+            + token (object)
+                + `grant_type`: `refresh_token` (string, fixed)
+                + client_id (string, required)
+                + client_secret (string, required)
+                + refresh_token (string, required)
 
 + Response 201 (application/json)
-
     + Headers
+    
+            Location: /tokens/10 or redirect_uri
+    
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (`Token_Response`)
 
-            Location: /questions/2
+### Get Tokens [GET /tokens{?user_ids,names,value}]
 
-    + Body
++ Parameters
+    + user_ids: `user-1380df72-275a-11e7-93ae-92361f002671,user-1380e1de-275a-11e7-93ae-92361f002671` (string, optional) - List of User ID's separated by comma.
+    + names: `refresh_token,access_token` (string, optional) - List of token types separated by comma.
+    + value: `token-1380df72-275a-11e7-93ae-92361f002671` (string, optional) - Token value.
 
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
-            }
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_Collection`)
+        + data (array[`Token_Response`])
+
+### Delete Token [DELETE /tokens/{id}]
+
+This method can be used to revoke Token which will immidiately de-authorize user.
+
++ Parameters
+    + id: `token-1380dcd4-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+## Approvals [/apps]
+
+### Authorize an Approval [POST]
+
+This method will update or create Approval. It's idempotent.
+
+After creating Approval user should be redirected to `redirect_url` with `code` query parameter.
+
++ Request (application/json)
+    + Attributes 
+        + approval 
+            + client_id: `client-1380df72-275a-11e7-93ae-92361f002671` (string, required) - Internal client ID, a UUID string.
+            + scope: `notebooks:read notebooks:create patients:read` (string, required) - Scope, in a space-delimited format.
+        + `redirect_uri`: `http://example.com/my_success_login_page` (string, required) - URL where user will be redirected on Approval creation.
+
++ Response 201 (application/json)
+    + Headers
+    
+            Location: http://example.com/my_success_login_page?code=authorization_code-1380df72-275a-11e7-93ae-92361f00267
+    
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (`Approval_Response`)
+
+### Get Approvals [GET /apps{?user_ids,client_ids}]
+
++ Parameters
+    + user_ids: `user-1380df72-275a-11e7-93ae-92361f002671,user-1380e1de-275a-11e7-93ae-92361f002671` (string, optional) - List of User ID's separated by comma.
+    + client_ids: `client-1380df72-275a-11e7-93ae-92361f002671,client-1380e1de-275a-11e7-93ae-92361f002671` (string, optional) - List of Client ID's separated by comma.
+
++ Response 200 (application/json)
+    + Attributes (`Response_Collection`)
+        + data (array[`Approval_Response`])
+
+### Get Approval by ID [GET /apps/{id}]
+
++ Parameters
+    + id: `approval-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`Approval_Response`)
+
+### Delete Approval [DELETE /apps/{id}]
+
+This method can be used to de-authorize Client. By deleting Approval all associated Tokens will be deleted.
+
++ Parameters
+    + id: `approval-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+## Users [/users]
+
+### Create a User [POST /users]
+
++ Request (application/json)
+    + Attributes
+        + user (User)
+            + password: `notASecret1` (string, required) - User password. At least 6 characters.
+            + password_confirmation (string) - Show have same value as `password` field.
+
++ Response 201 (application/json)
+    + Headers
+    
+            Location: /users/10
+    
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (`User_Response`)
+
+### Get User by Token [GET /tokens/{token_id}/user]
+
+Roles are filtered by a `client_id` of a current access token.
+
++ Parameters
+    + token_id: `token-1380df72-275a-11e7-93ae-92361f002671` (string, required) - Token ID.
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`User_Response`)
+        + urgent
+            + `client_id`: `client-1380df72-275a-11e7-93ae-92361f002671` (string) - Client ID from `access_token`.
+            + roles (array[`Role_Response`]) - Information about User Roles in a current Client.
+            + token (`Token_Response`) - Information about current token.
+
+### Get User by ID [GET /users/{id}]
+
++ Parameters
+    + id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`User_Response`)
+
+### List Users [GET /users{?email}]
+
++ Parameters
+    + email: `john@example.com` (string, optional) - Filter Users by email.
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_Collection`)
+        + data (array[`User_Response`])
+
+### Update User [PATCH /users/{id}]
+
++ Parameters
+    + id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+    + Attributes
+        + user (User)
+            + password: `notASecret1` (string, optional) - User password. At least 6 characters. Used only to admin-reset User password.
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`User_Response`)
+
+### Request Password Recovery [POST /password_recovery_requests]
+
+This method will send password recovery email to a User. Token from this email should be used in 
+[Reset User password]() method.
+
++ Request (application/json)
+    + Attributes
+        + password_recovery (object)
+            + email (string)
+
++ Response 201 (application/json)
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (object)
+            + id: `password_recovery-1380df72-275a-11e7-93ae-92361f002671` (string)
+            + type: `password_recovery`
+            + expires_at: `2017-04-20T19:14:13Z` (string) - Expiration datetime in ISO 8601 format
+
+### Reset User password [PATCH /users/{id}/actions/reset_password]
+
++ Parameters
+    + id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+    + Attributes
+        + user (object)
+            + password: `notASecret1` (string, required) - User password. At least 6 characters.
+        + reset_token (string, required) - Token that was sent to email via [Request Password Recovery]().
+
++ Response 200 (application/json)
+   + Attributes (`Response_OK`)
+        + data (`User_Response`)
+
+### Change User password [PATCH /users/{id}/actions/change_password]
+
++ Parameters
+    + id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+    + Attributes
+        + user (object)
+            + password: `notASecret1` (string, required) - User password. At least 6 characters.
+        + old_password: `notASecret0` (string, required) - User password. At least 6 characters.
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`User_Response`)
+
+### Delete user [DELETE /users/{id}]
+
+Also deletes all associated Clients, User Roles, Approvals and Tokens.
+
++ Parameters
+    + id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+## Roles [/roles]
+
+Roles are used to simplify Users access management. 
+Role scopes limits list of scopes that User can have.
+By changing Role scopes this change will immidiately propagate to all users within role.
+
+Roles are set separately for each Client.
+
+### List Roles [GET /roles{?name}]
+
++ Parameters
+    + name: `My role` (string, optional) - Return only roles that contains `name` substring.
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_Collection`)
+        + data (array[`Role_Response`])
+
+### Get Role by ID [GET /roles/{id}]
+
++ Parameters
+    + id: `role-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`Role_Response`)
+
+### Create Role [POST /roles]
+
++ Request (application/json)
+    + Attributes
+        + role (Role)
+
++ Response 201 (application/json)
+    + Headers
+    
+            Location: /roles/3383828
+    
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (`Role_Response`)
+
+### Update Role [PATCH /roles/{id}]
+
+When Role is updated, all associated Approvals and Tokens should be deleted.
+<!-- It can be optimized in future by observing how scopes are changed and modifying records instead of deletion. -->
+
++ Parameters
+    + id: `role-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+    + Attributes
+        + role (Role)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`Role_Response`)
+
+### Delete Role [DELETE /roles/{id}]
+
+Can be invoked only when there is no Users associated with Role.
+<!-- Also deletes all associated User Roles, all Approvals for each User Role, all Tokens for each Approval. -->
+
++ Parameters
+    + id: `role-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+## User Roles [/users/{user_id}/roles]
+
+User Roles are links between User and Role that shows which Roles User has.
+
+### Get User Roles [GET /users/{user_id}/roles]
+
++ Parameters
+    + user_id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required) - User ID.
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (array[`User_Role_Response`])
+
+### Add Role to User [POST /users/{user_id}/roles]
+
+We expect Client to require additional scopes in User login after adding new User Role to User.
+
++ Parameters
+    + user_id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required) - User ID.
+
++ Request (application/json)
+    + Attributes
+        + `user_role` (`User_Role`)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`User_Role_Response`)
+
+### Delete Role from User [DELETE /users/{user_id}/roles/{id}]
+
+Also deletes all associated Approvals for each affected User, all Tokens for each Approval.
+
++ Parameters
+    + id: `user_role-1380df72-275a-11e7-93ae-92361f002671` (string, required) - User Role ID.
+    + user_id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required) - User ID.
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+## Client Types [/client_types]
+
+Client Types are used to simplify Clients access management. 
+Client Type scopes limits list of scopes that Client can have.
+By changing Client Type scopes this change will immidiately propagate to all clients with same type.
+
+### List Client Types [GET /client_types{?name}]
+
++ Parameters
+    + name: `My type` (string, optional) - Return only Client Types that contains `name` substring.
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_Collection`)
+        + data (array[`Client_Type_Response`])
+
+### Get Client Type by ID [GET /client_types/{id}]
+
++ Parameters
+    + id: `client_type-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`Client_Type_Response`)
+
+### Create Сlient Type [POST /client_types]
+
++ Request (application/json)
+    + Attributes
+        + `client_type` (`Client_Type`)
+
++ Response 201 (application/json)
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (`Client_Type_Response`)
+
+### Update Сlient Type [PATCH /client_types/{id}]
+
+When `scopes` is changed all associated Approvals and Tokens are deleted.
+<!-- It can be optimized in future by observing how scopes are changed and modifying records instead of deletion. -->
+
++ Parameters
+    + id: `client_type-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+    + Attributes
+        + `client_type` (`Client_Type`)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`Client_Type_Response`)
+
+### Delete Client Type [DELETE /client_types/{id}]
+
+Can be invoked only when there is no Clients associated with Client Types.
+
++ Parameters
+    + id: `client_type-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+## Clients [/clients]
+
+### Get Clients [GET /clients{?name,user_id}]
+
++ Parameters
+    + name: `My client` (string, optional) - Return only Clients that contains `name` substring.
+    + `user_id`: `user-1380df72-275a-11e7-93ae-92361f002671` (string, optional) - Return only Clients that is owned by User `user_id`.
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_Collection`)
+        + data (array[`Client_Response`])
+
+### Get Client by ID [GET /client/{id}]
+
++ Parameters
+    + id: `client-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (`Client_Response`)
+
+### Create a Client [POST /clients]
+
++ Request (application/json)
+    + Attributes
+        + client (Client)
+
++ Response 201 (application/json)
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (`Client_Response`)
+
+### Update a Client [PATCH /clients/{id}]
+
++ Parameters
+    + id: `client-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+    + Attributes
+        + client (Client)
+
++ Response 201 (application/json)
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (`Client_Response`)
+
+### Delete a Client [DELETE /clients/{id}]
+
+Deletes all associated Approvals and Tokens.
+
++ Parameters
+    + id: `client-1380df72-275a-11e7-93ae-92361f002671` (string, required)
+
++ Request (application/json)
+
++ Response 204 (application/json)
+
+## Admin: Parties [/admin/parties]
+
+TODO: Move me to IL
+
+### Add role to partie's users [POST /admin/parties/:party_id/add_role] 
+
++ Request (application/json)
+    + Attributes
+        + role (string, required)
+        + client_id  (string, required)
+
++ Response 201 (application/json)
+    + Attributes (`Response_OK`)
+        + meta (`Response__Meta`)
+            + code: 201 (number)
+        + data (array[`User_Role_Response`])
+
+### Revoke role from partie's users [POST /admin/parties/:party_id/revoke_role]
+
++ Request (application/json)
+    + Attributes
+        + role (string, required)
+        + client_id (string, required)
+
++ Response 200 (application/json)
+    + Attributes (`Response_OK`)
+        + data (array[`User_Role_Response`])
+
+# Data Structures
+## Responses
+### `Response_Collection`
++ meta (Response__Meta, fixed-type)
++ data (array[], fixed-type)
++ paging (Response__Pagination, fixed-type)
+
+### `Response_OK`
++ meta (Response__Meta, fixed-type)
++ data (object, fixed-type)
+
+### `Response_Error`
++ meta (Response__Meta, fixed-type)
+    + code: 400 (number)
++ error (Response__Error, fixed-type)
+
+### `Response__Meta`
++ code: 200 (number) - HTTP response code.
++ url: http://example.com/resource (string) - URL to requested resource.
++ type (enum) - Type of data that is located in `data` attribute.
+    - object (string) - `data` attribute is a JSON object.
+    - list (string) - `data` attribute is a list.
++ code: 200 (number) - HTTP response code.
++ `idempotency_key`: `idemp-ssjssdjoa8308u0us0` (string, optional) - [Idempotency key](http://docs.apimanifest.apiary.io/#introduction/optional-features/idempotent-requests). Send it trough `X-Idempotency-Key` header.
++ `request_id`: `req-adasdoijasdojsda` (string) - [Request ID](http://docs.apimanifest.apiary.io/#introduction/interacting-with-api/request-id). Send it with `X-Request-ID` header.
+
+### `Response__Error`
++ type: type_atom (string) - Atom that represents error type.
++ message: Error description (string) - Human-readable error message. This is for developers, not end-users.
+
+### `Response__Error_DuplicateEntity`
++ type: `object_already_exists` (string) - Atom that represents error type.
++ message: This API already exists (string) - Human-readable error message. This is for developers, not end-users.
+
+### `Response__Error_ValidationFailed`
++ type: validation_failed (string) - type of an error.
++ message: Validation failed. You can find validators description at our API Manifest: http://docs.apimanifest.apiary.io/#introduction/interacting-with-api/errors. (string)
++ invalid (array)
+    + `entry_type`: `json_data_proprty` (string) - Type of error.
+    + entry: $.cvv (string) - JSON Path to an invalid property.
+    + rules (array)
+        + rule: required (string) - String constant that represents validation rule type. List of all types can be found in [API Manifest](http://docs.apimanifest.apiary.io/#introduction/interacting-with-api/errors).
+        + params (array) - Validation Parameters.
+
+### `Response__Pagination`
++ limit: 20 (number) - A limit on the number of objects to be returned, between 1 and 100. Default: 50.
++ cursors (object)
+    + `starting_after`: 56c31536a60ad644060041af (string) - A cursor for use in pagination. An object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    + `ending_before`: 56c31536a60ad644060041aa (string) - A cursor for use in pagination. An object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
++ size: 1000 (number) - Total number of objects in collection.
++ has_more: false (boolean) - Is this collection have more data to load in the same style as last request loaded it.
+
+## Tokens
+### Token (object)
++ name (enum, required) - Type of a Token.
+    + `authorization_code` (string)
+    + `refresh_token` (string)
+    + `access_token` (string)
+    + `session_token` (string)
+
+### `Token_Response` (Token)
++ id: `token-1380df72-275a-11e7-93ae-92361f002671` (string, required) - Internal token ID, a UUID string.
++ value: `token_value-1380df72-275a-11e7-93ae-92361f002671` (string) - Token that should be used in future authentification.
++ expires_at: `2017-04-20T19:14:13Z` (string) - Expiration datetime in ISO 8601 format.
++ details (object) - Some token specifics.
++ user_id: `user-1380df72-275a-11e7-93ae-92361f002671` (string) - ID of token owner.
++ `created_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
++ `updated_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
+
+## Approvals
+### Approval (object)
++ user_id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required) - Internal user ID, a UUID string.
++ client_id: `client-1380df72-275a-11e7-93ae-92361f002671` (string, required) - Internal client ID, a UUID string.
++ scope: `notebooks:read notebooks:create patients:read` (string, required) - Scope, in a space-delimited format.
+
+### `Approval_Response` (Approval)
++ id: `approval-1380df72-275a-11e7-93ae-92361f002671` (string) - Internal app ID, a UUID string.
++ `created_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
++ `updated_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
+
+## Clients
+### Client (object)
++ name: `eHealth portal` (string, required) - Client name.
++ redirect_uri: `*.example.com` (string, required) - Client Redirect URL pattern to protect from malicious redirects.
++ settings (object) - Client settings.
++ priv_settings (object) - Client private settings.
++ user_id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required) - Owner-user internal ID, a UUID string.
+
+### `Client_Response` (Client)
++ id: `client-1380df72-275a-11e7-93ae-92361f002671` (string) - Internal client ID, a UUID string.
++ secret: `client_secret-1380df72-275a-11e7-93ae-92361f002671` (string) - Auto-generated Client Secret.
++ `created_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
++ `updated_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
+
+## Users
+### User (object)
++ email: `john@example.com` (string, required) - User email.
+
+### `User_Data` (User)
++ settings (object) - User settings.
++ priv_settings (object) - User private settings.
+
+### `User_Response` (User_Data)
++ id: `user-1380df72-275a-11e7-93ae-92361f002671` (string) - Internal user ID, a UUID string.
++ `created_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
++ `updated_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
+
+## Roles
+### Role (object)
++ name: `Doctor` (string, required) - role title
++ scope: `notebooks:read notebooks:create patients:read` (string, required) - List of scopes, space-separated.
+
+### `Role_Response` (Role)
++ id: `role-1380df72-275a-11e7-93ae-92361f002671` (string) - Internal role ID, a UUID string.
++ `created_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
++ `updated_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
+
+## Client Types
+### `Client_Type` (object)
++ name: `MIS` (string, required) - client type title
++ scope: `notebooks:read notebooks:create patients:read` (string, required) - List of scopes, space-separated.
+
+### `Client_Type_Response` (`Client_Type`)
++ id: `client_type-1380df72-275a-11e7-93ae-92361f002671` (string) - Internal client type ID, a UUID string.
++ `created_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
++ `updated_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
+
+## User Roles
+### `User_Role` (object)
++ user_id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required) - User ID, a UUID string.
++ client_id: `client-1380df72-275a-11e7-93ae-92361f002671` (string, required) - Client ID, a UUID string.
+
+### `User_Role_Data` (`User_Role`)
++ role_id: `role-1380df72-275a-11e7-93ae-92361f002671` (string) - Role ID, a UUID string.
+
+### `User_Role_Response` (`User_Role_Data`)
++ id: `user_role-1380df72-275a-11e7-93ae-92361f002671` (string) - Internal user tole ID, a UUID string.
++ `created_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
++ `updated_at`: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
