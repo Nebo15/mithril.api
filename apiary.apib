@@ -36,10 +36,8 @@ Trump consists of two main parts:
 8. Client UI: stores `access_token` (in local storage, cookie, etc.) and makes all future requests with `Auhtorization: Bearer <access_token>` header.
 
 Notes:
-- If User alredy has approval with sufficient scopes, steps 3-5 are skipped.
 - If User already has approval with insufficient scopes, all steps are required, but Login UI MAY render page that shows only newly added scopes.
-
-When `access_token` expires, Client repeats steps 6-8 but via `grant_type=refresh_token`.
+- When `access_token` expires, Client repeats steps 6-8 but via `grant_type=refresh_token`.
 
 ### Session
 
