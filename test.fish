@@ -19,25 +19,25 @@ psql trump_api_dev -c "insert into clients (id, name, secret, redirect_uri, inse
 
 # 1. Login user
 
-set payload (
-  jq --monochrome-output \
-     --compact-output \
-     --null-input \
-     --arg client_id $client_id \
-     --arg user_email $user_email \
-     --arg user_password $user_password \
-     '{
-       "token": {
-         "grant_type": "password",
-         "email": $user_email,
-         "password": $user_password,
-         "client_id": $client_id,
-         "scope": "session,read,write"
-       }
-     }'
-)
-
 set login_result (
+  set payload (
+    jq --monochrome-output \
+       --compact-output \
+       --null-input \
+       --arg client_id $client_id \
+       --arg user_email $user_email \
+       --arg user_password $user_password \
+       '{
+         "token": {
+           "grant_type": "password",
+           "email": $user_email,
+           "password": $user_password,
+           "client_id": $client_id,
+           "scope": "session,read,write"
+         }
+       }'
+  )
+
   curl --silent \
        --request POST \
        --header 'Content-Type: application/json' \
@@ -51,24 +51,24 @@ echo $login_result | jq
 
 # 2. Frontend shows user a "An application application requested an access on behalf of your account. Continue?". User clicks "Yes":
 
-set password_token (echo $login_result | jq -r '.data.value')
-
-set payload (
-  jq --monochrome-output \
-     --compact-output \
-     --null-input \
-     --arg client_id $client_id \
-     --arg client_redirect_uri $client_redirect_uri \
-     '{
-       "app": {
-         "client_id": $client_id,
-         "redirect_uri": $client_redirect_uri,
-         "scope": "read,write"
-       }
-     }'
-)
-
 set code_result (
+  set password_token (echo $login_result | jq -r '.data.value')
+
+  set payload (
+    jq --monochrome-output \
+       --compact-output \
+       --null-input \
+       --arg client_id $client_id \
+       --arg client_redirect_uri $client_redirect_uri \
+       '{
+         "app": {
+           "client_id": $client_id,
+           "redirect_uri": $client_redirect_uri,
+           "scope": "read,write"
+         }
+       }'
+  )
+
   curl --silent \
        --request POST \
        --header 'Content-Type: application/json' \
@@ -82,26 +82,26 @@ echo $code_result | jq
 
 # 4. Client exchanges the code for access/secret token pair
 
-set payload (
-  jq --monochrome-output \
-     --compact-output \
-     --null-input \
-     --arg code (echo $code_result | jq -r '.data.value') \
-     --arg client_id $client_id \
-     --arg client_secret $client_secret \
-     --arg client_redirect_uri $client_redirect_uri \
-     '{
-       "token": {
-         "grant_type": "authorization_code",
-         "client_id": $client_id,
-         "client_secret": $client_secret,
-         "code": $code,
-         "redirect_uri": $client_redirect_uri
-       }
-     }'
-)
-
 set tokens_result (
+  set payload (
+    jq --monochrome-output \
+       --compact-output \
+       --null-input \
+       --arg code (echo $code_result | jq -r '.data.value') \
+       --arg client_id $client_id \
+       --arg client_secret $client_secret \
+       --arg client_redirect_uri $client_redirect_uri \
+       '{
+         "token": {
+           "grant_type": "authorization_code",
+           "client_id": $client_id,
+           "client_secret": $client_secret,
+           "code": $code,
+           "redirect_uri": $client_redirect_uri
+         }
+       }'
+  )
+
   curl --silent \
        --request POST \
        --header 'Content-Type: application/json' \
