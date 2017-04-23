@@ -24,6 +24,6 @@ config :authable, Authable.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
-  database: "trump_api",
+  database: "trump_api_test",
   hostname: "localhost",
   pool_size: 10
