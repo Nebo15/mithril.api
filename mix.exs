@@ -1,7 +1,7 @@
 defmodule Trump.Mixfile do
   use Mix.Project
 
-  @version "0.1.12"
+  @version "0.1.13"
 
   def project do
     [app: :trump_api,
