@@ -23,11 +23,6 @@ defmodule Trump.Web.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
 
-  plug Plug.Session,
-    store: :cookie,
-    key: "_trump_key",
-    signing_salt: "signing_salt"
-
   plug Trump.Web.Router
 
   @doc """
