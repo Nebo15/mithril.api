@@ -1,5 +1,7 @@
 FROM nebo15/alpine-elixir:latest
 
+RUN apk add --update make g++
+
 # Maintainers
 MAINTAINER Nebo#15 support@nebo15.com
 
@@ -16,8 +18,6 @@ RUN mix do deps.get, deps.compile
 
 # Add project sources
 COPY . .
-
-RUN apk add --update make
 
 # Compile project for Erlang VM
 RUN mix do compile, release --verbose
