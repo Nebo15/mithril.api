@@ -42,7 +42,7 @@ config :trump_api, Trump.Repo,
 # Configures the endpoint
 config :trump_api, Trump.Web.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "YfOapYVW+HP0fv/xObEFlLQ/nwr3BiUkTy+4WDjRzx7uTV/9b+QAm4TLABZdqLUI",
+  secret_key_base: "6sOsW9uKv+8o8y/hIA3F4dNkJE2O35e2l6SaS9P/xW0+Nh9Fo59T6JHnl0GzBmio",
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]
 
 # Configures Elixir's Logger
