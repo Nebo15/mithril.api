@@ -37,7 +37,14 @@ set payload (
      }'
 )
 
-set login_result (curl -s -X POST -H 'Content-Type: application/json' -d $payload 'http://localhost:4000/oauth/tokens')
+set login_result (
+  curl --silent \
+       --request POST \
+       --header 'Content-Type: application/json' \
+       --data $payload \
+       'http://localhost:4000/oauth/tokens'
+)
+
 echo $login_result | jq
 
 # Front-end is now able to issue an app authentication call.
@@ -61,7 +68,14 @@ set payload (
      }'
 )
 
-set code_result (curl -s -X POST -H 'Content-Type: application/json' -H "Authorization: Bearer $password_token" -d $payload 'http://localhost:4000/oauth/apps/authorize')
+set code_result (
+  curl --silent \
+       --request POST \
+       --header 'Content-Type: application/json' \
+       --header "Authorization: Bearer $password_token" \
+       --data $payload \
+       'http://localhost:4000/oauth/apps/authorize'
+)
 echo $code_result | jq
 
 # 3. Front-end redirects browser to redirect_uri, providing the following as GET params: state,
@@ -87,6 +101,13 @@ set payload (
      }'
 )
 
-set tokens_result (curl -s -X POST -H 'Content-Type: application/json' -H "Authentication: Bearer $code" -d $payload 'http://localhost:4000/oauth/tokens')
+set tokens_result (
+  curl --silent \
+       --request POST \
+       --header 'Content-Type: application/json' \
+       --header "Authentication: Bearer $code" \
+       --data $payload \
+       'http://localhost:4000/oauth/tokens'
+)
 
 echo $tokens_result | jq
