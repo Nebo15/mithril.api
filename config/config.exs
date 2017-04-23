@@ -36,8 +36,11 @@ config :trump_api, Trump.Repo,
   password: {:system, "DB_PASSWORD", "postgres"},
   hostname: {:system, "DB_HOST", "localhost"},
   port: {:system, :integer, "DB_PORT", 5432}
-# This configuration file is loaded before any dependency and
-# is restricted to this project.
+
+config :trump_api, :generators,
+  migration: false,
+  binary_id: true,
+  sample_binary_id: "11111111-1111-1111-1111-111111111111"
 
 # Configures the endpoint
 config :trump_api, Trump.Web.Endpoint,
@@ -50,15 +53,16 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Configure JSON Logger back-end
+config :logger_json, :backend,
+  on_init: {Man, :load_from_system_env, []},
+  json_encoder: Poison,
+  metadata: :all
+
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
 # by uncommenting the line below and defining dev.exs, test.exs and such.
 # Configuration from the imported file will override the ones defined
 # here (which is why it is important to import them last).
 #
-config :trump_api, :generators,
-  migration: false,
-  binary_id: true,
-  sample_binary_id: "11111111-1111-1111-1111-111111111111"
-
 import_config "#{Mix.env}.exs"
