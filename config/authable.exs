@@ -38,11 +38,3 @@ config :authable,
   },
   scopes: ~w(read write session),
   renderer: Authable.Renderer.RestApi
-
-config :authable, Authable.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "trump_api_dev",
-  hostname: "localhost",
-  pool_size: 10
