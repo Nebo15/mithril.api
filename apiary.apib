@@ -39,6 +39,10 @@ Notes:
 - If User already has approval with insufficient scopes, all steps are required, but Login UI MAY render page that shows only newly added scopes.
 - When `access_token` expires, Client repeats steps 6-8 but via `grant_type=refresh_token`.
 
+**Sequence Diagram**
+
+![oAuth Sequence](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgb0F1dGggRmxvdwoKQ2xpZW50IC0-IExvZ2luIFVJOiByZWRpcmVjdCB0bwANCSB3aXRoIGBjACoFX2lkYCwgYAAgCF91cmlgIGFuZCBgcmVzcG9uc2VfdHlwZT1jb2RlYCBxdWVyeSBwYXJhbXMKAEcJAGUNY29tcGxldGUgU2Vzc2lvbiBhdXRoIGZsb3cAJA1Vc2VyOiByZW5kZXIgcGFnZQCBEAZBcHByb3ZhbCAod2hpY2ggbGlzdHMgcmVxdWVzdGVkIHNjb3BlcykKVXNlcgCBXA5hADUFZQAbBwCBEA0Agh8FU2VydmVyOiBzZW5kIGBQT1NUIC9hcHBzYABWCAoAHAsAgjcOSFRUUCAyMDEsAIEVCmFuZCBMb2NhdGlvbiBoZWFkZXIAggMNAIMGBgCCdQt1c2VyIHRvIHVybCByZXR1cm5lZCBpbiBgAD4IYAA_CACDPQoAgSYSAIExBnRva2Vucz9ncmFudACDGAZhdXRob3JpegCBCwVfY29kZSAtIGV4Y2hhbmdlIGAAgzcGZnJvbQCDNgxldGVycyB0byBhbiBgYWNjZXNzXwBWBWAAgXsQAIIzDnRvcmUgcmVmcmVzaCAAgQcFAIIrEACBdggAJQZgACUHAFYHIChpbiBiYWNrLWVuZCEpAIRoBQCDDwYAdw0gdG8Agj8HIFVJCm5vdGUgb3ZlcgBMEAAmDihpbiBsb2NhbACBIQVhZ2UsIGNvb2tpZSwgZXRjLgBnBm1ha2VzIGFsbCBmdXR1AIFHBQCEWgVzAIYSB0F1aHQAgkQJOiBCZWFyZXIgPACCFgw-AIMlCQo&s=modern-blue)
+
 ### Session
 
 If user does not have session stored in browser cookie, or session is expired, or scopes is insufficient:
@@ -52,6 +56,14 @@ If user does not have session stored in browser cookie, or session is expired, o
 If user has valid session token (can be checked by sending `GET /tokens/{id}/user` request), he is already logged in.
 
 `session_token` is used in all internal services.
+
+**Sequence Diagram**
+
+![Session Sequence](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgU2Vzc2lvbiBhdXRoIEZsb3cKCgABGExvZ2luIFVJIC0-IFVzZXI6IHJlbmRlciBmb3JtIHdpdGggZW1haWwgYW5kIHBhc3N3b3JkClVzZXIgLT4gADYIOgARFABPDEF1dGggU2VydmVyIDogYFBPU1QgL3Rva2Vucz9ncmFudF90eXBlPQBZCGAKACUMAF4LIDogYHMAgVgGXwA6BWAAgTUNAIEGCnN0b3JlcwAdECBpbiBDb29raWUgYW5kL29yIExvY2FsIFN0b3JhZ2UK&s=modern-blue)
+
+## Projects (SaaS model)
+
+Users can create projects and grant access to other users (granted scope can contain same or less rights).
 
 ## Urgent Data
 
@@ -80,7 +92,7 @@ List of endpoints that is safe to be public and MUST be protected by additional 
 | --------- | --------------- | ------------------------------------------- | ------------- | ----------- |
 | Tokens    | Create          | `POST /tokens`                              | N/A           | Create authentication token. |
 | Users     | Get by Token    | `GET /tokens/{token_id}/user`               | `user:read`   | Allows authenticated user to get information about hemself. |
-| Users     | Request Password Recovery | `POST /password_recovery_requests`| N/A           | Used to recover forgotten password withoit authentication. | 
+| Users     | Request Password Recovery | `POST /password_recovery_requests`| N/A           | Used to recover forgotten password withoit authentication. |
 | Users     | Reset Password  | `PATCH /users/{id}/actions/reset_password`  | N/A           | Used to reset forgotten password withoit authentication. |
 | Users     | Change Password | `PATCH /users/{id}/actions/change_password` | `user:update` | Used by user to change their credentials. |
 | Approvals | Authorize       | `POST /apps`                                | `apps:create` | Used by User to approve Client access to hes data. First step in oAuth flow. Scopes is set in session token created with `grant_type=password`. |
@@ -132,9 +144,9 @@ List of endpoints that is safe to be public and MUST be protected by additional 
 
 + Response 201 (application/json)
     + Headers
-    
+
             Location: /tokens/10 or redirect_uri
-    
+
     + Attributes (`Response_OK`)
         + meta (`Response__Meta`)
             + code: 201 (number)
@@ -173,20 +185,28 @@ This method will update or create Approval. It's idempotent.
 After creating Approval user should be redirected to `redirect_url` with `code` query parameter.
 
 + Request (application/json)
-    + Attributes 
-        + approval 
+    + Attributes
+        + approval
             + client_id: `client-1380df72-275a-11e7-93ae-92361f002671` (string, required) - Internal client ID, a UUID string.
             + scope: `notebooks:read notebooks:create patients:read` (string, required) - Scope, in a space-delimited format.
         + `redirect_uri`: `http://example.com/my_success_login_page` (string, required) - URL where user will be redirected on Approval creation.
 
 + Response 201 (application/json)
     + Headers
-    
+
             Location: http://example.com/my_success_login_page?code=authorization_code-1380df72-275a-11e7-93ae-92361f00267
-    
+
     + Attributes (`Response_OK`)
         + meta (`Response__Meta`)
             + code: 201 (number)
+        + data (`Approval_Response`)
+
++ Response 200 (application/json)
+    + Headers
+
+            Location: http://example.com/my_success_login_page?code=authorization_code-1380df72-275a-11e7-93ae-92361f00267
+
+    + Attributes (`Response_OK`)
         + data (`Approval_Response`)
 
 ### Get Approvals [GET /apps{?user_ids,client_ids}]
@@ -233,9 +253,9 @@ This method can be used to de-authorize Client. By deleting Approval all associa
 
 + Response 201 (application/json)
     + Headers
-    
+
             Location: /users/10
-    
+
     + Attributes (`Response_OK`)
         + meta (`Response__Meta`)
             + code: 201 (number)
@@ -296,7 +316,7 @@ Roles are filtered by a `client_id` of a current access token.
 
 ### Request Password Recovery [POST /password_recovery_requests]
 
-This method will send password recovery email to a User. Token from this email should be used in 
+This method will send password recovery email to a User. Token from this email should be used in
 [Reset User password]() method.
 
 + Request (application/json)
@@ -356,7 +376,7 @@ Also deletes all associated Clients, User Roles, Approvals and Tokens.
 
 ## Roles [/roles]
 
-Roles are used to simplify Users access management. 
+Roles are used to simplify Users access management.
 Role scopes limits list of scopes that User can have.
 By changing Role scopes this change will immidiately propagate to all users within role.
 
@@ -392,9 +412,9 @@ Roles are set separately for each Client.
 
 + Response 201 (application/json)
     + Headers
-    
+
             Location: /roles/3383828
-    
+
     + Attributes (`Response_OK`)
         + meta (`Response__Meta`)
             + code: 201 (number)
@@ -472,7 +492,7 @@ Also deletes all associated Approvals for each affected User, all Tokens for eac
 
 ## Client Types [/client_types]
 
-Client Types are used to simplify Clients access management. 
+Client Types are used to simplify Clients access management.
 Client Type scopes limits list of scopes that Client can have.
 By changing Client Type scopes this change will immidiately propagate to all clients with same type.
 
@@ -602,7 +622,7 @@ Deletes all associated Approvals and Tokens.
 
 TODO: Move me to IL
 
-### Add role to partie's users [POST /admin/parties/:party_id/add_role] 
+### Add role to partie's users [POST /admin/parties/:party_id/add_role]
 
 + Request (application/json)
     + Attributes
