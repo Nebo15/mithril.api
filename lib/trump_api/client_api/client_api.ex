@@ -50,9 +50,17 @@ defmodule Trump.ClientAPI do
 
   """
   def create_client(attrs \\ %{}) do
-    %Client{}
-    |> client_changeset(attrs)
-    |> Repo.insert()
+    result =
+      Ecto.Multi.new()
+      |> Ecto.Multi.insert(:client, client_changeset(%Client{}, attrs))
+      |> Repo.transaction()
+
+    case result do
+      {:ok, %{client: client}} ->
+        {:ok, client}
+      {:error, :client, data, _} ->
+        {:error, data}
+    end
   end
 
   @doc """
