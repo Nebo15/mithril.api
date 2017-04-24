@@ -53,6 +53,16 @@ defmodule Trump.ClientAPI do
     result =
       Ecto.Multi.new()
       |> Ecto.Multi.insert(:client, client_changeset(%Client{}, attrs))
+      |> Ecto.Multi.run(:client_type, fn %{client: client} ->
+           record = %{
+             client_id:      client_id,
+             client_type_id: client_type_id,
+             inserted_at:    inserted_at,
+             updated_at:     updated_at
+           }
+
+           Repo.insert_all("client_type_types", [%{client_id: client_id, }])
+         end)
       |> Repo.transaction()
 
     case result do

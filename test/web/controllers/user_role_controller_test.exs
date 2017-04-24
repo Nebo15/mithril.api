@@ -4,7 +4,6 @@ defmodule Trump.Web.UserRoleControllerTest do
   alias Trump.Web.UserAPI.User
   alias Trump.RoleAPI
   alias Trump.UserRoleAPI
-  alias Trump.UserRoleAPI.UserRole
   alias Trump.ClientAPI
 
   setup %{conn: conn} do
