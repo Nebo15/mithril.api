@@ -1,20 +1,22 @@
 FORMAT: 1A
-HOST: https://trump.herokuapp.com/
+HOST: https://mithril.herokuapp.com/
 
-# Trump
+# Mithril
 
-Trump – authentication and role management service.
+Mithril – authentication and role management service.
 
-Trump is known for:
+> Mithril is a precious Silvery metal, very lightweight but capable of providing extreme strength in alloys.
+
+Mithril is known for:
 
 1. Implementing OAuth2 flow (e.g. issuing tokens);
 2. Token verification service;
 3. Role management.
 
-Trump consists of two main parts:
+Mithril consists of two main parts:
 
-- [REST API back-end](https://github.com/Nebo15/trump.api),
-- [Management UI](https://github.com/Nebo15/trump.web).
+- [REST API back-end](https://github.com/Nebo15/mithril.api),
+- [Management UI](https://github.com/Nebo15/mithril.web).
 
 ## Use Cases
 
@@ -617,34 +619,6 @@ Deletes all associated Approvals and Tokens.
 + Request (application/json)
 
 + Response 204 (application/json)
-
-## Admin: Parties [/admin/parties]
-
-TODO: Move me to IL
-
-### Add role to partie's users [POST /admin/parties/:party_id/add_role]
-
-+ Request (application/json)
-    + Attributes
-        + role (string, required)
-        + client_id  (string, required)
-
-+ Response 201 (application/json)
-    + Attributes (`Response_OK`)
-        + meta (`Response__Meta`)
-            + code: 201 (number)
-        + data (array[`User_Role_Response`])
-
-### Revoke role from partie's users [POST /admin/parties/:party_id/revoke_role]
-
-+ Request (application/json)
-    + Attributes
-        + role (string, required)
-        + client_id (string, required)
-
-+ Response 200 (application/json)
-    + Attributes (`Response_OK`)
-        + data (array[`User_Role_Response`])
 
 # Data Structures
 ## Responses
