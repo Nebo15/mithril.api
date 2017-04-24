@@ -4,8 +4,7 @@
       color: true,
       name: "default",
       files: %{
-        included: ["lib/"],
-        excluded: ["lib/trump_api/tasks.ex"]
+        included: ["lib/"]
       },
       checks: [
         {Credo.Check.Design.TagTODO, exit_status: 0},

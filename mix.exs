@@ -24,10 +24,10 @@ defmodule Trump.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [extra_applications: [:logger, :confex, :runtime_tools, :ecto, :postgrex,
+    [extra_applications: [:logger, :logger_json, :confex, :runtime_tools,
+                          :ecto, :postgrex,
                           :cowboy, :httpoison, :poison,
-                          :phoenix, :multiverse,
-                          :eview, :phoenix_ecto],
+                          :phoenix, :phoenix_ecto, :eview],
      mod: {Trump, []}]
   end
 
@@ -57,7 +57,7 @@ defmodule Trump.Mixfile do
      {:httpoison, "~> 0.11.1"},
      {:poison, "~> 3.1"},
      {:phoenix, "~> 1.3.0-rc"},
-     {:multiverse, "~> 0.4.3"},
+     {:logger_json, "~> 0.4.0"},
      {:eview, "~> 0.10.1"},
      {:phoenix_ecto, "~> 3.2"},
      {:benchfella, ">= 0.3.4", only: [:dev, :test]},
