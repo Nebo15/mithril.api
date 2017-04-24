@@ -64,6 +64,13 @@ client_type_id | uuid      | not null
 inserted_at    | timestamp | not null
 updated_at     | timestamp | not null
 
+[user_extensions]
+id          | uuid      | not null
+user_id     | uuid      | not null
+party_id    | uuid      | not null
+inserted_at | timestamp | not null
+updated_at  | timestamp | not null
+
 (auth)
 users
 clients
@@ -73,10 +80,13 @@ roles
 user_roles
 client_types
 client_client_types
+user_extensions
 
+users        1--+ user_extensions
 users        1--* tokens
 users        1--* apps
-users        1--* user_roles
+users        1--+ user_roles
 roles        1--* user_roles
 client_types 1--* client_client_types
 clients      1--* client_client_types
+clients      1--* apps

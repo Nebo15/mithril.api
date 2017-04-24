@@ -31,7 +31,10 @@ config :trump_api, Trump.Repo,
 # which you typically run after static files are built.
 config :trump_api, Trump.Web.Endpoint,
   on_init: {Trump.Web.Endpoint, :load_from_system_env, []},
-  http: [port: {:system, "PORT", "80"}],
+  http: [
+    port: {:system, "PORT", "80"},
+    protocol_options: [max_keepalive: 1_000_000],
+  ],
   url:  [
     host: {:system, "HOST", "localhost"},
     port: {:system, "PORT", "80"},
@@ -41,7 +44,13 @@ config :trump_api, Trump.Web.Endpoint,
   code_reloader: false
 
 # Do not print debug messages in production
-config :logger, level: :info
+# and handle all other reports by Elixir Logger with JSON back-end
+# SASL reports turned off because of their verbosity.
+config :logger,
+  backends: [LoggerJSON],
+  level: :info,
+  # handle_sasl_reports: true,
+  handle_otp_reports: true
 
 # Do not log passwords, card data and tokens
 config :phoenix, :filter_parameters, ["password", "secret", "token", "password_confirmation", "card", "pan", "cvv"]

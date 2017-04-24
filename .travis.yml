@@ -1,8 +1,8 @@
 language: elixir
-sudo: required
 cache:
   directories:
     - deps
+    - _build
 services:
   - docker
   - postgresql
