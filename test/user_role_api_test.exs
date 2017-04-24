@@ -67,9 +67,4 @@ defmodule Trump.UserRoleAPITest do
     assert {:ok, %UserRole{}} = UserRoleAPI.delete_user_role(user_role)
     assert_raise Ecto.NoResultsError, fn -> UserRoleAPI.get_user_role!(user_role.id) end
   end
-
-  test "change_user_role/1 returns a user_role changeset" do
-    user_role = fixture(:user_role)
-    assert %Ecto.Changeset{} = UserRoleAPI.change_user_role(user_role)
-  end
 end
