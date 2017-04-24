@@ -19,3 +19,11 @@ config :logger, level: :warn
 
 # Run acceptance test in concurrent mode
 config :trump_api, sql_sandbox: true
+
+config :authable, Authable.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
+  database: "trump_api_test",
+  hostname: "localhost",
+  pool_size: 10

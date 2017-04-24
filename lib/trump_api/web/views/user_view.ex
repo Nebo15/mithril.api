@@ -16,6 +16,6 @@ defmodule Trump.Web.UserView do
     %{id: user.id,
       email: user.email,
       password: user.password,
-      scopes: user.scopes}
+      settings: user.settings}
   end
 end

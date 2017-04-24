@@ -16,7 +16,14 @@ defmodule Trump.Web.Router do
     # plug :allow_jsonp
   end
 
-  scope "/api", Trump.Web do
+  scope "/oauth", as: :oauth2, alias: Trump do
+    pipe_through :api
+
+    post "/apps/authorize", OAuth.AppController, :authorize
+    post "/tokens",         OAuth.TokenController, :create
+  end
+
+  scope "/admin", Trump.Web do
     pipe_through :api
 
     resources "/users", UserController, except: [:new, :edit]
