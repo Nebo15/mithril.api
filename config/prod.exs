@@ -90,7 +90,7 @@ config :authable, Authable.Repo,
   username: "${DB_USER}",
   password: "${DB_PASSWORD}",
   hostname: "${DB_HOST}",
-  port: "${DB_PORT}"
+  port: "${DB_PORT}",
   pool_size: 10
 
 config :phoenix, :serve_endpoints, true
