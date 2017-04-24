@@ -12,15 +12,9 @@ ENV MIX_ENV=prod \
 
 WORKDIR ${HOME}
 
-# Install and compile project dependencies
-COPY mix.* ./
-RUN mix do deps.get, deps.compile
-
-# Add project sources
+# Install deps and compile project
 COPY . .
-
-# Compile project for Erlang VM
-RUN mix do compile, release --verbose
+RUN mix do deps.get, compile, release --verbose
 
 # Move release to /opt/$APP_NAME
 RUN \
