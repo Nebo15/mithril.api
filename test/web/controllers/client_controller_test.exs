@@ -4,14 +4,6 @@ defmodule Trump.Web.ClientControllerTest do
   alias Trump.ClientAPI
   alias Trump.ClientAPI.Client
 
-  @create_attrs %{
-    name: "some name",
-    priv_settings: %{},
-    redirect_uri: "some redirect_uri",
-    secret: "some secret",
-    settings: %{}
-  }
-
   @update_attrs %{
     name: "some updated name",
     priv_settings: %{},
@@ -29,7 +21,7 @@ defmodule Trump.Web.ClientControllerTest do
   }
 
   def fixture(:client) do
-    attrs = Map.put_new(@create_attrs, :client_type_id, elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id)
+    attrs = Trump.Fixtures.client_create_attrs()
     {:ok, client} = ClientAPI.create_client(attrs)
     client
   end
@@ -44,7 +36,7 @@ defmodule Trump.Web.ClientControllerTest do
   end
 
   test "creates client and renders client when data is valid", %{conn: conn} do
-    attrs = Map.put_new(@create_attrs, :client_type_id, elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id)
+    attrs = Trump.Fixtures.client_create_attrs()
     conn = post conn, client_path(conn, :create), client: attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
 

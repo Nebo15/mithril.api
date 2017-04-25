@@ -2,28 +2,11 @@ defmodule Trump.UserRoleAPITest do
   use Trump.DataCase
 
   alias Trump.UserRoleAPI
-  alias Trump.ClientAPI
-  alias Trump.RoleAPI
   alias Trump.UserRoleAPI.UserRole
 
   def fixture(:user_role) do
-    client_attrs = %{
-      name: "some name",
-      priv_settings: %{},
-      redirect_uri: "some redirect_uri",
-      secret: "some secret",
-      user_id: elem(Trump.Web.UserAPI.create_user(%{email: "some new email", password: "some password", settings: %{}}), 1).id,
-      client_type_id: elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id,
-      settings: %{}
-    }
-
-    attrs = %{
-      user_id: elem(Trump.Web.UserAPI.create_user(%{email: "some email", password: "some password", settings: %{}}), 1).id,
-      client_id: elem(ClientAPI.create_client(client_attrs), 1).id,
-      role_id: elem(RoleAPI.create_role(%{name: "some name", scope: "some scope"}), 1).id
-    }
-
-    {:ok, user_role} = UserRoleAPI.create_user_role(attrs)
+    user_role_attrs = Trump.Fixtures.user_role_attrs()
+    {:ok, user_role} = UserRoleAPI.create_user_role(user_role_attrs)
     user_role
   end
 
@@ -38,21 +21,7 @@ defmodule Trump.UserRoleAPITest do
   end
 
   test "create_user_role/1 with valid data creates a user_role" do
-    client_attrs = %{
-      name: "some name",
-      priv_settings: %{},
-      redirect_uri: "some redirect_uri",
-      secret: "some secret",
-      user_id: elem(Trump.Web.UserAPI.create_user(%{email: "some new email", password: "some password", settings: %{}}), 1).id,
-      client_type_id: elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id,
-      settings: %{}
-    }
-
-    attrs = %{
-      user_id: elem(Trump.Web.UserAPI.create_user(%{email: "some email", password: "some password", settings: %{}}), 1).id,
-      client_id: elem(ClientAPI.create_client(client_attrs), 1).id,
-      role_id: elem(RoleAPI.create_role(%{name: "some name", scope: "some scope"}), 1).id
-    }
+    attrs = Trump.Fixtures.user_role_attrs()
 
     assert {:ok, %UserRole{} = user_role} = UserRoleAPI.create_user_role(attrs)
     assert user_role.client_id == attrs.client_id

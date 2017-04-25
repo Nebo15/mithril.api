@@ -2,9 +2,7 @@ defmodule Trump.Web.UserRoleControllerTest do
   use Trump.Web.ConnCase
 
   alias Trump.Web.UserAPI.User
-  alias Trump.RoleAPI
   alias Trump.UserRoleAPI
-  alias Trump.ClientAPI
 
   setup %{conn: conn} do
     {:ok, user} = Trump.Web.UserAPI.create_user(%{email: "some email", password: "some password", settings: %{}})
@@ -18,21 +16,7 @@ defmodule Trump.Web.UserRoleControllerTest do
   end
 
   test "creates user_role and renders user_role when data is valid", %{user_id: user_id, conn: conn} do
-    client_attrs = %{
-      name: "some name",
-      priv_settings: %{},
-      redirect_uri: "some redirect_uri",
-      secret: "some secret",
-      user_id: elem(Trump.Web.UserAPI.create_user(%{email: "some new email", password: "some password", settings: %{}}), 1).id,
-      client_type_id: elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id,
-      settings: %{}
-    }
-
-    create_attrs = %{
-      client_id: elem(ClientAPI.create_client(client_attrs), 1).id,
-      role_id: elem(RoleAPI.create_role(%{name: "some name", scope: "some scope"}), 1).id
-    }
-
+    create_attrs = Trump.Fixtures.user_role_attrs()
     conn = post conn, user_role_path(conn, :create, %User{id: user_id}), user_role: create_attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -41,7 +25,7 @@ defmodule Trump.Web.UserRoleControllerTest do
       "id" => id,
       "client_id" => create_attrs.client_id,
       "role_id" => create_attrs.role_id,
-      "user_id" => user_id,
+      "user_id" => create_attrs.user_id,
       "type" => "user_role"}
   end
 
@@ -51,23 +35,9 @@ defmodule Trump.Web.UserRoleControllerTest do
     assert json_response(conn, 422)["errors"] != %{}
   end
 
-  test "deletes chosen user_role", %{user_id: user_id, conn: conn} do
-    client_attrs = %{
-      name: "some name",
-      priv_settings: %{},
-      redirect_uri: "some redirect_uri",
-      secret: "some secret",
-      user_id: elem(Trump.Web.UserAPI.create_user(%{email: "some new email", password: "some password", settings: %{}}), 1).id,
-      client_type_id: elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id,
-      settings: %{}
-    }
-
-    create_attrs = %{
-      client_id: elem(ClientAPI.create_client(client_attrs), 1).id,
-      role_id: elem(RoleAPI.create_role(%{name: "some name", scope: "some scope"}), 1).id
-    }
-
-    {:ok, user_role} = UserRoleAPI.create_user_role(Map.put_new(create_attrs, :user_id, user_id))
+  test "deletes chosen user_role", %{conn: conn} do
+    create_attrs = Trump.Fixtures.user_role_attrs()
+    {:ok, user_role} = UserRoleAPI.create_user_role(create_attrs)
     conn = delete conn, user_role_path(conn, :delete, user_role.user_id, user_role.id)
     assert response(conn, 204)
     assert_error_sent 404, fn ->

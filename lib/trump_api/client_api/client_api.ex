@@ -56,10 +56,25 @@ defmodule Trump.ClientAPI do
       Ecto.Multi.new()
       |> Ecto.Multi.insert(:client, changeset)
       |> Ecto.Multi.run(:client_type, fn %{client: client} ->
+           id =
+             Ecto.UUID.generate()
+             |> Ecto.UUID.dump()
+             |> elem(1)
+
+           client_id =
+             client.id
+             |> Ecto.UUID.dump()
+             |> elem(1)
+
+           client_type_id =
+             changeset.changes.client_type_id
+             |> Ecto.UUID.dump()
+             |> elem(1)
+
            record = [
-             id:             Ecto.UUID.generate() |> Ecto.UUID.dump() |> elem(1),
-             client_id:      Ecto.UUID.dump(client.id) |> elem(1),
-             client_type_id: Ecto.UUID.dump(changeset.changes.client_type_id) |> elem(1),
+             id:             id,
+             client_id:      client_id,
+             client_type_id: client_type_id,
              inserted_at:    DateTime.utc_now(),
              updated_at:     DateTime.utc_now()
            ]

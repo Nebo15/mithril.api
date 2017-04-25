@@ -14,7 +14,9 @@ defmodule Trump.Web.UserRoleController do
   end
 
   def create(conn, %{"user_id" => user_id, "user_role" => user_role_params}) do
-    with {:ok, %UserRole{} = user_role} <- UserRoleAPI.create_user_role(Map.put_new(user_role_params, "user_id", user_id)) do
+    user_role_attrs = Map.put_new(user_role_params, "user_id", user_id)
+
+    with {:ok, %UserRole{} = user_role} <- UserRoleAPI.create_user_role(user_role_attrs) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", user_role_path(conn, :show, user_role.user_id, user_role.id))
