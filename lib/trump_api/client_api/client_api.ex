@@ -50,18 +50,26 @@ defmodule Trump.ClientAPI do
 
   """
   def create_client(attrs \\ %{}) do
+    changeset = client_changeset(%Client{}, attrs)
+
     result =
       Ecto.Multi.new()
-      |> Ecto.Multi.insert(:client, client_changeset(%Client{}, attrs))
+      |> Ecto.Multi.insert(:client, changeset)
       |> Ecto.Multi.run(:client_type, fn %{client: client} ->
-           record = %{
-             client_id:      client_id,
-             client_type_id: client_type_id,
-             inserted_at:    inserted_at,
-             updated_at:     updated_at
-           }
+           record = [
+             id:             Ecto.UUID.generate() |> Ecto.UUID.dump() |> elem(1),
+             client_id:      Ecto.UUID.dump(client.id) |> elem(1),
+             client_type_id: Ecto.UUID.dump(changeset.changes.client_type_id) |> elem(1),
+             inserted_at:    DateTime.utc_now(),
+             updated_at:     DateTime.utc_now()
+           ]
 
-           Repo.insert_all("client_type_types", [%{client_id: client_id, }])
+           case Repo.insert_all("client_client_types", [record]) do
+             {n, _} ->
+               {:ok, :client_type}
+             _ ->
+               {:error, :error}
+           end
          end)
       |> Repo.transaction()
 
@@ -122,7 +130,7 @@ defmodule Trump.ClientAPI do
 
   defp client_changeset(%Client{} = client, attrs) do
     client
-    |> cast(attrs, [:name, :secret, :redirect_uri, :settings, :priv_settings])
+    |> cast(attrs, [:name, :secret, :redirect_uri, :settings, :priv_settings, :client_type_id])
     |> validate_required([:name, :secret, :redirect_uri, :settings, :priv_settings])
   end
 end

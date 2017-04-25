@@ -29,22 +29,24 @@ defmodule Trump.ClientAPITest do
   }
 
   def fixture(:client, attrs \\ @create_attrs) do
+    attrs = Map.put_new(attrs, :client_type_id, elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id)
     {:ok, client} = ClientAPI.create_client(attrs)
     client
   end
 
   test "list_clients/1 returns all clients" do
     client = fixture(:client)
-    assert ClientAPI.list_clients() == [client]
+    assert ClientAPI.list_clients() == [%{client | client_type_id: nil}]
   end
 
   test "get_client! returns the client with given id" do
     client = fixture(:client)
-    assert ClientAPI.get_client!(client.id) == client
+    assert ClientAPI.get_client!(client.id) == %{client | client_type_id: nil}
   end
 
   test "create_client/1 with valid data creates a client" do
-    assert {:ok, %Client{} = client} = ClientAPI.create_client(@create_attrs)
+    create_attrs = Map.put_new(@create_attrs, :client_type_id, elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id)
+    assert {:ok, %Client{} = client} = ClientAPI.create_client(create_attrs)
     assert client.name == "some name"
     assert client.priv_settings == %{}
     assert client.redirect_uri == "some redirect_uri"
@@ -70,7 +72,7 @@ defmodule Trump.ClientAPITest do
   test "update_client/2 with invalid data returns error changeset" do
     client = fixture(:client)
     assert {:error, %Ecto.Changeset{}} = ClientAPI.update_client(client, @invalid_attrs)
-    assert client == ClientAPI.get_client!(client.id)
+    assert %{client | client_type_id: nil} == ClientAPI.get_client!(client.id)
   end
 
   test "delete_client/1 deletes the client" do

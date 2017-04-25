@@ -24,6 +24,7 @@ defmodule Trump.Web.UserRoleControllerTest do
       redirect_uri: "some redirect_uri",
       secret: "some secret",
       user_id: elem(Trump.Web.UserAPI.create_user(%{email: "some new email", password: "some password", settings: %{}}), 1).id,
+      client_type_id: elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id,
       settings: %{}
     }
 
@@ -57,6 +58,7 @@ defmodule Trump.Web.UserRoleControllerTest do
       redirect_uri: "some redirect_uri",
       secret: "some secret",
       user_id: elem(Trump.Web.UserAPI.create_user(%{email: "some new email", password: "some password", settings: %{}}), 1).id,
+      client_type_id: elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id,
       settings: %{}
     }
 
