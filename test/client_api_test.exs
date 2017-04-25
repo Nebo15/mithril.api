@@ -4,14 +4,6 @@ defmodule Trump.ClientAPITest do
   alias Trump.ClientAPI
   alias Trump.ClientAPI.Client
 
-  @create_attrs %{
-    name: "some name",
-    priv_settings: %{},
-    redirect_uri: "some redirect_uri",
-    secret: "some secret",
-    settings: %{}
-  }
-
   @update_attrs %{
     name: "some updated name",
     priv_settings: %{},
@@ -28,8 +20,8 @@ defmodule Trump.ClientAPITest do
     settings: nil
   }
 
-  def fixture(:client, attrs \\ @create_attrs) do
-    attrs = Map.put_new(attrs, :client_type_id, elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id)
+  def fixture(:client) do
+    attrs = Trump.Fixtures.client_create_attrs()
     {:ok, client} = ClientAPI.create_client(attrs)
     client
   end
@@ -45,8 +37,8 @@ defmodule Trump.ClientAPITest do
   end
 
   test "create_client/1 with valid data creates a client" do
-    create_attrs = Map.put_new(@create_attrs, :client_type_id, elem(Trump.ClientTypeAPI.create_client_type(%{name: "some_kind_of_client", scope: "some, scope"}), 1).id)
-    assert {:ok, %Client{} = client} = ClientAPI.create_client(create_attrs)
+    attrs = Trump.Fixtures.client_create_attrs()
+    assert {:ok, %Client{} = client} = ClientAPI.create_client(attrs)
     assert client.name == "some name"
     assert client.priv_settings == %{}
     assert client.redirect_uri == "some redirect_uri"
