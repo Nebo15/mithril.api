@@ -10,6 +10,7 @@ defmodule Trump.ClientAPI.Client do
     field :secret, :string
     field :settings, :map
     field :user_id, :binary_id
+    field :client_type_id, :binary_id, virtual: true
 
     timestamps()
   end

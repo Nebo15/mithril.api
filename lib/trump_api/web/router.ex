@@ -26,9 +26,14 @@ defmodule Trump.Web.Router do
   scope "/admin", Trump.Web do
     pipe_through :api
 
-    resources "/users", UserController, except: [:new, :edit]
+    resources "/users", UserController, except: [:new, :edit] do
+      resources "/roles", UserRoleController, except: [:new, :edit, :update], as: :role
+    end
+
     resources "/clients", ClientController, except: [:new, :edit]
     resources "/tokens", TokenController, except: [:new, :edit]
     resources "/apps", AppController, except: [:new, :edit]
+    resources "/client_types", ClientTypeController, except: [:new, :edit]
+    resources "/roles", RoleController, except: [:new, :edit]
   end
 end
