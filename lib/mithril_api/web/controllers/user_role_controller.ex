@@ -1,7 +1,6 @@
 defmodule Mithril.Web.UserRoleController do
   use Mithril.Web, :controller
 
-  alias Mithril.Web.UserAPI.User
   alias Mithril.UserRoleAPI
   alias Mithril.UserRoleAPI.UserRole
 

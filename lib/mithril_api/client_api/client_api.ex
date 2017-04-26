@@ -80,7 +80,7 @@ defmodule Mithril.ClientAPI do
            ]
 
            case Repo.insert_all("client_client_types", [record]) do
-             {n, _} ->
+             {_n, _} ->
                {:ok, :client_type}
              _ ->
                {:error, :error}

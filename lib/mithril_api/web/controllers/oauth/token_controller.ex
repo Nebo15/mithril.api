@@ -11,7 +11,7 @@ defmodule Mithril.OAuth.TokenController do
         conn
         |> put_status(:created)
         |> render(Mithril.Web.TokenView, "show.json", token: token)
-      {:error, {http_status_code, errors} = res} ->
+      {:error, {http_status_code, errors}} ->
         conn
         |> render(http_status_code, %{errors: errors})
     end

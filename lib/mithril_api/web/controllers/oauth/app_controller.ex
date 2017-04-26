@@ -8,11 +8,11 @@ defmodule Mithril.OAuth.AppController do
     params = Map.put(app_params, "user", conn.assigns[:current_user])
 
     case process(params) do
-      {:ok, %{"token" => token} = res} ->
+      {:ok, %{"token" => token}} ->
         conn
         |> put_status(:created)
         |> render(Mithril.Web.TokenView, "show.json", token: token)
-      {:error, {http_status_code, errors} = res} ->
+      {:error, {http_status_code, errors}} ->
         conn
         |> render(http_status_code, %{errors: errors})
     end
