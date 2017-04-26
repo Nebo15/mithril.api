@@ -88,12 +88,6 @@ We constantly are releasing pre-built versions that will reduce time to deploy:
 - [PostgreSQL Docker container](https://hub.docker.com/r/nebo15/alpine-postgre/);
 - [UI Docker container](https://hub.docker.com/r/nebo15/mithril-web/).
 
-### Heroku
-
-Template allows to deploy Man to Heroku just in minute (and use it for free within Heroku tiers):
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nebo15/man.api)
-
 ## Documentation
 
 This project uses API Blueprint for [REST API specs](http://docs.mithril1.apiary.io/#), you can find their source in [apiary.apib](apiary.apib) file.
