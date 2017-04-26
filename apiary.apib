@@ -3,26 +3,49 @@ HOST: https://mithril.herokuapp.com/
 
 # Mithril
 
-Mithril – authentication and role management service.
+Authentication and role management service.
 
 > Mithril is a precious Silvery metal, very lightweight but capable of providing extreme strength in alloys.
 
 Mithril is known for:
 
-1. Implementing OAuth2 flow (e.g. issuing tokens);
+1. Implementing OAuth2 flow (e.g. issuing or revoking tokens);
 2. Token verification service;
-3. Role management.
+3. Role management;
+4. Client management.
 
 Mithril consists of two main parts:
 
 - [REST API back-end](https://github.com/Nebo15/mithril.api),
 - [Management UI](https://github.com/Nebo15/mithril.web).
 
-## Use Cases
+## Integration
 
-- Issuing / revoking OAuth2 tokens,
-- Answering a question "can a given token request a service?",
-- Managing users / tokens / clients / user roles.
+Mithril by itself does not have any authorization tools, but you have two options to integrate with it:
+
+- Use a Annon API Gateway that allows to configure Access Control Layer over your API;
+- Write your own authorization plug that will resolve token scopes via [Mithrill's API](http://docs.mithril1.apiary.io/#).
+
+## Installation
+
+### Heroku One-click deployment
+
+Trump can be deployed by one button click on Heroku, by-default instance will fit in free tier and you will be able to change it later:
+
+  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nebo15/mitrhril.api)
+
+### Docker
+
+Also you can deploy Mithril as Docker container.
+We constantly are releasing pre-built versions that will reduce time to deploy:
+
+- [Back-End Docker container](https://hub.docker.com/r/nebo15/mithril_api/);
+- [PostgreSQL Docker container](https://hub.docker.com/r/nebo15/alpine-postgre/);
+- [UI Docker container](https://hub.docker.com/r/nebo15/mithril-web/).
+
+## License
+
+See [LICENSE.md](https://github.com/Nebo15/mithril.api/blob/master/LICENSE.md).
 
 ## Authorization Flows
 
@@ -63,10 +86,6 @@ If user has valid session token (can be checked by sending `GET /tokens/{id}/use
 
 ![Session Sequence](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgU2Vzc2lvbiBhdXRoIEZsb3cKCgABGExvZ2luIFVJIC0-IFVzZXI6IHJlbmRlciBmb3JtIHdpdGggZW1haWwgYW5kIHBhc3N3b3JkClVzZXIgLT4gADYIOgARFABPDEF1dGggU2VydmVyIDogYFBPU1QgL3Rva2Vucz9ncmFudF90eXBlPQBZCGAKACUMAF4LIDogYHMAgVgGXwA6BWAAgTUNAIEGCnN0b3JlcwAdECBpbiBDb29raWUgYW5kL29yIExvY2FsIFN0b3JhZ2UK&s=modern-blue)
 
-## Projects (SaaS model)
-
-Users can create projects and grant access to other users (granted scope can contain same or less rights).
-
 ## Urgent Data
 
 Endpoint `GET /tokens/:id/user` returns `urgent` field that allows Clients to:
@@ -77,7 +96,7 @@ This data MAY be used to pro-actively react on scopes or roles chanes, and to re
 
 ## Accessing resources owned by user
 
-By-default, only certain endpoints are exposed to the Internet (configured in Annon gateway) so users can authenticate and manage resources that is owned by them.
+By-default, only certain endpoints should are exposed to the Internet (this can be configured in Annon gateway) so users can authenticate and manage resources that is owned by them.
 This endpoints MUST expect headers with current API consumer (User) ID and scopes, and limit access based on this headers. Example:
 
 ```
