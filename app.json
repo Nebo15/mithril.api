@@ -2,7 +2,7 @@
   "name": "Mithril",
   "description": "Authentication and role management service.",
   "keywords": ["elixir", "application", "oAuth", "authentication", "role based access control", "rbac"],
-  "repository": "https://github.com/nebo15/mitrhril.api",
+  "repository": "https://github.com/nebo15/mithril.api",
   "success_url": "/",
   "env": {
     "HOST": {

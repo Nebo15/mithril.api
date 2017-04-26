@@ -30,7 +30,7 @@ Mithril by itself does not have any authorization tools, but you have two option
 
 Mithril can be deployed by one button click on Heroku, by-default instance will fit in free tier and you will be able to change it later:
 
-  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nebo15/mitrhril.api)
+  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nebo15/mithril.api)
 
 ### Docker
 
