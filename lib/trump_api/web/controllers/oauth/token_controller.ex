@@ -16,6 +16,18 @@ defmodule Trump.OAuth.TokenController do
     end
   end
 
+  def show(conn, %{"id" => _, "client_id" => _, "client_secret" => _} = params) do
+    case Authable.Model.Token.client_token(params) do
+      {:ok, %{"token" => token}} ->
+        conn
+        |> put_status(:ok)
+        |> render(Trump.Web.TokenView, "show.json", token: token)
+      {:error, {http_status_code, errors}} ->
+        conn
+        |> render(http_status_code, %{errors: errors})
+    end
+  end
+
   defp process(params) do
     case Authable.OAuth2.authorize(params) do
       {:error, errors, http_status_code} ->

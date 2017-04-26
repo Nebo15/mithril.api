@@ -21,6 +21,7 @@ defmodule Trump.Web.Router do
 
     post "/apps/authorize", OAuth.AppController, :authorize
     post "/tokens",         OAuth.TokenController, :create
+    get "/tokens/:id",      OAuth.TokenController, :show
   end
 
   scope "/admin", Trump.Web do
