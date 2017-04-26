@@ -1,1 +1,1 @@
-web: _build/${MIX_ENV}/rel/trump_api/bin/trump_api foreground
+web: _build/${MIX_ENV}/rel/mithril_api/bin/mithril_api foreground

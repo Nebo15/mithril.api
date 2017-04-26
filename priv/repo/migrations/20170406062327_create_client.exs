@@ -1,4 +1,4 @@
-defmodule Trump.Repo.Migrations.CreateClient do
+defmodule Mithril.Repo.Migrations.CreateClient do
   use Ecto.Migration
 
   def change do

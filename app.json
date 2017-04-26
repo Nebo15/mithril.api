@@ -49,7 +49,7 @@
     }
   ],
   "scripts": {
-    "postdeploy": "if [[ \"${DB_MIGRATE}\" == \"true\" ]]; then _build/${MIX_ENV}/rel/trump_api/bin/trump_api command Elixir.Trump.ReleaseTasks migrate!; fi;"
+    "postdeploy": "if [[ \"${DB_MIGRATE}\" == \"true\" ]]; then _build/${MIX_ENV}/rel/mithril_api/bin/mithril_api command Elixir.Mithril.ReleaseTasks migrate!; fi;"
   },
   "addons": [
     {

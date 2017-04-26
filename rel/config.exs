@@ -14,9 +14,9 @@ environment :default do
   set cookie: cookie
 end
 
-release :trump_api do
-  set version: current_version(:trump_api)
+release :mithril_api do
+  set version: current_version(:mithril_api)
   set applications: [
-    trump_api: :permanent
+    mithril_api: :permanent
   ]
 end

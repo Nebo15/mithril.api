@@ -1,6 +1,6 @@
-defmodule TrumpTest do
+defmodule MithrilTest do
   use ExUnit.Case
-  doctest Trump
+  doctest Mithril
 
   test "the truth" do
     assert 1 + 1 == 2

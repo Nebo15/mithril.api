@@ -1,8 +1,8 @@
-defmodule Trump.AppAPITest do
-  use Trump.DataCase
+defmodule Mithril.AppAPITest do
+  use Mithril.DataCase
 
-  alias Trump.AppAPI
-  alias Trump.AppAPI.App
+  alias Mithril.AppAPI
+  alias Mithril.AppAPI.App
 
   @create_attrs %{scope: "some scope"}
   @update_attrs %{scope: "some updated scope"}

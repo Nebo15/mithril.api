@@ -21,24 +21,24 @@ set role_scope 'some_service:read'
 set user_role_id (uuidgen)
 set client_client_type_id (uuidgen)
 
-psql trump_api_dev -c "delete from apps"
-psql trump_api_dev -c "delete from users"
-psql trump_api_dev -c "delete from clients"
-psql trump_api_dev -c "delete from tokens"
+psql mithril_api_dev -c "delete from apps"
+psql mithril_api_dev -c "delete from users"
+psql mithril_api_dev -c "delete from clients"
+psql mithril_api_dev -c "delete from tokens"
 
-psql trump_api_dev -c "delete from roles"
-psql trump_api_dev -c "delete from user_roles"
-psql trump_api_dev -c "delete from client_types"
-psql trump_api_dev -c "delete from client_client_types"
+psql mithril_api_dev -c "delete from roles"
+psql mithril_api_dev -c "delete from user_roles"
+psql mithril_api_dev -c "delete from client_types"
+psql mithril_api_dev -c "delete from client_client_types"
 
-psql trump_api_dev -c "insert into roles (id, name, scope, inserted_at, updated_at) values ('$role_id', '$role_type', '$role_scope', now(), now())"
-psql trump_api_dev -c "insert into client_types (id, name, scope, inserted_at, updated_at) values ('$client_type_id', '$client_type_name', '$client_type_scope', now(), now())"
+psql mithril_api_dev -c "insert into roles (id, name, scope, inserted_at, updated_at) values ('$role_id', '$role_type', '$role_scope', now(), now())"
+psql mithril_api_dev -c "insert into client_types (id, name, scope, inserted_at, updated_at) values ('$client_type_id', '$client_type_name', '$client_type_scope', now(), now())"
 
-psql trump_api_dev -c "insert into users (id, email, password, inserted_at, updated_at) values ('$user_id', '$user_email', '$user_password_hash', now(), now())"
-psql trump_api_dev -c "insert into clients (id, name, secret, redirect_uri, inserted_at, updated_at) values ('$client_id', '$client_name', '$client_secret', '$client_redirect_uri', now(), now())"
+psql mithril_api_dev -c "insert into users (id, email, password, inserted_at, updated_at) values ('$user_id', '$user_email', '$user_password_hash', now(), now())"
+psql mithril_api_dev -c "insert into clients (id, name, secret, redirect_uri, inserted_at, updated_at) values ('$client_id', '$client_name', '$client_secret', '$client_redirect_uri', now(), now())"
 
-psql trump_api_dev -c "insert into user_roles (id, user_id, role_id, inserted_at, updated_at) values ('$user_role_id', '$user_id', '$role_id', now(), now())"
-psql trump_api_dev -c "insert into client_client_types (id, client_id, client_type_id, inserted_at, updated_at) values ('$client_client_type_id', '$client_id', '$client_type_id', now(), now())"
+psql mithril_api_dev -c "insert into user_roles (id, user_id, role_id, inserted_at, updated_at) values ('$user_role_id', '$user_id', '$role_id', now(), now())"
+psql mithril_api_dev -c "insert into client_client_types (id, client_id, client_type_id, inserted_at, updated_at) values ('$client_client_type_id', '$client_id', '$client_type_id', now(), now())"
 
 # 1. Login user
 

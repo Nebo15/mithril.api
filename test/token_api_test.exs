@@ -1,8 +1,8 @@
-defmodule Trump.TokenAPITest do
-  use Trump.DataCase
+defmodule Mithril.TokenAPITest do
+  use Mithril.DataCase
 
-  alias Trump.TokenAPI
-  alias Trump.TokenAPI.Token
+  alias Mithril.TokenAPI
+  alias Mithril.TokenAPI.Token
 
   @create_attrs %{
     details: %{},

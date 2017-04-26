@@ -1,4 +1,4 @@
-defmodule Trump.Fixtures do
+defmodule Mithril.Fixtures do
   def create_token(details) do
     token_attrs = %{
       user_id: create_user().id,
@@ -9,7 +9,7 @@ defmodule Trump.Fixtures do
       Authable.Model.Token.access_token_changeset(%Authable.Model.Token{}, token_attrs)
 
     {:ok, token} =
-      Trump.Repo.insert(changeset)
+      Mithril.Repo.insert(changeset)
 
     token
   end
@@ -17,7 +17,7 @@ defmodule Trump.Fixtures do
   def create_client do
     {:ok, client} =
       client_create_attrs()
-      |> Trump.ClientAPI.create_client()
+      |> Mithril.ClientAPI.create_client()
 
     client
   end
@@ -25,7 +25,7 @@ defmodule Trump.Fixtures do
   def create_user do
     {:ok, user} =
       user_create_attrs()
-      |> Trump.Web.UserAPI.create_user()
+      |> Mithril.Web.UserAPI.create_user()
 
     user
   end
@@ -33,7 +33,7 @@ defmodule Trump.Fixtures do
   def create_client_type do
     {:ok, client_type} =
       client_type_attrs()
-      |> Trump.ClientTypeAPI.create_client_type()
+      |> Mithril.ClientTypeAPI.create_client_type()
 
     client_type
   end
@@ -41,7 +41,7 @@ defmodule Trump.Fixtures do
   def create_role do
     {:ok, role} =
       role_attrs()
-      |> Trump.RoleAPI.create_role()
+      |> Mithril.RoleAPI.create_role()
 
     role
   end

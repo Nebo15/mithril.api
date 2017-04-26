@@ -1,13 +1,13 @@
-defmodule Trump.TokenControllerTest do
-  use Trump.Web.ConnCase
+defmodule Mithril.TokenControllerTest do
+  use Mithril.Web.ConnCase
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
   test "returns a token", %{conn: conn} do
-    client = Trump.Fixtures.create_client()
-    token = Trump.Fixtures.create_token(%{
+    client = Mithril.Fixtures.create_client()
+    token = Mithril.Fixtures.create_token(%{
       grant_type: "authorization_code",
       scope: "some_scopes",
       client_id: client.id

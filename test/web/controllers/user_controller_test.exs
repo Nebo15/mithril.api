@@ -1,8 +1,8 @@
-defmodule Trump.Web.UserControllerTest do
-  use Trump.Web.ConnCase
+defmodule Mithril.Web.UserControllerTest do
+  use Mithril.Web.ConnCase
 
-  alias Trump.Web.UserAPI
-  alias Trump.Web.UserAPI.User
+  alias Mithril.Web.UserAPI
+  alias Mithril.Web.UserAPI.User
 
   @create_attrs %{email: "some email", password: "some password", settings: %{}}
   @update_attrs %{email: "some updated email", password: "some updated password", settings: %{}}

@@ -1,10 +1,10 @@
-defmodule Trump.Mixfile do
+defmodule Mithril.Mixfile do
   use Mix.Project
 
   @version "0.1.19"
 
   def project do
-    [app: :trump_api,
+    [app: :mithril_api,
      description: "Add description to your package.",
      package: package(),
      version: @version,
@@ -28,7 +28,7 @@ defmodule Trump.Mixfile do
                           :ecto, :postgrex,
                           :cowboy, :httpoison, :poison,
                           :phoenix, :phoenix_ecto, :eview],
-     mod: {Trump, []}]
+     mod: {Mithril, []}]
   end
 
   # Specifies which paths to compile per environment.

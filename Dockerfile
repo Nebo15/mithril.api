@@ -7,7 +7,7 @@ MAINTAINER Nebo#15 support@nebo15.com
 
 # Configure environment variables and other settings
 ENV MIX_ENV=prod \
-    APP_NAME=trump_api \
+    APP_NAME=mithril_api \
     APP_PORT=4000
 
 WORKDIR ${HOME}

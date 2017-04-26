@@ -1,8 +1,8 @@
-defmodule Trump.RoleAPITest do
-  use Trump.DataCase
+defmodule Mithril.RoleAPITest do
+  use Mithril.DataCase
 
-  alias Trump.RoleAPI
-  alias Trump.RoleAPI.Role
+  alias Mithril.RoleAPI
+  alias Mithril.RoleAPI.Role
 
   @create_attrs %{name: "some name", scope: "some scope"}
   @update_attrs %{name: "some updated name", scope: "some updated scope"}
