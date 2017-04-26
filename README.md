@@ -24,6 +24,31 @@ Mithril by itself does not have any authorization tools, but you have two option
 - Use a Annon API Gateway that allows to configure Access Control Layer over your API;
 - Write your own authorization plug that will resolve token scopes via [Mithrill's API](http://docs.mithril1.apiary.io/#).
 
+## Installation
+
+### Heroku One-click deployment
+
+Trump can be deployed by one button click on Heroku, by-default instance will fit in free tier and you will be able to change it later:
+
+  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nebo15/mitrhril.api)
+
+### Docker
+
+Also you can deploy Mithril as Docker container.
+We constantly are releasing pre-built versions that will reduce time to deploy:
+
+- [Back-End Docker container](https://hub.docker.com/r/nebo15/mithril_api/);
+- [PostgreSQL Docker container](https://hub.docker.com/r/nebo15/alpine-postgre/);
+- [UI Docker container](https://hub.docker.com/r/nebo15/mithril-web/).
+
+## Documentation
+
+This project uses API Blueprint for [REST API specs](http://docs.mithril1.apiary.io/#), you can find their source in [apiary.apib](apiary.apib) file.
+
+## License
+
+See [LICENSE.md](LICENSE.md).
+
 ## Authorization Flows
 
 ### oAuth
@@ -71,27 +96,3 @@ Endpoint `GET /tokens/:id/user` returns `urgent` field that allows Clients to:
 
 This data MAY be used to pro-actively react on scopes or roles chanes, and to renew token before it expires.
 
-## Installation
-
-### Heroku One-click deployment
-
-Trump can be deployed by one button click on Heroku, by-default instance will fit in free tier and you will be able to change it later:
-
-  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nebo15/mitrhril.api)
-
-### Docker
-
-Also you can deploy Mithril as Docker container.
-We constantly are releasing pre-built versions that will reduce time to deploy:
-
-- [Back-End Docker container](https://hub.docker.com/r/nebo15/mithril_api/);
-- [PostgreSQL Docker container](https://hub.docker.com/r/nebo15/alpine-postgre/);
-- [UI Docker container](https://hub.docker.com/r/nebo15/mithril-web/).
-
-## Documentation
-
-This project uses API Blueprint for [REST API specs](http://docs.mithril1.apiary.io/#), you can find their source in [apiary.apib](apiary.apib) file.
-
-## License
-
-See [LICENSE.md](LICENSE.md).
