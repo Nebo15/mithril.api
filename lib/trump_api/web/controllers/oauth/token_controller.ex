@@ -1,7 +1,8 @@
 defmodule Trump.OAuth.TokenController do
   use Trump.Web, :controller
 
-  plug Authable.Plug.Authenticate, [scopes: ~w(session read write)] when action in [:authorize, :delete]
+  # TODO: this will be on Gateway - remove all such calls
+  # plug Authable.Plug.Authenticate, [scopes: ~w(session read write)] when action in [:authorize, :delete]
 
   # POST /tokens
   def create(conn, %{"token" => token_params}) do
@@ -17,7 +18,7 @@ defmodule Trump.OAuth.TokenController do
   end
 
   def show(conn, %{"id" => _, "client_id" => _, "client_secret" => _} = params) do
-    case Authable.Model.Token.client_token(params) do
+    case Trump.TokenApi.TokenSearch.find(params) do
       {:ok, %{"token" => token}} ->
         conn
         |> put_status(:ok)
