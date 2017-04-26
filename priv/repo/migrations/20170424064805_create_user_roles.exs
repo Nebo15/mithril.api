@@ -1,4 +1,4 @@
-defmodule Trump.Repo.Migrations.CreateUserRoles do
+defmodule Mithril.Repo.Migrations.CreateUserRoles do
   use Ecto.Migration
 
   def change do

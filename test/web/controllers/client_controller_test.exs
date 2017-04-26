@@ -1,8 +1,8 @@
-defmodule Trump.Web.ClientControllerTest do
-  use Trump.Web.ConnCase
+defmodule Mithril.Web.ClientControllerTest do
+  use Mithril.Web.ConnCase
 
-  alias Trump.ClientAPI
-  alias Trump.ClientAPI.Client
+  alias Mithril.ClientAPI
+  alias Mithril.ClientAPI.Client
 
   @update_attrs %{
     name: "some updated name",
@@ -21,7 +21,7 @@ defmodule Trump.Web.ClientControllerTest do
   }
 
   def fixture(:client) do
-    attrs = Trump.Fixtures.client_create_attrs()
+    attrs = Mithril.Fixtures.client_create_attrs()
     {:ok, client} = ClientAPI.create_client(attrs)
     client
   end
@@ -36,7 +36,7 @@ defmodule Trump.Web.ClientControllerTest do
   end
 
   test "creates client and renders client when data is valid", %{conn: conn} do
-    attrs = Trump.Fixtures.client_create_attrs()
+    attrs = Mithril.Fixtures.client_create_attrs()
     conn = post conn, client_path(conn, :create), client: attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
 

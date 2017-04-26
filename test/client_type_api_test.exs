@@ -1,8 +1,8 @@
-defmodule Trump.ClientTypeAPITest do
-  use Trump.DataCase
+defmodule Mithril.ClientTypeAPITest do
+  use Mithril.DataCase
 
-  alias Trump.ClientTypeAPI
-  alias Trump.ClientTypeAPI.ClientType
+  alias Mithril.ClientTypeAPI
+  alias Mithril.ClientTypeAPI.ClientType
 
   @create_attrs %{name: "some name", scope: "some scope"}
   @update_attrs %{name: "some updated name", scope: "some updated scope"}

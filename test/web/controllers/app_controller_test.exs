@@ -1,8 +1,8 @@
-defmodule Trump.Web.AppControllerTest do
-  use Trump.Web.ConnCase
+defmodule Mithril.Web.AppControllerTest do
+  use Mithril.Web.ConnCase
 
-  alias Trump.AppAPI
-  alias Trump.AppAPI.App
+  alias Mithril.AppAPI
+  alias Mithril.AppAPI.App
 
   @create_attrs %{scope: "some scope"}
   @update_attrs %{scope: "some updated scope"}

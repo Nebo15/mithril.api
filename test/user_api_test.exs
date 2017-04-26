@@ -1,8 +1,8 @@
-defmodule Trump.Web.UserAPITest do
-  use Trump.DataCase
+defmodule Mithril.Web.UserAPITest do
+  use Mithril.DataCase
 
-  alias Trump.Web.UserAPI
-  alias Trump.Web.UserAPI.User
+  alias Mithril.Web.UserAPI
+  alias Mithril.Web.UserAPI.User
 
   @create_attrs %{email: "some email", password: "some password", settings: %{}}
   @update_attrs %{email: "some updated email", password: "some updated password", settings: %{}}

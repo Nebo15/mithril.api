@@ -1,4 +1,4 @@
-defmodule Trump.Web.ConnCase do
+defmodule Mithril.Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -18,22 +18,22 @@ defmodule Trump.Web.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import Trump.Web.Router.Helpers
+      import Mithril.Web.Router.Helpers
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      alias Trump.Repo
+      alias Mithril.Repo
 
       # The default endpoint for testing
-      @endpoint Trump.Web.Endpoint
+      @endpoint Mithril.Web.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Trump.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Mithril.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Trump.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Mithril.Repo, {:shared, self()})
     end
 
     conn =

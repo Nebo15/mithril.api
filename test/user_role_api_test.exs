@@ -1,11 +1,11 @@
-defmodule Trump.UserRoleAPITest do
-  use Trump.DataCase
+defmodule Mithril.UserRoleAPITest do
+  use Mithril.DataCase
 
-  alias Trump.UserRoleAPI
-  alias Trump.UserRoleAPI.UserRole
+  alias Mithril.UserRoleAPI
+  alias Mithril.UserRoleAPI.UserRole
 
   def fixture(:user_role) do
-    user_role_attrs = Trump.Fixtures.user_role_attrs()
+    user_role_attrs = Mithril.Fixtures.user_role_attrs()
     {:ok, user_role} = UserRoleAPI.create_user_role(user_role_attrs)
     user_role
   end
@@ -21,7 +21,7 @@ defmodule Trump.UserRoleAPITest do
   end
 
   test "create_user_role/1 with valid data creates a user_role" do
-    attrs = Trump.Fixtures.user_role_attrs()
+    attrs = Mithril.Fixtures.user_role_attrs()
 
     assert {:ok, %UserRole{} = user_role} = UserRoleAPI.create_user_role(attrs)
     assert user_role.client_id == attrs.client_id

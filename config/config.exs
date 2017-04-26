@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :trump_api, key: :value
+#     config :mithril_api, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:trump_api, :key)
+#     Application.get_env(:mithril_api, :key)
 #
 # Or configure a 3rd-party app:
 #
@@ -24,26 +24,26 @@ use Mix.Config
 #
 #     :var_name, "${ENV_VAR_NAME}"
 
-config :trump_api,
-  ecto_repos: [Trump.Repo],
-  namespace: Trump
+config :mithril_api,
+  ecto_repos: [Mithril.Repo],
+  namespace: Mithril
 
 # Configure your database
-config :trump_api, Trump.Repo,
+config :mithril_api, Mithril.Repo,
   adapter: Ecto.Adapters.Postgres,
-  database: {:system, "DB_NAME", "trump_api_dev"},
+  database: {:system, "DB_NAME", "mithril_api_dev"},
   username: {:system, "DB_USER", "postgres"},
   password: {:system, "DB_PASSWORD", "postgres"},
   hostname: {:system, "DB_HOST", "localhost"},
   port: {:system, :integer, "DB_PORT", 5432}
 
-config :trump_api, :generators,
+config :mithril_api, :generators,
   migration: false,
   binary_id: true,
   sample_binary_id: "11111111-1111-1111-1111-111111111111"
 
 # Configures the endpoint
-config :trump_api, Trump.Web.Endpoint,
+config :mithril_api, Mithril.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "6sOsW9uKv+8o8y/hIA3F4dNkJE2O35e2l6SaS9P/xW0+Nh9Fo59T6JHnl0GzBmio",
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]
@@ -55,7 +55,7 @@ config :logger, :console,
 
 # Configure JSON Logger back-end
 config :logger_json, :backend,
-  on_init: {Trump, :load_from_system_env, []},
+  on_init: {Mithril, :load_from_system_env, []},
   json_encoder: Poison,
   metadata: :all
 
@@ -66,7 +66,7 @@ config :logger_json, :backend,
 # here (which is why it is important to import them last).
 #
 
-config :trump_api, :generators,
+config :mithril_api, :generators,
   migration: false,
   binary_id: true,
   sample_binary_id: "11111111-1111-1111-1111-111111111111"

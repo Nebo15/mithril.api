@@ -1,0 +1,64 @@
+defmodule Mithril.ReleaseTasks do
+  @moduledoc """
+  Nice way to apply migrations inside a released application.
+
+  Example:
+
+      mithril_api/bin/mithril_api command Elixir.Mithril.ReleaseTasks migrate!
+  """
+  alias Ecto.Migrator
+
+  @start_apps [
+    :logger,
+    :logger_json,
+    :postgrex,
+    :ecto
+  ]
+
+  @apps [
+    :mithril_api
+  ]
+
+  @repos [
+    Mithril.Repo
+  ]
+
+  def migrate! do
+    IO.puts "Loading mithril_api.."
+    # Load the code for mithril_api, but don't start it
+    :ok = Application.load(:mithril_api)
+
+    IO.puts "Starting dependencies.."
+    # Start apps necessary for executing migrations
+    Enum.each(@start_apps, &Application.ensure_all_started/1)
+
+    # Start the Repo(s) for mithril_api
+    IO.puts "Starting repos.."
+    Enum.each(@repos, &(&1.start_link(pool_size: 1)))
+
+    # Run migrations
+    Enum.each(@apps, &run_migrations_for/1)
+
+    # Run the seed script if it exists
+    seed_script = seed_path(:mithril_api)
+    if File.exists?(seed_script) do
+      IO.puts "Running seed script.."
+      Code.eval_file(seed_script)
+    end
+
+    # Signal shutdown
+    IO.puts "Success!"
+    :init.stop()
+  end
+
+  def priv_dir(app),
+    do: :code.priv_dir(app)
+
+  defp run_migrations_for(app) do
+    IO.puts "Running migrations for #{app}"
+    Enum.each(@repos, &Migrator.run(&1, migrations_path(app), :up, all: true))
+  end
+
+  defp migrations_path(app), do: Path.join([priv_dir(app), "repo", "migrations"])
+  defp seed_path(app), do: Path.join([priv_dir(app), "repo", "seeds.exs"])
+end

@@ -1,11 +1,11 @@
-defmodule Trump.Web.UserRoleControllerTest do
-  use Trump.Web.ConnCase
+defmodule Mithril.Web.UserRoleControllerTest do
+  use Mithril.Web.ConnCase
 
-  alias Trump.Web.UserAPI.User
-  alias Trump.UserRoleAPI
+  alias Mithril.Web.UserAPI.User
+  alias Mithril.UserRoleAPI
 
   setup %{conn: conn} do
-    {:ok, user} = Trump.Web.UserAPI.create_user(%{email: "some email", password: "some password", settings: %{}})
+    {:ok, user} = Mithril.Web.UserAPI.create_user(%{email: "some email", password: "some password", settings: %{}})
 
     {:ok, conn: put_req_header(conn, "accept", "application/json"), user_id: user.id}
   end
@@ -16,7 +16,7 @@ defmodule Trump.Web.UserRoleControllerTest do
   end
 
   test "creates user_role and renders user_role when data is valid", %{user_id: user_id, conn: conn} do
-    create_attrs = Trump.Fixtures.user_role_attrs()
+    create_attrs = Mithril.Fixtures.user_role_attrs()
     conn = post conn, user_role_path(conn, :create, %User{id: user_id}), user_role: create_attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -36,7 +36,7 @@ defmodule Trump.Web.UserRoleControllerTest do
   end
 
   test "deletes chosen user_role", %{conn: conn} do
-    create_attrs = Trump.Fixtures.user_role_attrs()
+    create_attrs = Mithril.Fixtures.user_role_attrs()
     {:ok, user_role} = UserRoleAPI.create_user_role(create_attrs)
     conn = delete conn, user_role_path(conn, :delete, user_role.user_id, user_role.id)
     assert response(conn, 204)

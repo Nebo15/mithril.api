@@ -1,8 +1,8 @@
-defmodule Trump.Web.TokenControllerTest do
-  use Trump.Web.ConnCase
+defmodule Mithril.Web.TokenControllerTest do
+  use Mithril.Web.ConnCase
 
-  alias Trump.TokenAPI
-  alias Trump.TokenAPI.Token
+  alias Mithril.TokenAPI
+  alias Mithril.TokenAPI.Token
 
   @create_attrs %{details: %{}, expires_at: 42, name: "some name", value: "some value"}
   @update_attrs %{details: %{}, expires_at: 43, name: "some updated name", value: "some updated value"}

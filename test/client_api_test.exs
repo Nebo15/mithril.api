@@ -1,8 +1,8 @@
-defmodule Trump.ClientAPITest do
-  use Trump.DataCase
+defmodule Mithril.ClientAPITest do
+  use Mithril.DataCase
 
-  alias Trump.ClientAPI
-  alias Trump.ClientAPI.Client
+  alias Mithril.ClientAPI
+  alias Mithril.ClientAPI.Client
 
   @update_attrs %{
     name: "some updated name",
@@ -21,7 +21,7 @@ defmodule Trump.ClientAPITest do
   }
 
   def fixture(:client) do
-    attrs = Trump.Fixtures.client_create_attrs()
+    attrs = Mithril.Fixtures.client_create_attrs()
     {:ok, client} = ClientAPI.create_client(attrs)
     client
   end
@@ -37,7 +37,7 @@ defmodule Trump.ClientAPITest do
   end
 
   test "create_client/1 with valid data creates a client" do
-    attrs = Trump.Fixtures.client_create_attrs()
+    attrs = Mithril.Fixtures.client_create_attrs()
     assert {:ok, %Client{} = client} = ClientAPI.create_client(attrs)
     assert client.name == "some name"
     assert client.priv_settings == %{}

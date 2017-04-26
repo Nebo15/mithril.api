@@ -1,8 +1,8 @@
-defmodule Trump.Web.ClientTypeControllerTest do
-  use Trump.Web.ConnCase
+defmodule Mithril.Web.ClientTypeControllerTest do
+  use Mithril.Web.ConnCase
 
-  alias Trump.ClientTypeAPI
-  alias Trump.ClientTypeAPI.ClientType
+  alias Mithril.ClientTypeAPI
+  alias Mithril.ClientTypeAPI.ClientType
 
   @create_attrs %{name: "some name", scope: "some scope"}
   @update_attrs %{name: "some updated name", scope: "some updated scope"}
