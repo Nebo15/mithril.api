@@ -21,7 +21,6 @@ defmodule Mithril.Web.Router do
 
     post "/apps/authorize", OAuth.AppController, :authorize
     post "/tokens",         OAuth.TokenController, :create
-    get "/tokens/:id",      OAuth.TokenController, :show
   end
 
   scope "/admin", Mithril.Web do
