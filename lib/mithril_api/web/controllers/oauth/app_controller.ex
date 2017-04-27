@@ -1,7 +1,7 @@
 defmodule Mithril.OAuth.AppController do
   use Mithril.Web, :controller
 
-  plug Authable.Plug.Authenticate, [scopes: ~w(session read write)] when action in [:authorize]
+  plug Authable.Plug.Authenticate when action in [:authorize]
 
   # POST /apps/authorize
   def authorize(conn, %{"app" => app_params}) do
