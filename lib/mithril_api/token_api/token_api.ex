@@ -37,6 +37,7 @@ defmodule Mithril.TokenAPI do
   """
   def get_token!(id), do: Repo.get!(Token, id)
 
+  def get_token_by_value!(value), do: Repo.get_by!(Token, value: value)
   @doc """
   Creates a token.
 

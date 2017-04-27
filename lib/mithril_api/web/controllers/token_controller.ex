@@ -25,6 +25,11 @@ defmodule Mithril.Web.TokenController do
     render(conn, "show.json", token: token)
   end
 
+  def verify(conn, %{"token_id" => value}) do
+    token = TokenAPI.get_token_by_value!(value)
+    render(conn, "show.json", token: token)
+  end
+
   def update(conn, %{"id" => id, "token" => token_params}) do
     token = TokenAPI.get_token!(id)
 
