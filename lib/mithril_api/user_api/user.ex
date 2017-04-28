@@ -7,8 +7,8 @@ defmodule Mithril.Web.UserAPI.User do
   schema "users" do
     field :email, :string
     field :password, :string
-    field :settings, :map
-    field :priv_settings, :map
+    field :settings, :map, default: %{}
+    field :priv_settings, :map, default: %{}
 
     timestamps()
   end

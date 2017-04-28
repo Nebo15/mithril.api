@@ -37,6 +37,6 @@ defmodule Mithril.Web.UserAPI do
   defp user_changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:email, :password, :settings])
-    |> validate_required([:email, :password, :settings])
+    |> validate_required([:email, :password])
   end
 end
