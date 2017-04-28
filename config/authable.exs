@@ -36,5 +36,5 @@ config :authable,
       "session_token" => Authable.Authentication.Session
     }
   },
-  scopes: ~w(read write session),
+  scopes: ~w(app:authorize some_api:read some_api:write),
   renderer: Authable.Renderer.RestApi

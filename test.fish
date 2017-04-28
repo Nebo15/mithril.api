@@ -56,7 +56,7 @@ set login_result (
            "email": $user_email,
            "password": $user_password,
            "client_id": $client_id,
-           "scope": "session,read,write"
+           "scope": "app:authorize"
          }
        }'
   )
@@ -73,6 +73,7 @@ echo $login_result | jq
 # Front-end is now able to issue an app authentication call.
 
 # 2. Frontend shows user a "An application application requested an access on behalf of your account. Continue?". User clicks "Yes":
+#    Client initially asked for api:read and api:write, so create it.
 
 set code_result (
   set password_token (echo $login_result | jq -r '.data.value')
@@ -87,7 +88,7 @@ set code_result (
          "app": {
            "client_id": $client_id,
            "redirect_uri": $client_redirect_uri,
-           "scope": "read,write"
+           "scope": "some_api:read,some_api:write"
          }
        }'
   )
