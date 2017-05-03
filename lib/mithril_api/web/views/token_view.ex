@@ -17,6 +17,7 @@ defmodule Mithril.Web.TokenView do
       name: token.name,
       value: token.value,
       expires_at: token.expires_at,
+      user_id: token.user_id,
       details: token.details}
   end
 end

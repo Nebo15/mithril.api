@@ -33,7 +33,8 @@ defmodule Mithril.Web.TokenControllerTest do
       "expires_at" => 42,
       "name" => "some name",
       "value" => "some value",
-      "type" => "token"}
+      "type" => "token",
+      "user_id" => nil}
   end
 
   test "does not create token and renders errors when data is invalid", %{conn: conn} do
@@ -53,7 +54,8 @@ defmodule Mithril.Web.TokenControllerTest do
       "expires_at" => 43,
       "name" => "some updated name",
       "value" => "some updated value",
-      "type" => "token"}
+      "type" => "token",
+      "user_id" => nil}
   end
 
   test "does not update chosen token and renders errors when data is invalid", %{conn: conn} do
