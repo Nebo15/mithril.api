@@ -40,7 +40,7 @@ defmodule Mithril.ClientAPITest do
     assert {:ok, %Client{} = client} = ClientAPI.create_client(attrs)
     assert client.name == "some name"
     assert client.priv_settings == %{}
-    assert client.redirect_uri == "some redirect_uri"
+    assert client.redirect_uri == "fill_me"
     assert client.secret
     assert client.settings == %{}
   end
