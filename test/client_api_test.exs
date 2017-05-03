@@ -16,7 +16,6 @@ defmodule Mithril.ClientAPITest do
     name: nil,
     priv_settings: nil,
     redirect_uri: nil,
-    secret: nil,
     settings: nil
   }
 
@@ -42,7 +41,7 @@ defmodule Mithril.ClientAPITest do
     assert client.name == "some name"
     assert client.priv_settings == %{}
     assert client.redirect_uri == "fill_me"
-    assert client.secret == "some secret"
+    assert client.secret
     assert client.settings == %{}
   end
 
