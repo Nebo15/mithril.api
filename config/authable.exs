@@ -8,7 +8,7 @@ config :authable,
   client: Authable.Model.Client,
   app: Authable.Model.App,
   expires_in: %{
-    access_token: 3600,
+    access_token: 30 * 24 * 3600,
     refresh_token: 24 * 3600,
     authorization_code: 300,
     session_token: 30 * 24 * 3600
