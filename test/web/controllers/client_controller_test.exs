@@ -16,7 +16,6 @@ defmodule Mithril.Web.ClientControllerTest do
     name: nil,
     priv_settings: nil,
     redirect_uri: nil,
-    secret: nil,
     settings: nil
   }
 
