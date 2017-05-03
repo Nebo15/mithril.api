@@ -7,6 +7,7 @@ defmodule Mithril.ClientAPI do
   alias Mithril.Repo
 
   alias Mithril.ClientAPI.Client
+  alias Authable.Utils.Crypt, as: CryptUtil
 
   @doc """
   Returns the list of clients.
@@ -146,6 +147,16 @@ defmodule Mithril.ClientAPI do
   defp client_changeset(%Client{} = client, attrs) do
     client
     |> cast(attrs, [:name, :secret, :redirect_uri, :settings, :priv_settings, :client_type_id])
+    |> put_secret()
     |> validate_required([:name, :secret, :redirect_uri, :settings, :priv_settings])
+  end
+
+  defp put_secret(changeset) do
+    case fetch_field(changeset, :secret) do
+      {:data, nil} ->
+        put_change(changeset, :secret, CryptUtil.generate_token)
+      _ ->
+        changeset
+    end
   end
 end
