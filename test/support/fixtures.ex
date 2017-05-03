@@ -64,10 +64,8 @@ defmodule Mithril.Fixtures do
   def client_create_attrs do
     %{
       name: "some name",
-      priv_settings: %{},
-      redirect_uri: "some redirect_uri",
+      redirect_uri: "",
       secret: "some secret",
-      settings: %{},
       user_id: create_user().id,
       client_type_id: create_client_type().id
     }
