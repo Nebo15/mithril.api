@@ -6,7 +6,7 @@ defmodule Mithril.ClientAPI.Client do
   schema "clients" do
     field :name, :string
     field :priv_settings, :map, default: %{}
-    field :redirect_uri, :string, default: "fill_me"
+    field :redirect_uri, :string
     field :secret, :string
     field :settings, :map, default: %{}
     field :client_type_id, :binary_id, virtual: true

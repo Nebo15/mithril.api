@@ -44,7 +44,7 @@ defmodule Mithril.Web.ClientControllerTest do
       "id" => id,
       "name" => "some name",
       "priv_settings" => %{},
-      "redirect_uri" => "fill_me",
+      "redirect_uri" => "localhost",
       "secret" => "some secret",
       "settings" => %{},
       "type" => "client"}
