@@ -9,8 +9,9 @@ defmodule Mithril.ClientAPI.Client do
     field :redirect_uri, :string, default: "fill_me"
     field :secret, :string
     field :settings, :map, default: %{}
-    field :user_id, :binary_id
     field :client_type_id, :binary_id, virtual: true
+
+    belongs_to :user, Mithril.Web.UserAPI.User
 
     timestamps()
   end
