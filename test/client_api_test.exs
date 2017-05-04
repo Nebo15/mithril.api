@@ -49,6 +49,12 @@ defmodule Mithril.ClientAPITest do
     assert {:error, %Ecto.Changeset{}} = ClientAPI.create_client(@invalid_attrs)
   end
 
+  test "create_client/1 with no client_type_id provided returns error changeset" do
+    {:error, %Ecto.Changeset{} = changeset} = ClientAPI.create_client(@invalid_attrs)
+
+    assert Keyword.fetch!(changeset.errors, :client_type_id) == {"can't be blank", [validation: :required]}
+  end
+
   test "update_client/2 with valid data updates the client" do
     client = fixture(:client)
     assert {:ok, client} = ClientAPI.update_client(client, @update_attrs)

@@ -76,9 +76,12 @@ defmodule Mithril.ClientAPI do
 
   defp client_changeset(%Client{} = client, attrs) do
     client
-    |> cast(attrs, [:name, :secret, :redirect_uri, :settings, :priv_settings, :client_type_id])
+    |> cast(attrs, [:name, :user_id, :secret, :redirect_uri, :settings, :priv_settings, :client_type_id])
     |> put_secret()
-    |> validate_required([:name, :secret, :redirect_uri, :settings, :priv_settings])
+    |> validate_required([:name, :user_id, :secret, :redirect_uri, :settings, :priv_settings])
+    |> validate_client_type()
+    |> unique_constraint(:name)
+    |> assoc_constraint(:user)
   end
 
   defp put_secret(changeset) do
@@ -86,6 +89,15 @@ defmodule Mithril.ClientAPI do
       {:data, nil} ->
         put_change(changeset, :secret, CryptUtil.generate_token)
       _ ->
+        changeset
+    end
+  end
+
+  defp validate_client_type(changeset) do
+    case fetch_field(changeset, :id) do
+      {:data, nil} ->
+        validate_required(changeset, [:client_type_id])
+      {:data, _} ->
         changeset
     end
   end
