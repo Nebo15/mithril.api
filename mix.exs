@@ -58,7 +58,7 @@ defmodule Mithril.Mixfile do
      {:poison, "~> 3.1"},
      {:phoenix, "~> 1.3.0-rc"},
      {:logger_json, "~> 0.4.0"},
-     {:eview, "~> 0.10.1"},
+     {:eview, "~> 0.10.7"},
      {:phoenix_ecto, "~> 3.2"},
      {:authable, ">= 0.0.0"},
      {:benchfella, ">= 0.3.4", only: [:dev, :test]},
