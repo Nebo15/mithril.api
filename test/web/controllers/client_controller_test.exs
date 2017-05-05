@@ -34,20 +34,30 @@ defmodule Mithril.Web.ClientControllerTest do
     assert json_response(conn, 200)["data"] == []
   end
 
+  test "search clients by name", %{conn: conn} do
+    name = "search_name"
+    fixture(:client)
+    {:ok, _} = name |> Mithril.Fixtures.client_create_attrs() |> ClientAPI.create_client()
+
+    conn = get conn, client_path(conn, :index, [name: name])
+    resp = json_response(conn, 200)
+
+    assert Map.has_key?(resp, "paging")
+    assert 1 == length(resp["data"])
+    refute resp["paging"]["has_more"]
+  end
+
   test "creates client and renders client when data is valid", %{conn: conn} do
     attrs = Mithril.Fixtures.client_create_attrs()
     conn = post conn, client_path(conn, :create), client: attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
 
     conn = get conn, client_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{
-      "id" => id,
-      "name" => "some name",
-      "priv_settings" => %{},
-      "redirect_uri" => "localhost",
-      "secret" => "some secret",
-      "settings" => %{},
-      "type" => "client"}
+    resp = json_response(conn, 200)["data"]
+
+    assert id == resp["id"]
+    assert "localhost" == resp["redirect_uri"]
+    assert %{} == resp["priv_settings"]
   end
 
   test "does not create client and renders errors when data is invalid", %{conn: conn} do
@@ -66,7 +76,7 @@ defmodule Mithril.Web.ClientControllerTest do
       "name" => "some updated name",
       "priv_settings" => %{},
       "redirect_uri" => "some updated redirect_uri",
-      "secret" => "some updated secret",
+      "secret" => client.secret,
       "settings" => %{},
       "type" => "client"}
   end

@@ -27,7 +27,9 @@ defmodule Mithril.ClientAPITest do
 
   test "list_clients/1 returns all clients" do
     client = fixture(:client)
-    assert ClientAPI.list_clients() == [%{client | client_type_id: nil}]
+    {clients, _paging} = ClientAPI.list_clients(%{})
+    assert [%{client | client_type_id: nil}] == clients
+
   end
 
   test "get_client! returns the client with given id" do
@@ -62,7 +64,6 @@ defmodule Mithril.ClientAPITest do
     assert client.name == "some updated name"
     assert client.priv_settings == %{}
     assert client.redirect_uri == "some updated redirect_uri"
-    assert client.secret == "some updated secret"
     assert client.settings == %{}
   end
 
