@@ -3,7 +3,7 @@ defmodule Mithril.ClientAPI.ClientSearch do
 
   use Ecto.Schema
 
-  schema "employee_search" do
+  schema "client_search" do
     field :name, :string
     field :user_id, Ecto.UUID
   end
