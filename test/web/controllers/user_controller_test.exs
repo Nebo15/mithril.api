@@ -22,6 +22,18 @@ defmodule Mithril.Web.UserControllerTest do
     assert json_response(conn, 200)["data"] == []
   end
 
+  test "finds user by valid email", %{conn: conn} do
+    conn = post conn, user_path(conn, :create), user: @create_attrs
+    conn = get conn, user_path(conn, :index, %{email: @create_attrs.email})
+    assert length(json_response(conn, 200)["data"]) == 1
+  end
+
+  test "finds nothing by invalid email", %{conn: conn} do
+    conn = post conn, user_path(conn, :create), user: @create_attrs
+    conn = get conn, user_path(conn, :index, %{email: @create_attrs.email <> "111"})
+    assert length(json_response(conn, 200)["data"]) == 0
+  end
+
   test "creates user and renders user when data is valid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @create_attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
