@@ -60,6 +60,7 @@ defmodule Mithril.Mixfile do
      {:logger_json, "~> 0.4.0"},
      {:eview, "~> 0.10.7"},
      {:phoenix_ecto, "~> 3.2"},
+     {:ecto_paging, ">= 0.0.0"},
      {:authable, ">= 0.0.0"},
      {:benchfella, ">= 0.3.4", only: [:dev, :test]},
      {:ex_doc, ">= 0.15.0", only: [:dev, :test]},
