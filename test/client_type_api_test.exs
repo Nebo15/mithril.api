@@ -15,7 +15,8 @@ defmodule Mithril.ClientTypeAPITest do
 
   test "list_client_types/1 returns all client_types" do
     client_type = fixture(:client_type)
-    assert ClientTypeAPI.list_client_types() == [client_type]
+    {client_types, _paging} = ClientTypeAPI.list_client_types()
+    assert [client_type] == client_types
   end
 
   test "get_client_type! returns the client_type with given id" do

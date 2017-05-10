@@ -22,6 +22,19 @@ defmodule Mithril.Web.ClientTypeControllerTest do
     assert json_response(conn, 200)["data"] == []
   end
 
+  test "search client types by name", %{conn: conn} do
+    name = "MSP"
+    fixture(:client_type)
+    {:ok, _} = name |> Mithril.Fixtures.client_type_attrs() |> ClientTypeAPI.create_client_type()
+
+    conn = get conn, client_type_path(conn, :index, [name: name])
+    resp = json_response(conn, 200)
+
+    assert Map.has_key?(resp, "paging")
+    assert 1 == length(resp["data"])
+    refute resp["paging"]["has_more"]
+  end
+
   test "creates client_type and renders client_type when data is valid", %{conn: conn} do
     conn = post conn, client_type_path(conn, :create), client_type: @create_attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]

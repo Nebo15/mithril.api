@@ -6,9 +6,10 @@ defmodule Mithril.Web.ClientTypeController do
 
   action_fallback Mithril.Web.FallbackController
 
-  def index(conn, _params) do
-    client_types = ClientTypeAPI.list_client_types()
-    render(conn, "index.json", client_types: client_types)
+  def index(conn, params) do
+    with {client_types, %Ecto.Paging{} = paging} <- ClientTypeAPI.list_client_types(params) do
+      render(conn, "index.json", client_types: client_types, paging: paging)
+    end
   end
 
   def create(conn, %{"client_type" => client_type_params}) do
