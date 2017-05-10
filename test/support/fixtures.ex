@@ -71,9 +71,9 @@ defmodule Mithril.Fixtures do
     }
   end
 
-  def client_type_attrs do
+  def client_type_attrs(name \\ "some_kind_of_client") do
     %{
-      name: "some_kind_of_client",
+      name: name,
       scope: "some, scope"
     }
   end

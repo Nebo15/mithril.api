@@ -2,10 +2,12 @@ defmodule Mithril.ClientTypeAPI do
   @moduledoc """
   The boundary for the ClientTypeAPI system.
   """
+  use Mithril.Search
 
   import Ecto.{Query, Changeset}, warn: false
   alias Mithril.Repo
 
+  alias Mithril.ClientAPI.ClientTypeSearch
   alias Mithril.ClientTypeAPI.ClientType
 
   @doc """
@@ -17,8 +19,10 @@ defmodule Mithril.ClientTypeAPI do
       [%ClientType{}, ...]
 
   """
-  def list_client_types do
-    Repo.all(ClientType)
+  def list_client_types(params \\ %{}) do
+    %ClientTypeSearch{}
+    |> client_type_changeset(params)
+    |> search(params, ClientType, 50)
   end
 
   @doc """
@@ -106,5 +110,13 @@ defmodule Mithril.ClientTypeAPI do
     client_type
     |> cast(attrs, [:name, :scope])
     |> validate_required([:name, :scope])
+  end
+
+  defp client_type_changeset(%ClientTypeSearch{} = client_type, attrs) do
+    fields = ~W(
+      name
+    )
+
+    cast(client_type, attrs, fields)
   end
 end
