@@ -9,7 +9,7 @@ defmodule Mithril.Search do
 
       alias Mithril.Repo
 
-      def search(%Ecto.Changeset{valid?: true, changes: changes}, search_params, entity, default_limit) do
+      def get_paging(search_params, default_limit) do
         limit =
           search_params
           |> Map.get("limit", default_limit)
@@ -19,15 +19,20 @@ defmodule Mithril.Search do
           starting_after: Map.get(search_params, "starting_after"),
           ending_before: Map.get(search_params, "ending_before")
         }
+        %Ecto.Paging{limit: limit, cursors: cursors}
+      end
 
+      def search(%Ecto.Changeset{valid?: true, changes: changes}, search_params, entity, default_limit) do
         entity
         |> get_search_query(changes)
-        |> Repo.page(%Ecto.Paging{limit: limit, cursors: cursors})
+        |> Repo.page(get_paging(search_params, default_limit))
       end
 
       def search(%Ecto.Changeset{valid?: false} = changeset, _search_params, _entity, _default_limit) do
         {:error, changeset}
       end
+
+      def search(query, search_params, default_limit), do: Repo.page(query, get_paging(search_params, default_limit))
 
       def get_search_query(entity, changes) when map_size(changes) > 0 do
         params = Map.to_list(changes)

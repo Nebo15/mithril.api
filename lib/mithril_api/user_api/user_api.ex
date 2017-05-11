@@ -9,13 +9,17 @@ defmodule Mithril.Web.UserAPI do
   alias Mithril.Repo
 
   alias Mithril.Web.UserAPI.User
-  alias Mithril.Web.UserAPI.UserSearch
 
   def list_users(params) do
-    %UserSearch{}
-    |> user_changeset(params)
-    |> search(params, User, 50)
+    User
+    |> filter_by_email(params)
+    |> search(params, 50)
   end
+
+  defp filter_by_email(query, %{"email" => email}) when is_binary(email) do
+    where(query, [r], r.email == ^email)
+  end
+  defp filter_by_email(query, _), do: query
 
   def get_user!(id), do: Repo.get!(User, id)
 
@@ -39,13 +43,6 @@ defmodule Mithril.Web.UserAPI do
     user_changeset(user, %{})
   end
 
-  defp user_changeset(%UserSearch{} = user, attrs) do
-    fields = ~W(
-      email
-    )
-
-    cast(user, attrs, fields)
-  end
   defp user_changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:email, :password, :settings])
