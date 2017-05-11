@@ -111,12 +111,12 @@ List of endpoints that is safe to be public and MUST be protected by additional 
 
 | Resource  | Action          | Endpoint                                    | Scopes        | Description |
 | --------- | --------------- | ------------------------------------------- | ------------- | ----------- |
-| Tokens    | Create          | `POST /tokens`                              | N/A           | Create authentication token. |
+| Tokens    | Create          | `POST /oauth/tokens`                              | N/A           | Create authentication token. |
 | Users     | Get by Token    | `GET /tokens/{token_id}/user`               | `user:read`   | Allows authenticated user to get information about hemself. |
 | Users     | Request Password Recovery | `POST /password_recovery_requests`| N/A           | Used to recover forgotten password withoit authentication. |
 | Users     | Reset Password  | `PATCH /users/{id}/actions/reset_password`  | N/A           | Used to reset forgotten password withoit authentication. |
 | Users     | Change Password | `PATCH /users/{id}/actions/change_password` | `user:update` | Used by user to change their credentials. |
-| Approvals | Authorize       | `POST /apps`                                | `apps:create` | Used by User to approve Client access to hes data. First step in oAuth flow. Scopes is set in session token created with `grant_type=password`. |
+| Approvals | Authorize       | `POST /oauth/apps`                                | `apps:create` | Used by User to approve Client access to hes data. First step in oAuth flow. Scopes is set in session token created with `grant_type=password`. |
 | Approvals | Get Approvals   | `GET /apps{?client_ids}`                    | `apps:read`   | Used by user to see list of Approvals that he authorized. **Returning list is forse-filtered for owner**. |
 | Approvals | Delete          | `DELETE /apps/{id}`                         | `apps:delete` | Used by user to de-authorize Client from accessing hes data. **Can delete only owned Approvals**. |
 
