@@ -3,17 +3,16 @@ defmodule Mithril.Web.UserAPI do
   The boundary for the UserAPI system.
   """
 
-  use Mithril.Search
-
   import Ecto.{Query, Changeset}, warn: false
-  alias Mithril.Repo
+  import Mithril.Paging
 
+  alias Mithril.Repo
   alias Mithril.Web.UserAPI.User
 
   def list_users(params) do
     User
     |> filter_by_email(params)
-    |> search(params, 50)
+    |> Repo.page(get_paging(params, 50))
   end
 
   defp filter_by_email(query, %{"email" => email}) when is_binary(email) do
