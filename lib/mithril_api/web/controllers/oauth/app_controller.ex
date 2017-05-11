@@ -11,6 +11,7 @@ defmodule Mithril.OAuth.AppController do
       {:ok, %{"token" => token}} ->
         conn
         |> put_status(:created)
+        |> put_resp_header("location", generate_location(token))
         |> render(Mithril.Web.TokenView, "show.json", token: token)
       {:error, {http_status_code, errors}} ->
         conn
@@ -27,5 +28,14 @@ defmodule Mithril.OAuth.AppController do
       res ->
         {:ok, res}
     end
+  end
+
+  defp generate_location(token) do
+    query = URI.encode_query(%{
+      code: token.value
+    })
+
+    # TODO: redirect_uri may contain params too
+    token.details.redirect_uri <> "?" <> query
   end
 end

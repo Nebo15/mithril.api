@@ -36,7 +36,7 @@ defmodule Mithril.TokenAPI do
 
   defp token_changeset(%Token{} = token, attrs) do
     token
-    |> cast(attrs, [:name, :value, :expires_at, :details])
-    |> validate_required([:name, :value, :expires_at, :details])
+    |> cast(attrs, [:name, :user_id, :value, :expires_at, :details])
+    |> validate_required([:name, :user_id, :value, :expires_at, :details])
   end
 end
