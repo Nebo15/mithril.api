@@ -8,9 +8,10 @@ defmodule Mithril.Web.UserController do
 
   action_fallback Mithril.Web.FallbackController
 
-  def index(conn, _params) do
-    users = UserAPI.list_users()
-    render(conn, "index.json", users: users)
+  def index(conn, params) do
+    with {users, %Ecto.Paging{} = paging} <- UserAPI.list_users(params) do
+      render(conn, "index.json", users: users, paging: paging)
+    end
   end
 
   def create(conn, %{"user" => user_params}) do

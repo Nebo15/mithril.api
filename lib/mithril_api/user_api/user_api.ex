@@ -4,13 +4,21 @@ defmodule Mithril.Web.UserAPI do
   """
 
   import Ecto.{Query, Changeset}, warn: false
-  alias Mithril.Repo
+  import Mithril.Paging
 
+  alias Mithril.Repo
   alias Mithril.Web.UserAPI.User
 
-  def list_users do
-    Repo.all(User)
+  def list_users(params) do
+    User
+    |> filter_by_email(params)
+    |> Repo.page(get_paging(params, 50))
   end
+
+  defp filter_by_email(query, %{"email" => email}) when is_binary(email) do
+    where(query, [r], r.email == ^email)
+  end
+  defp filter_by_email(query, _), do: query
 
   def get_user!(id), do: Repo.get!(User, id)
 
