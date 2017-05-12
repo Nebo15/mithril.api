@@ -20,6 +20,13 @@ defmodule Mithril.OAuth.AppController do
   end
 
   defp process(%{"user" => user} = params) do
+    # TODO:
+    #   use Mithril.Authorization.App.grant(params)
+    #
+    # params must have:
+    #
+    #   @app_authorization.grant(%{"user" => user, "client_id" => client_id,
+    #   "redirect_uri" => redirect_uri, "scope" => scope})
     case Authable.OAuth2.grant_app_authorization(user, params) do
       {:error, errors, http_status_code} ->
         {:error, {http_status_code, errors}}
