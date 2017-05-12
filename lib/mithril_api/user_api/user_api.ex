@@ -46,5 +46,16 @@ defmodule Mithril.Web.UserAPI do
     user
     |> cast(attrs, [:email, :password, :settings])
     |> validate_required([:email, :password])
+    |> put_password()
+  end
+
+  defp put_password(changeset) do
+    if password = get_change(changeset, :password) do
+      secured_password = Comeonin.Bcrypt.hashpwsalt(password)
+
+      put_change(changeset, :password, secured_password)
+    else
+      changeset
+    end
   end
 end

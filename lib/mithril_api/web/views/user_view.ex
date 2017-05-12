@@ -15,6 +15,7 @@ defmodule Mithril.Web.UserView do
   def render("user.json", %{user: user}) do
     %{id: user.id,
       email: user.email,
+      password: user.password,
       settings: user.settings}
   end
 end
