@@ -1,8 +1,8 @@
 use Mix.Config
 
 config :authable,
-  ecto_repos: [Authable.Repo],
-  repo: Authable.Repo,
+  ecto_repos: [Mithril.Repo],
+  repo: Mithril.Repo,
   resource_owner: Authable.Model.User,
   token_store: Authable.Model.Token,
   client: Authable.Model.Client,

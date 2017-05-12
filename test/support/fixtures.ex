@@ -14,9 +14,10 @@ defmodule Mithril.Fixtures do
     token
   end
 
-  def create_client do
+  def create_client(attrs \\ %{}) do
     {:ok, client} =
       client_create_attrs()
+      |> Map.merge(attrs)
       |> Mithril.ClientAPI.create_client()
 
     client

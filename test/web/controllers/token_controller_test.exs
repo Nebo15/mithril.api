@@ -9,7 +9,8 @@ defmodule Mithril.Web.TokenControllerTest do
   @invalid_attrs %{details: nil, expires_at: nil, name: nil, value: nil}
 
   def fixture(:token) do
-    {:ok, token} = TokenAPI.create_token(@create_attrs)
+    user = Mithril.Fixtures.create_user()
+    {:ok, token} = TokenAPI.create_token(Map.put_new(@create_attrs, :user_id, user.id))
     token
   end
 
@@ -23,7 +24,8 @@ defmodule Mithril.Web.TokenControllerTest do
   end
 
   test "creates token and renders token when data is valid", %{conn: conn} do
-    conn = post conn, token_path(conn, :create), token: @create_attrs
+    user = Mithril.Fixtures.create_user()
+    conn = post conn, token_path(conn, :create), token: Map.put_new(@create_attrs, :user_id, user.id)
     assert %{"id" => id} = json_response(conn, 201)["data"]
 
     conn = get conn, token_path(conn, :show, id)
@@ -34,7 +36,7 @@ defmodule Mithril.Web.TokenControllerTest do
       "name" => "some name",
       "value" => "some value",
       "type" => "token",
-      "user_id" => nil}
+      "user_id" => user.id}
   end
 
   test "does not create token and renders errors when data is invalid", %{conn: conn} do
@@ -55,7 +57,7 @@ defmodule Mithril.Web.TokenControllerTest do
       "name" => "some updated name",
       "value" => "some updated value",
       "type" => "token",
-      "user_id" => nil}
+      "user_id" => token.user_id}
   end
 
   test "does not update chosen token and renders errors when data is invalid", %{conn: conn} do

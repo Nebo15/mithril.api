@@ -26,4 +26,5 @@ config :authable, Authable.Repo,
   password: "postgres",
   database: "mithril_api_test",
   hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10

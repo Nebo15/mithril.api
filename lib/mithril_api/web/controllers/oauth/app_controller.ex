@@ -11,6 +11,7 @@ defmodule Mithril.OAuth.AppController do
       {:ok, %{"token" => token}} ->
         conn
         |> put_status(:created)
+        |> put_resp_header("location", generate_location(token))
         |> render(Mithril.Web.TokenView, "show.json", token: token)
       {:error, {http_status_code, errors}} ->
         conn
@@ -27,5 +28,21 @@ defmodule Mithril.OAuth.AppController do
       res ->
         {:ok, res}
     end
+  end
+
+  defp generate_location(token) do
+    redirect_uri = URI.parse(token.details.redirect_uri)
+
+    new_redirect_uri =
+      Map.update! redirect_uri, :query, fn(query) ->
+        query =
+          if query, do: URI.decode_query(query), else: %{}
+
+        query
+        |> Map.merge(%{code: token.value})
+        |> URI.encode_query
+      end
+
+    URI.to_string(new_redirect_uri)
   end
 end
