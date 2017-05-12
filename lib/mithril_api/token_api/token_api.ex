@@ -20,6 +20,12 @@ defmodule Mithril.TokenAPI do
     |> Repo.insert()
   end
 
+  def create_authorization_code(attrs \\ %{}) do
+    %Token{}
+    |> authorization_code_changeset(attrs)
+    |> Repo.insert()
+  end
+
   def update_token(%Token{} = token, attrs) do
     token
     |> token_changeset(attrs)
@@ -38,5 +44,15 @@ defmodule Mithril.TokenAPI do
     token
     |> cast(attrs, [:name, :user_id, :value, :expires_at, :details])
     |> validate_required([:name, :user_id, :value, :expires_at, :details])
+  end
+
+  defp authorization_code_changeset(%Token{} = token, attrs) do
+    token
+    |> cast(params, [:name, :expires_at, :details, :user_id])
+    |> validate_required([:user_id])
+    |> put_change(:value, SecureRandom.urlsafe_base64)
+    |> put_change(:name, "authorization_code")
+    |> put_change(:expires_at, :os.system_time(:seconds) + 5 * 60) # valid for 5 minutes
+    |> unique_constraint(:value, name: :tokens_value_name_index)
   end
 end
