@@ -42,7 +42,6 @@ defmodule Mithril.Web.UserControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => id,
       "email" => "some email",
-      "password" => "some password",
       "settings" => %{},
       "type" => "user"}
   end
@@ -61,7 +60,6 @@ defmodule Mithril.Web.UserControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => id,
       "email" => "some updated email",
-      "password" => "some updated password",
       "settings" => %{},
       "type" => "user"}
   end
