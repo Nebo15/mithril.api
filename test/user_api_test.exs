@@ -39,8 +39,14 @@ defmodule Mithril.Web.UserAPITest do
   test "create_user/1 with valid data creates a user" do
     assert {:ok, %User{} = user} = UserAPI.create_user(@create_attrs)
     assert user.email == "some email"
-    assert user.password == "some password"
+    assert String.length(user.password) == 60
     assert user.settings == %{}
+  end
+
+  test "create_user/1 secures user password" do
+    {:ok, user} = UserAPI.create_user(@create_attrs)
+
+    assert Comeonin.Bcrypt.checkpw("some password", user.password)
   end
 
   test "create_user/1 with invalid data returns error changeset" do
@@ -52,7 +58,7 @@ defmodule Mithril.Web.UserAPITest do
     assert {:ok, user} = UserAPI.update_user(user, @update_attrs)
     assert %User{} = user
     assert user.email == "some updated email"
-    assert user.password == "some updated password"
+    assert String.length(user.password) == 60
     assert user.settings == %{}
   end
 
