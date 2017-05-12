@@ -6,7 +6,7 @@ defmodule Mithril.OAuth.AppControllerTest do
   end
 
   test "successfully approves client request", %{conn: conn} do
-    client = Mithril.Fixtures.create_client()
+    client = Mithril.Fixtures.create_client(%{redirect_uri: "http://some_host.com:3000/path?param=1"})
     user   = Mithril.Fixtures.create_user()
 
     {:ok, token} =
@@ -48,6 +48,6 @@ defmodule Mithril.OAuth.AppControllerTest do
 
     [header] = Plug.Conn.get_resp_header(conn, "location")
 
-    assert "#{token.details.redirect_uri}?code=#{result["value"]}" == header
+    assert "http://some_host.com:3000/path?code=#{result["value"]}&param=1" == header
   end
 end

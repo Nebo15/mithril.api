@@ -31,11 +31,18 @@ defmodule Mithril.OAuth.AppController do
   end
 
   defp generate_location(token) do
-    query = URI.encode_query(%{
-      code: token.value
-    })
+    redirect_uri = URI.parse(token.details.redirect_uri)
 
-    # TODO: redirect_uri may contain params too
-    token.details.redirect_uri <> "?" <> query
+    new_redirect_uri =
+      Map.update! redirect_uri, :query, fn(query) ->
+        query =
+          if query, do: URI.decode_query(query), else: %{}
+
+        query
+        |> Map.merge(%{code: token.value})
+        |> URI.encode_query
+      end
+
+    URI.to_string(new_redirect_uri)
   end
 end
