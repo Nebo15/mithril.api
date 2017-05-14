@@ -78,6 +78,7 @@ defmodule Mithril.Authorization.App do
       user_id: user.id,
       details: %{
         client_id: client.id,
+        grant_type: "password",
         redirect_uri: client.redirect_uri,
         scope: "app:authorize"
       }

@@ -31,6 +31,7 @@ defmodule Mithril.OAuth.AppControllerTest do
     assert result["details"]["scope"] == "app:authorize"
     assert result["details"]["redirect_uri"]
     assert result["details"]["client_id"]
+    assert result["details"]["grant_type"] == "password"
 
     [header] = Plug.Conn.get_resp_header(conn, "location")
 
@@ -43,14 +44,14 @@ defmodule Mithril.OAuth.AppControllerTest do
     assert app.scope == "some_api:read,some_api:write"
   end
 
-  test "successfully updates existing approval with less scopes", %{conn: conn} do
+  test "successfully updates existing approval with less scope", %{conn: conn} do
     client = Mithril.Fixtures.create_client()
     user   = Mithril.Fixtures.create_user()
 
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scopes: "some_api:read,some_api:write"
+      scope: "some_api:read,some_api:write"
     })
 
     request = %{
@@ -85,7 +86,7 @@ defmodule Mithril.OAuth.AppControllerTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scopes: "some_api:read"
+      scope: "some_api:read"
     })
 
     request = %{

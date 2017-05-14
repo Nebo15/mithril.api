@@ -26,45 +26,47 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     |> validate_client_match(client)
     |> validate_token_expiration
     |> validate_token_redirect_uri(redirect_uri)
-    |> validate_token_scope(required_scopes)
     |> validate_app_authorization
+    |> validate_requested_scopes(required_scopes)
     |> delete_token
     |> create_access_token(required_scopes)
   end
 
-  defp create_access_token({:error, err, code}), do: {:error, err, code}
+  defp create_access_token({:error, err, code}, _required_scopes), do: {:error, err, code}
   defp create_access_token({:ok, token}, required_scopes) do
     Mithril.TokenAPI.create_access_token(%{
       user_id: token.user_id,
       details: %{
         grant_type: "authorization_code",
-        client_id: token.client_id,
+        client_id: token.details["client_id"],
         scope: required_scopes,
-        redirect_uri: token.redirect_uri
+        redirect_uri: token.details["redirect_uri"]
       }
     })
   end
 
   defp delete_token({:error, err, code}), do: {:error, err, code}
-  defp delete_token({:ok, token}), do: Mithril.TokenAPI.delete_token(token)
+  defp delete_token({:ok, token, _app}), do: Mithril.TokenAPI.delete_token(token)
 
   defp validate_app_authorization({:error, err, code}),
     do: {:error, err, code}
   defp validate_app_authorization({:ok, token}) do
-    if app_authorized?(token.user_id, token.details["client_id"]) do
-      {:ok, token}
+    IO.inspect token.user_id
+    IO.inspect token.details["client_id"]
+    IO.inspect token
+    if app = get_app(token.user_id, token.details["client_id"]) do
+      {:ok, token, app}
     else
       GrantTypeError.access_denied("Resource owner revoked access for the client.")
     end
   end
 
-  defp validate_token_scope({:error, err, code}, _), do: {:error, err, code}
-  defp validate_token_scope({:ok, token}, ""), do: {:ok, token}
-  defp validate_token_scope({:ok, token}, required_scopes) do
-    required_scopes = required_scopes |> Authable.Utils.String.comma_split
-    scopes = Authable.Utils.String.comma_split(token.details["scope"])
+  defp validate_requested_scopes({:error, err, code}, _), do: {:error, err, code}
+  defp validate_requested_scopes({:ok, token, app}, required_scopes) do
+    scopes = Authable.Utils.String.comma_split(app.scope)
+    required_scopes = Authable.Utils.String.comma_split(required_scopes)
     if Authable.Utils.List.subset?(scopes, required_scopes) do
-      {:ok, token}
+      {:ok, token, app}
     else
       GrantTypeError.invalid_scope(scopes)
     end
@@ -96,5 +98,9 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     else
       {:ok, token}
     end
+  end
+
+  defp get_app(user_id, client_id) do
+    Mithril.AppAPI.get_app_by(user_id: user_id, client_id: client_id)
   end
 end
