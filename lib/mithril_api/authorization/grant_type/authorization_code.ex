@@ -3,12 +3,18 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
 
   alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 
-  def authorize(%{"client_id" => client_id, "client_secret" => client_secret, "code" => code, "redirect_uri" => redirect_uri, "scope" => scopes}) do
+  def authorize(%{
+      "client_id" => client_id,
+      "client_secret" => client_secret,
+      "code" => code,
+      "redirect_uri" => redirect_uri,
+      "scope" => scopes}) do
     client = Mithril.ClientAPI.get_client_by(id: client_id, secret: client_secret)
     do_authorize(client, code, redirect_uri, scopes)
   end
   def authorize(_) do
-    GrantTypeError.invalid_request("Request must include at least client_id, client_secret, code, scopes and redirect_uri parameters.")
+    message = "Request must include at least client_id, client_secret, code, scopes and redirect_uri parameters."
+    GrantTypeError.invalid_request(message)
   end
 
   defp do_authorize(nil, _, _, _),
@@ -84,7 +90,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   defp validate_token_expiration({:error, err, code}),
     do: {:error, err, code}
   defp validate_token_expiration({:ok, token}) do
-    if Mithril.TokenAPI.is_expired?(token) do
+    if Mithril.TokenAPI.expired?(token) do
       GrantTypeError.invalid_grant("Token expired.")
     else
       {:ok, token}

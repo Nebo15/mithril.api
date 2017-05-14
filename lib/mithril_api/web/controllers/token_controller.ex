@@ -33,23 +33,16 @@ defmodule Mithril.Web.TokenController do
   #   - check that app exists
   #
   # Check Authable.Plug for more details.
-  #
-  # Definitely include this:
-  #
-  # Authable.GrantType.Base.app_authorized?(
-  #   "256a6d70-4a91-43fe-aacf-5588862ed8a2"
-  #   "52024ca6-cf1d-4a9d-bfb6-9bc5023ad56e"
-  # )
   def verify(conn, %{"token_id" => value}) do
     token = TokenAPI.get_token_by_value!(value)
     render(conn, "show.json", token: token)
   end
 
-  def verify(conn, %{"email" => email, "password" => "password"}) do
-    token = TokenAPI.get_token_by_value!(value)
-    # TODO: render the fact that user exists
-    render(conn, "show.json", token: token)
-  end
+  # TODO: render the fact that user exists
+  # def verify(conn, %{"email" => email, "password" => "password"}) do
+  #   token = TokenAPI.get_token_by_value!(value)
+  #   render(conn, "show.json", token: token)
+  # end
 
   def update(conn, %{"id" => id, "token" => token_params}) do
     token = TokenAPI.get_token!(id)

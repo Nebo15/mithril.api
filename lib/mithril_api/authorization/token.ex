@@ -4,7 +4,8 @@ defmodule Mithril.Authorization.Token do
   # Functions in this module create new access_tokens,
   # based on grant_type the request came with
 
-  alias Mithril.Authorization.GrantType.{Password, AuthorizationCode}
+  alias Mithril.Authorization.GrantType.Password
+  alias Mithril.Authorization.GrantType.AuthorizationCode
 
   # TODO:
   # rename grant_type to response_type

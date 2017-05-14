@@ -47,7 +47,7 @@ defmodule Mithril.TokenAPI do
     token_changeset(token, %{})
   end
 
-  def is_expired?(%Token{} = token) do
+  def expired?(%Token{} = token) do
     token.expires_at < :os.system_time(:seconds)
   end
 

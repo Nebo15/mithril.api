@@ -1,15 +1,7 @@
 defmodule Mithril.Authorization.GrantType.Password do
   @moduledoc false
 
-  @scopes ~w(
-    app:authorize
-    some_api:read
-    some_api:write
-    legal_entity:read
-    legal_entity:write
-    employee_request:write
-    employee_request:read
-  )
+  @scopes Application.get_env(:mithril_api, :scopes)
 
   alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 

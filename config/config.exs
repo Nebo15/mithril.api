@@ -72,3 +72,13 @@ config :mithril_api, :generators,
   sample_binary_id: "11111111-1111-1111-1111-111111111111"
 
 import_config "#{Mix.env}.exs"
+
+config :mithril_api, :scopes, ~w(
+  app:authorize
+  some_api:read
+  some_api:write
+  legal_entity:read
+  legal_entity:write
+  employee_request:write
+  employee_request:read
+)

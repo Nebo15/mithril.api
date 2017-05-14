@@ -1,26 +1,21 @@
 defmodule Mithril.Authorization.App do
   @moduledoc false
 
-  import Ecto.Query, only: [from: 2]
+  @scopes Application.get_env(:mithril_api, :scopes)
 
-  # TODO: this should be configurable
-  @scopes ~w(
-    app:authorize
-    some_api:read
-    some_api:write
-    legal_entity:read
-    legal_entity:write
-    employee_request:write
-    employee_request:read
-  )
-
+  # NOTE: On every approval a new token is created.
+  # Current (session) token with it's scopes is still valid until it expires.
+  # E.g. session expiration should be sufficiently short
+  #
+  # TODO:
+  # After find_client() call, issue a establish_scopes_to_be_granted() call
+  # in order to "clash" 3 things: client_type, user_role and scopes being requested
   def grant(%{"user_id" => _, "client_id" => _, "redirect_uri" => _, "scope" => _} = params) do
     params
     |> find_user()
     |> find_client()
-    # |> establish_scopes_to_be_granted # TODO
     |> update_or_create_app()
-    |> create_token() # TODO: On every approval a new token is created. Current (session) token with it's scopes is still valid until it expires!
+    |> create_token()
   end
 
   defp find_client(%{"client_id" => client_id, "redirect_uri" => redirect_uri} = params) do
@@ -47,8 +42,12 @@ defmodule Mithril.Authorization.App do
   defp update_or_create_app(%{"user" => user, "client_id" => client_id, "scope" => scope} = params) do
     app =
       case Mithril.AppAPI.get_app_by([user_id: user.id, client_id: client_id]) do
-        nil -> Mithril.AppAPI.create_app(%{user_id: user.id, client_id: client_id, scope: scope}) |> elem(1)
-        app -> update_app_scopes({app, scope})
+        nil ->
+          {:ok, app} = Mithril.AppAPI.create_app(%{user_id: user.id, client_id: client_id, scope: scope})
+
+          app
+        app ->
+          update_app_scopes({app, scope})
       end
     Map.put(params, "app", app)
   end
@@ -71,7 +70,7 @@ defmodule Mithril.Authorization.App do
     {:error, errors, status}
   end
 
-  defp create_token(%{"user" => user, "client" => client, "app" => app} = params) do
+  defp create_token(%{"user" => user, "client" => client} = params) do
     {:ok, token} = Mithril.TokenAPI.create_authorization_code(%{
       user_id: user.id,
       details: %{
