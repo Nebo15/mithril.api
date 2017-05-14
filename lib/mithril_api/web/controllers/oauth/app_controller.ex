@@ -1,11 +1,10 @@
 defmodule Mithril.OAuth.AppController do
   use Mithril.Web, :controller
 
-  plug Authable.Plug.Authenticate, [scopes: ~w(app:authorize)] when action in [:authorize]
-
   # POST /apps/authorize
   def authorize(conn, %{"app" => app_params}) do
-    params = Map.put(app_params, "user", conn.assigns[:current_user])
+    [user_id | _] = Plug.Conn.get_req_header("x-consumer-id")
+    params = Map.put(app_params, "user_id", user_id)
 
     case process(params) do
       {:ok, %{"token" => token}} ->
@@ -19,15 +18,10 @@ defmodule Mithril.OAuth.AppController do
     end
   end
 
-  defp process(%{"user" => user} = params) do
-    # TODO:
-    #   use Mithril.Authorization.App.grant(params)
-    #
-    # params must have:
-    #
-    #   @app_authorization.grant(%{"user" => user, "client_id" => client_id,
-    #   "redirect_uri" => redirect_uri, "scope" => scope})
-    case Authable.OAuth2.grant_app_authorization(user, params) do
+  defp process(params) do
+    # Double check what it does:
+    # Authable.OAuth2.grant_app_authorization(user, params) do
+    case Mithril.Authorization.App.grant(params) do
       {:error, errors, http_status_code} ->
         {:error, {http_status_code, errors}}
       {:error, changeset} ->
