@@ -85,5 +85,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
     }
 
     conn = post(conn, "/oauth/tokens", Poison.encode!(request))
+
+    # TODO: assert that rendered json has "errors" key with expected value
   end
 end

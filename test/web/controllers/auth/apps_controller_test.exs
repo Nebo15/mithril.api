@@ -99,5 +99,7 @@ defmodule Mithril.OAuth.AppControllerTest do
       conn
       |> put_req_header("x-consumer-id", "F003D59D-3E7A-40E0-8207-7EC05C3303FF")
       |> post("/oauth/apps/authorize", Poison.encode!(request))
+      #
+    # TODO: assert that rendered json has "errors" key with expected value
   end
 end
