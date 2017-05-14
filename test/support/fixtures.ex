@@ -1,19 +1,4 @@
 defmodule Mithril.Fixtures do
-  def create_token(details) do
-    token_attrs = %{
-      user_id: create_user().id,
-      details: details
-    }
-
-    changeset =
-      Authable.Model.Token.access_token_changeset(%Authable.Model.Token{}, token_attrs)
-
-    {:ok, token} =
-      Mithril.Repo.insert(changeset)
-
-    token
-  end
-
   def create_client(attrs \\ %{}) do
     {:ok, client} =
       client_create_attrs()

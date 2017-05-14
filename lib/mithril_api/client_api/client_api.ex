@@ -8,7 +8,6 @@ defmodule Mithril.ClientAPI do
 
   alias Mithril.ClientAPI.Client
   alias Mithril.ClientAPI.ClientSearch
-  alias Authable.Utils.Crypt, as: CryptUtil
 
   def list_clients(params) do
     %ClientSearch{}
@@ -103,7 +102,7 @@ defmodule Mithril.ClientAPI do
   defp put_secret(changeset) do
     case fetch_field(changeset, :secret) do
       {:data, nil} ->
-        put_change(changeset, :secret, CryptUtil.generate_token)
+        put_change(changeset, :secret, SecureRandom.urlsafe_base64)
       _ ->
         changeset
     end

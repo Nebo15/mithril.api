@@ -49,8 +49,8 @@ defmodule Mithril.Authorization.GrantType.Password do
   defp validate_token_scope({:error, err, code}, _), do: {:error, err, code}
   defp validate_token_scope({:ok, user}, required_scopes) do
     scopes = @scopes
-    required_scopes = Authable.Utils.String.comma_split(required_scopes)
-    if Authable.Utils.List.subset?(scopes, required_scopes) do
+    required_scopes = Mithril.Utils.String.comma_split(required_scopes)
+    if Mithril.Utils.List.subset?(scopes, required_scopes) do
       {:ok, user}
     else
       GrantTypeError.invalid_scope(scopes)

@@ -1,9 +1,6 @@
 defmodule Mithril.OAuth.AppController do
   use Mithril.Web, :controller
 
-  # TODO: Must be protected by gateway? E.g. incoming request must have "can make approvals" scope
-
-  # POST /apps/authorize
   def authorize(conn, %{"app" => app_params}) do
     [user_id | _] = Plug.Conn.get_req_header(conn, "x-consumer-id")
     params = Map.put(app_params, "user_id", user_id)
@@ -21,8 +18,6 @@ defmodule Mithril.OAuth.AppController do
   end
 
   defp process(params) do
-    # Double check what it does:
-    # Authable.OAuth2.grant_app_authorization(user, params) do
     case Mithril.Authorization.App.grant(params) do
       {:error, errors, http_status_code} ->
         {:error, {http_status_code, errors}}

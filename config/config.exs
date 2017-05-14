@@ -71,5 +71,4 @@ config :mithril_api, :generators,
   binary_id: true,
   sample_binary_id: "11111111-1111-1111-1111-111111111111"
 
-import_config "authable.exs"
 import_config "#{Mix.env}.exs"

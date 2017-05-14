@@ -55,11 +55,10 @@ defmodule Mithril.Authorization.App do
 
   defp update_app_scopes({app, scope}) do
     if app.scope != scope do
-      # TODO: get rid of Authable here
       scope =
         scope
-        |> Authable.Utils.String.comma_split
-        |> Enum.concat(Authable.Utils.String.comma_split(app.scope))
+        |> Mithril.Utils.String.comma_split
+        |> Enum.concat(Mithril.Utils.String.comma_split(app.scope))
         |> Enum.uniq()
       scope = @scopes -- (@scopes -- scope)
       Mithril.AppAPI.update_app(app, %{scope: Enum.join(scope, ",")})

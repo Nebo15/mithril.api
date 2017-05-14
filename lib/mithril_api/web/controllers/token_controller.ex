@@ -25,7 +25,14 @@ defmodule Mithril.Web.TokenController do
     render(conn, "show.json", token: token)
   end
 
-  # Make verification stronger. Check Authable.Plug for more details!
+  # Make verification stronger:
+  #
+  #   - load & check that that token exists
+  #   - check that token is not expired
+  #   - check that client_id exists
+  #   - check that app exists
+  #
+  # Check Authable.Plug for more details.
   #
   # Definitely include this:
   #
@@ -35,6 +42,12 @@ defmodule Mithril.Web.TokenController do
   # )
   def verify(conn, %{"token_id" => value}) do
     token = TokenAPI.get_token_by_value!(value)
+    render(conn, "show.json", token: token)
+  end
+
+  def verify(conn, %{"email" => email, "password" => "password"}) do
+    token = TokenAPI.get_token_by_value!(value)
+    # TODO: render the fact that user exists
     render(conn, "show.json", token: token)
   end
 
