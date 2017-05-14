@@ -18,6 +18,7 @@ defmodule Mithril.ClientAPI do
 
   def get_client!(id), do: Repo.get!(Client, id)
 
+  def get_client(id), do: Repo.get(Client, id)
   def get_client_by(attrs), do: Repo.get_by(Client, attrs)
 
   def create_client(attrs \\ %{}) do

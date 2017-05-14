@@ -18,7 +18,7 @@ defmodule Mithril.OAuth.TokenController do
   end
 
   defp process(params) do
-    case Authable.OAuth2.authorize(params) do
+    case Mithril.OAuth2.authorize(params) do
       {:error, errors, http_status_code} ->
         {:error, {http_status_code, errors}}
       {:error, changeset} ->
