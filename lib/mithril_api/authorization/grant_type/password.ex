@@ -19,8 +19,7 @@ defmodule Mithril.Authorization.GrantType.Password do
     create_token(client, user, password, scopes)
   end
   def authorize(_) do
-    GrantTypeError.invalid_request(
-      "Request must include at least email, password, client_id and scope parameters.")
+    GrantTypeError.invalid_request("Request must include at least email, password, client_id and scope parameters.")
   end
 
   defp create_token(nil, _, _, _),

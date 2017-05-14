@@ -5,7 +5,7 @@ defmodule Mithril.OAuth.AppControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  test "successfully approves new client request", %{conn: conn} do
+  test "successfully approves new client request & issues a code grant", %{conn: conn} do
     client = Mithril.Fixtures.create_client(%{redirect_uri: "http://some_host.com:3000/path?param=1"})
     user   = Mithril.Fixtures.create_user()
 
