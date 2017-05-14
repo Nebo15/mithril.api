@@ -20,7 +20,7 @@ defmodule Mithril.Authorization.App do
     |> find_client()
     # |> establish_scopes_to_be_granted # TODO
     |> update_or_create_app()
-    |> create_token() # TODO: On every approval a new token is create. An old token with it's scopes is still valid until it expires!
+    |> create_token() # TODO: On every approval a new token is created. Current (session) token with it's scopes is still valid until it expires!
   end
 
   defp find_client(%{"client_id" => client_id, "redirect_uri" => redirect_uri} = params) do
