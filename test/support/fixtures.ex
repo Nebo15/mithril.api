@@ -23,9 +23,10 @@ defmodule Mithril.Fixtures do
     client
   end
 
-  def create_user do
+  def create_user(attrs \\ %{}) do
     {:ok, user} =
       user_create_attrs()
+      |> Map.merge(attrs)
       |> Mithril.Web.UserAPI.create_user()
 
     user

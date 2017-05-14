@@ -46,6 +46,10 @@ defmodule Mithril.TokenAPI do
     token_changeset(token, %{})
   end
 
+  def is_expired?(%Token{} = token) do
+    token.expires_at < :os.system_time(:seconds)
+  end
+
   defp token_changeset(%Token{} = token, attrs) do
     token
     |> cast(attrs, [:name, :user_id, :value, :expires_at, :details])
