@@ -44,7 +44,7 @@ defmodule Mithril.OAuth.AppControllerTest do
     assert result["user_id"]
     assert result["name"]
     assert result["expires_at"]
-    assert result["details"]["scope"]
+    assert result["details"]["scope"] == "some_api:read,some_api:write"
     assert result["details"]["redirect_uri"]
     assert result["details"]["client_id"]
 
@@ -56,10 +56,40 @@ defmodule Mithril.OAuth.AppControllerTest do
 
     assert app.user_id == user.id
     assert app.client_id == client.id
-    assert app.scope == ~w(some_api:read some_api:write)
+    assert app.scope == "some_api:read,some_api:write"
   end
 
-  @tag pending: true
-  test "successfully updates existing approval", %{conn: conn} do
+  test "successfully updates existing approval with less scopes", %{conn: conn} do
+    client = Mithril.Fixtures.create_client()
+    user   = Mithril.Fixtures.create_user()
+
+    Mithril.AppAPI.create_app(%{
+      user_id: user.id,
+      client_id: client.id,
+      scopes: "some_api:read, some_api:write"
+    })
+
+    request = %{
+      app: %{
+        client_id: client.id,
+        redirect_uri: client.redirect_uri,
+        scope: "some_api:read",
+      }
+    }
+
+    conn =
+      conn
+      |> put_req_header("x-consumer-id", user.id)
+      |> post("/oauth/apps/authorize", Poison.encode!(request))
+
+    result = json_response(conn, 201)["data"]
+
+    assert result["details"]["scope"] == "some_api:read"
+
+    app = Mithril.AppAPI.get_app_by([user_id: user.id, client_id: client.id])
+
+    assert app.user_id == user.id
+    assert app.client_id == client.id
+    assert app.scope == "some_api:read"
   end
 end
