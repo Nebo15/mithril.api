@@ -1,7 +1,6 @@
 defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   @moduledoc false
 
-  import Authable.GrantType.Base
   alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 
   def authorize(%{"client_id" => client_id, "client_secret" => client_secret, "code" => code, "redirect_uri" => redirect_uri, "scope" => scopes}) do
@@ -27,7 +26,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     |> validate_token_redirect_uri(redirect_uri)
     |> validate_app_authorization
     |> validate_requested_scopes(required_scopes)
-    |> delete_token
+    |> delete_code_grant_token
     |> create_access_token(required_scopes)
   end
 
@@ -44,8 +43,8 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     })
   end
 
-  defp delete_token({:error, err, code}), do: {:error, err, code}
-  defp delete_token({:ok, token, _app}), do: Mithril.TokenAPI.delete_token(token)
+  defp delete_code_grant_token({:error, err, code}), do: {:error, err, code}
+  defp delete_code_grant_token({:ok, token, _app}), do: Mithril.TokenAPI.delete_token(token)
 
   defp validate_app_authorization({:error, err, code}),
     do: {:error, err, code}
