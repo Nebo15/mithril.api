@@ -26,9 +26,9 @@ defmodule Mithril.Authorization.App do
     params
     |> find_user()
     |> find_client()
-    # |> define_scopes_to_be_granted # TODO
+    # |> establish_scopes_to_be_granted # TODO
     |> update_or_create_app()
-    |> create_token()
+    |> create_token() # TODO: On every approval a new token is create. An old token with it's scopes is still valid until it expires!
   end
 
   defp find_client(%{"client_id" => client_id, "redirect_uri" => redirect_uri} = params) do
@@ -64,6 +64,7 @@ defmodule Mithril.Authorization.App do
   # TODO: Test this code branch
   defp update_app_scopes({app, scope}) do
     if app.scope != scope do
+      # TODO: get rid of Authable here
       scope =
         scope
         |> Authable.Utils.String.comma_split
