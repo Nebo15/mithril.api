@@ -11,9 +11,7 @@ defmodule Mithril.Authorization.GrantType.Password do
     employee_request:read
   )
 
-  import Authable.GrantType.Base
-  alias Authable.GrantType.Error, as: GrantTypeError
-  alias Authable.Utils.Crypt, as: CryptUtil
+  alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 
   def authorize(%{"email" => email, "password" => password, "client_id" => client_id, "scope" => scopes}) do
     client = Mithril.ClientAPI.get_client(client_id)
@@ -61,7 +59,7 @@ defmodule Mithril.Authorization.GrantType.Password do
   end
 
   defp match_with_user_password({:ok, user}, password) do
-    if CryptUtil.match_password(password, Map.get(user, :password, "")) do
+    if Comeonin.Bcrypt.checkpw(password, Map.get(user, :password, "")) do
       {:ok, user}
     else
       GrantTypeError.invalid_grant("Identity, password combination is wrong.")

@@ -150,7 +150,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     })
 
     assert %{invalid_grant: "Token expired."} = errors
-    assert :unauthorized
+    assert :unauthorized = code
   end
 
   test "it returns token not found or expired error" do

@@ -97,7 +97,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
   test "it returns insufficient parameters error" do
     {:error, errors, code} = PasswordGrantType.authorize(%{})
 
-    assert %{invalid_request: "Request must include at least email, password and client_id parameters."} = errors
+    assert %{invalid_request: "Request must include at least email, password, client_id and scope parameters."} = errors
     assert :bad_request = code
   end
 end

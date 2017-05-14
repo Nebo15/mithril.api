@@ -2,7 +2,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   @moduledoc false
 
   import Authable.GrantType.Base
-  alias Authable.GrantType.Error, as: GrantTypeError
+  alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 
   def authorize(%{"client_id" => client_id, "client_secret" => client_secret, "code" => code, "redirect_uri" => redirect_uri, "scope" => scopes}) do
     client = Mithril.ClientAPI.get_client_by(id: client_id, secret: client_secret)

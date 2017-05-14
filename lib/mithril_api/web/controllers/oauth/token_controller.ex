@@ -1,10 +1,6 @@
 defmodule Mithril.OAuth.TokenController do
   use Mithril.Web, :controller
 
-  # TODO: this will be on Gateway - remove all such calls
-  # plug Authable.Plug.Authenticate, [scopes: ~w(session read write)] when action in [:authorize, :delete]
-
-  # POST /tokens
   def create(conn, %{"token" => token_params}) do
     case process(token_params) do
       {:ok, token} ->
