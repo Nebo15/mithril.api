@@ -87,7 +87,7 @@ defmodule Mithril.Authorization.App do
       details: %{
         client_id: client.id,
         redirect_uri: client.redirect_uri,
-        scope: app.scope
+        scope: "app:authorize"
       }
     })
 

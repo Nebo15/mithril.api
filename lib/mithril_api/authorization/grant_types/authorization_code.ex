@@ -29,16 +29,16 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     |> validate_token_scope(required_scopes)
     |> validate_app_authorization
     |> delete_token
-    |> create_oauth2_token(required_scopes)
+    |> create_access_token(required_scopes)
   end
 
   defp create_access_token({:error, err, code}), do: {:error, err, code}
   defp create_access_token({:ok, token}, required_scopes) do
     Mithril.TokenAPI.create_access_token(%{
-      user_id: user.id,
+      user_id: token.user_id,
       details: %{
         grant_type: "authorization_code",
-        client_id: token.id,
+        client_id: token.client_id,
         scope: required_scopes,
         redirect_uri: token.redirect_uri
       }
@@ -46,7 +46,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   end
 
   defp delete_token({:error, err, code}), do: {:error, err, code}
-  defp delete_token({:ok, token}), do Mithril.TokenAPI.delete_token(token)
+  defp delete_token({:ok, token}), do: Mithril.TokenAPI.delete_token(token)
 
   defp validate_app_authorization({:error, err, code}),
     do: {:error, err, code}
@@ -97,6 +97,4 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
       {:ok, token}
     end
   end
-
-  defp grant_type, do:
 end
