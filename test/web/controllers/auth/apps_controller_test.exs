@@ -80,4 +80,24 @@ defmodule Mithril.OAuth.AppControllerTest do
     assert app.client_id == client.id
     assert app.scope == "some_api:read,some_api:write"
   end
+
+  test "incorrectly crafted body is still treated nicely", %{conn: conn} do
+    assert_error_sent 400, fn ->
+      conn = post(conn, "/oauth/apps/authorize", Poison.encode!(%{"scope" => "some_api:read"}))
+    end
+  end
+
+  @tag pending: true
+  test "errors are rendered as json", %{conn: conn} do
+    request = %{
+      "app" => %{
+        "scope" => "some_api:read"
+      }
+    }
+
+    conn =
+      conn
+      |> put_req_header("x-consumer-id", "F003D59D-3E7A-40E0-8207-7EC05C3303FF")
+      |> post("/oauth/apps/authorize", Poison.encode!(request))
+  end
 end

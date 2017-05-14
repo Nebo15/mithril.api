@@ -69,4 +69,21 @@ defmodule Mithril.OAuth.TokenControllerTest do
     assert token["details"]["redirect_uri"] == client.redirect_uri
     assert token["details"]["scope"] == "some_api:read"
   end
+
+  test "incorrectly crafted body is still treated nicely", %{conn: conn} do
+    assert_error_sent 400, fn ->
+      conn = post(conn, "/oauth/tokens", Poison.encode!(%{"scope" => "some_api:read"}))
+    end
+  end
+
+  @tag pending: true
+  test "errors are rendered as json", %{conn: conn} do
+    request = %{
+      "token" => %{
+        "scope" => "some_api:read"
+      }
+    }
+
+    conn = post(conn, "/oauth/tokens", Poison.encode!(request))
+  end
 end

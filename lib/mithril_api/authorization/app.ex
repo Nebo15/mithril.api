@@ -17,6 +17,10 @@ defmodule Mithril.Authorization.App do
     |> update_or_create_app()
     |> create_token()
   end
+  def grant(_) do
+    message = "Request must include at least client_id, redirect_uri and scopes parameters."
+    {:error, %{invalid_client: message}, :bad_request}
+  end
 
   defp find_client(%{"client_id" => client_id, "redirect_uri" => redirect_uri} = params) do
     case Mithril.ClientAPI.get_client_by([id: client_id, redirect_uri: redirect_uri]) do

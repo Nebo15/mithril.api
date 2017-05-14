@@ -74,4 +74,20 @@ defmodule Mithril.Web.TokenControllerTest do
       get conn, token_path(conn, :show, token)
     end
   end
+
+  test "verify token using token value", %{conn: conn} do
+    token = fixture(:token)
+
+    conn = get conn, token_verify_path(conn, :verify, token.value)
+
+    assert json_response(conn, 200)["data"]== %{
+      "details" => %{},
+      "expires_at" => 42,
+      "id" => token.id,
+      "name" => "some name",
+      "type" => "token",
+      "user_id" => token.user_id,
+      "value" => "some value"
+    }
+  end
 end
