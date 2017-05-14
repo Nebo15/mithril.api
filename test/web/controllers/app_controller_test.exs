@@ -9,7 +9,11 @@ defmodule Mithril.Web.AppControllerTest do
   @invalid_attrs %{scope: nil}
 
   def fixture(:app) do
-    {:ok, app} = AppAPI.create_app(@create_attrs)
+    user  = Mithril.Fixtures.create_user()
+    client = Mithril.Fixtures.create_client()
+
+    attrs = Map.merge(@create_attrs, %{user_id: user.id, client_id: client.id})
+    {:ok, app} = AppAPI.create_app(attrs)
     app
   end
 
@@ -23,7 +27,11 @@ defmodule Mithril.Web.AppControllerTest do
   end
 
   test "creates app and renders app when data is valid", %{conn: conn} do
-    conn = post conn, app_path(conn, :create), app: @create_attrs
+    user  = Mithril.Fixtures.create_user()
+    client = Mithril.Fixtures.create_client()
+
+    attrs = Map.merge(@create_attrs, %{user_id: user.id, client_id: client.id})
+    conn = post conn, app_path(conn, :create), app: attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
 
     conn = get conn, app_path(conn, :show, id)
