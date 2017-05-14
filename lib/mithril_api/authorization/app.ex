@@ -1,15 +1,7 @@
 defmodule Mithril.Authorization.App do
-  @moduledoc """
-  App Authorization Policy module
-  """
+  @moduledoc false
 
   import Ecto.Query, only: [from: 2]
-
-  # Mithril.Repo Application.get_env(:authable, :repo)
-  # Mithril.TokenAPI.Token Application.get_env(:authable, :token_store)
-  # @client Application.get_env(:authable, :client)
-  # @app Application.get_env(:authable, :app)
-  # @scopes Application.get_env(:authable, :scopes)
 
   # TODO: this should be configurable
   @scopes ~w(
