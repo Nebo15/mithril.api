@@ -1,6 +1,8 @@
 defmodule Mithril.OAuth.TokenController do
   use Mithril.Web, :controller
 
+  # TODO: Must be protected by gateway? E.g. incoming request must have "can create tokens" scope
+
   def create(conn, %{"token" => token_params}) do
     case process(token_params) do
       {:ok, token} ->
@@ -14,12 +16,12 @@ defmodule Mithril.OAuth.TokenController do
   end
 
   defp process(params) do
-    case Mithril.OAuth2.authorize(params) do
+    case Mithril.Authorization.Token.authorize(params) do
       {:error, errors, http_status_code} ->
         {:error, {http_status_code, errors}}
       {:error, changeset} ->
         {:error, {:unprocessable_entity, changeset}}
-      token ->
+      {:ok, token} ->
         {:ok, token}
     end
   end

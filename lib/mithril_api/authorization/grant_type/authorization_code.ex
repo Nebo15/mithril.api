@@ -56,6 +56,10 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     end
   end
 
+  # TODO: Probably no need to do this at all. When client exchanges code for token,
+  # client doesn't have to pass scopes once again.
+  #
+  # Also, probably no need to pass redirect_uri once again
   defp validate_requested_scopes({:error, err, code}, _), do: {:error, err, code}
   defp validate_requested_scopes({:ok, token, app}, required_scopes) do
     scopes = Authable.Utils.String.comma_split(app.scope)

@@ -87,4 +87,19 @@ defmodule Mithril.Fixtures do
       settings: %{}
     }
   end
+
+  def create_code_grant_token(client, user, expires_at \\ 2000000000) do
+    Mithril.TokenAPI.create_token(%{
+      details: %{
+        scope: "app:authorize",
+        client_id: client.id,
+        grant_type: "password",
+        redirect_uri: client.redirect_uri
+      },
+      user_id: user.id,
+      expires_at: expires_at,
+      name: "authorization_code",
+      value: "some_short_lived_code"
+    })
+  end
 end

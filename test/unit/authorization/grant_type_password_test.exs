@@ -18,22 +18,10 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
     assert token.value
     assert token.expires_at
     assert token.user_id == user.id
-    assert token.details.client_id == client.id #."9b73db0e-e2c1-4ecc-b946-5d18ca110c8d"
+    assert token.details.client_id == client.id
     assert token.details.grant_type == "password"
     assert token.details.redirect_uri == client.redirect_uri
     assert token.details.scope == "some_api:read"
-  end
-
-  # Different test
-  @tag pending: true
-  test "creates authentication-code-granted access token" do
-    
-  end
-
-  # Different test
-  @tag pending: true
-  test "creates refresh-token-granted access token" do
-    
   end
 
   test "it returns Incorrect password error" do
