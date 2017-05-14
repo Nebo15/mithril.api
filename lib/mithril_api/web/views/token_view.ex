@@ -20,4 +20,12 @@ defmodule Mithril.Web.TokenView do
       user_id: token.user_id,
       details: token.details}
   end
+
+  def render("unauthorized.json", errors) do
+    %{errors: errors}
+  end
+
+  def render("bad_request.json", errors) do
+    %{errors: errors}
+  end
 end

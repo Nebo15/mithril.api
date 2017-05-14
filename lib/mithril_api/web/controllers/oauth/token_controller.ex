@@ -8,6 +8,7 @@ defmodule Mithril.OAuth.TokenController do
         |> put_status(:created)
         |> render(Mithril.Web.TokenView, "show.json", token: token)
       {:error, {http_status_code, errors}} ->
+        # TODO: test rendering errors (code should catch unauthorized.json, etc.)
         conn
         |> render(http_status_code, %{errors: errors})
     end
