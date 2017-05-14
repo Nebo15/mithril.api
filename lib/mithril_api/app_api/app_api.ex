@@ -14,7 +14,7 @@ defmodule Mithril.AppAPI do
 
   def get_app!(id), do: Repo.get!(App, id)
 
-  def get_app_by!(attrs), do: Repo.get_by!(App, attrs)
+  def get_app_by(attrs), do: Repo.get_by(App, attrs)
 
   def create_app(attrs \\ %{}) do
     %App{}

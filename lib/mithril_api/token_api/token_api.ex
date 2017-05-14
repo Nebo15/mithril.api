@@ -48,7 +48,7 @@ defmodule Mithril.TokenAPI do
 
   defp authorization_code_changeset(%Token{} = token, attrs) do
     token
-    |> cast(params, [:name, :expires_at, :details, :user_id])
+    |> cast(attrs, [:name, :expires_at, :details, :user_id])
     |> validate_required([:user_id])
     |> put_change(:value, SecureRandom.urlsafe_base64)
     |> put_change(:name, "authorization_code")

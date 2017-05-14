@@ -11,7 +11,7 @@ defmodule Mithril.Authorization.App do
   # @app Application.get_env(:authable, :app)
   # @scopes Application.get_env(:authable, :scopes)
 
-  # This should be configurable
+  # TODO: this should be configurable
   @scopes ~w(
     app:authorize
     some_api:read
@@ -26,13 +26,13 @@ defmodule Mithril.Authorization.App do
     params
     |> find_user()
     |> find_client()
-    # |> define_scopes_to_be_granted
+    # |> define_scopes_to_be_granted # TODO
     |> update_or_create_app()
     |> create_token()
   end
 
   defp find_client(%{"client_id" => client_id, "redirect_uri" => redirect_uri} = params) do
-    case Mithril.ClientAPI.get_client_by([id: client_id, redirect_uri: redirect_uri])
+    case Mithril.ClientAPI.get_client_by([id: client_id, redirect_uri: redirect_uri]) do
       nil ->
         {:error, %{invalid_client: "Client not found"}, :unprocessable_entity}
       client ->
@@ -40,8 +40,8 @@ defmodule Mithril.Authorization.App do
     end
   end
 
-  defp find_user(%{"user_id" => user_id}) do
-    case Mithril.Web.UserAPI.get_user(user_id)
+  defp find_user(%{"user_id" => user_id} = params) do
+    case Mithril.Web.UserAPI.get_user(user_id) do
       nil ->
         {:error, %{invalid_client: "User not found"}, :unprocessable_entity}
       user ->
@@ -54,13 +54,14 @@ defmodule Mithril.Authorization.App do
   end
   defp update_or_create_app(%{"user" => user, "client_id" => client_id, "scope" => scope} = params) do
     app =
-      case Mithril.AppAPI.get_app_by!([user_id: user.id, client_id: client_id]) do
-        nil -> Mithril.AppAPI.create_app(%{user_id: user.id, client_id: client_id, scope: scope})
+      case Mithril.AppAPI.get_app_by([user_id: user.id, client_id: client_id]) do
+        nil -> Mithril.AppAPI.create_app(%{user_id: user.id, client_id: client_id, scope: scope}) |> elem(1)
         app -> update_app_scopes({app, scope})
       end
     Map.put(params, "app", app)
   end
 
+  # TODO: Test this code branch
   defp update_app_scopes({app, scope}) do
     if app.scope != scope do
       scope =

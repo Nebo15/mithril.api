@@ -3,7 +3,7 @@ defmodule Mithril.OAuth.AppController do
 
   # POST /apps/authorize
   def authorize(conn, %{"app" => app_params}) do
-    [user_id | _] = Plug.Conn.get_req_header("x-consumer-id")
+    [user_id | _] = Plug.Conn.get_req_header(conn, "x-consumer-id")
     params = Map.put(app_params, "user_id", user_id)
 
     case process(params) do

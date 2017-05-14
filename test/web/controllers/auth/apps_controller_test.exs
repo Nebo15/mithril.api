@@ -5,7 +5,7 @@ defmodule Mithril.OAuth.AppControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  test "successfully approves client request", %{conn: conn} do
+  test "successfully approves new client request", %{conn: conn} do
     client = Mithril.Fixtures.create_client(%{redirect_uri: "http://some_host.com:3000/path?param=1"})
     user   = Mithril.Fixtures.create_user()
 
@@ -51,5 +51,15 @@ defmodule Mithril.OAuth.AppControllerTest do
     [header] = Plug.Conn.get_resp_header(conn, "location")
 
     assert "http://some_host.com:3000/path?code=#{result["value"]}&param=1" == header
+
+    app = Mithril.AppAPI.get_app_by([user_id: user.id, client_id: client.id])
+
+    assert app.user_id == user.id
+    assert app.client_id == client.id
+    assert app.scope == ~w(some_api:read some_api:write)
+  end
+
+  @tag pending: true
+  test "successfully updates existing approval", %{conn: conn} do
   end
 end
