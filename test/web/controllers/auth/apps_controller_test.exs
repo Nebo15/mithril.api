@@ -9,19 +9,21 @@ defmodule Mithril.OAuth.AppControllerTest do
     client = Mithril.Fixtures.create_client(%{redirect_uri: "http://some_host.com:3000/path?param=1"})
     user   = Mithril.Fixtures.create_user()
 
-    {:ok, token} =
-      Mithril.TokenAPI.create_token(%{
-        details: %{
-          scope: "app:authorize",
-          client_id: client.id,
-          grant_type: "password",
-          redirect_uri: client.redirect_uri
-        },
-        user_id: user.id,
-        expires_at: 2000000000, # 2050
-        name: "access_token",
-        value: "token_token_token"
-      })
+    # This is now checked by gateway's token/verify:
+    #
+    #   {:ok, token} =
+    #     Mithril.TokenAPI.create_token(%{
+    #       details: %{
+    #         scope: "app:authorize",
+    #         client_id: client.id,
+    #         grant_type: "password",
+    #         redirect_uri: client.redirect_uri
+    #       },
+    #       user_id: user.id,
+    #       expires_at: 2000000000, # 2050
+    #       name: "access_token",
+    #       value: "token_token_token"
+    #     })
 
     request = %{
       app: %{
@@ -33,7 +35,7 @@ defmodule Mithril.OAuth.AppControllerTest do
 
     conn =
       conn
-      |> put_req_header("authorization", "Bearer #{token.value}")
+      |> put_req_header("x-consumer-id", user.id)
       |> post("/oauth/apps/authorize", Poison.encode!(request))
 
     result = json_response(conn, 201)["data"]
