@@ -51,9 +51,6 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   defp validate_app_authorization({:error, err, code}),
     do: {:error, err, code}
   defp validate_app_authorization({:ok, token}) do
-    IO.inspect token.user_id
-    IO.inspect token.details["client_id"]
-    IO.inspect token
     if app = get_app(token.user_id, token.details["client_id"]) do
       {:ok, token, app}
     else
