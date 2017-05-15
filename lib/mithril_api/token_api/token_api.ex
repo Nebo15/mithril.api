@@ -21,6 +21,13 @@ defmodule Mithril.TokenAPI do
     |> Repo.insert()
   end
 
+  # TODO: create refresh and auth token in transaction
+  def create_refresh_token(attrs \\ %{}) do
+    %Token{}
+    |> refresh_token_changeset(attrs)
+    |> Repo.insert()
+  end
+
   def create_authorization_code(attrs \\ %{}) do
     %Token{}
     |> authorization_code_changeset(attrs)
@@ -68,6 +75,16 @@ defmodule Mithril.TokenAPI do
     token
     |> cast(attrs, [:name, :user_id, :value, :expires_at, :details])
     |> validate_required([:name, :user_id, :value, :expires_at, :details])
+  end
+
+  defp refresh_token_changeset(%Token{} = token, attrs) do
+    token
+    |> cast(attrs, [:name, :expires_at, :details, :user_id])
+    |> validate_required([:user_id])
+    |> put_change(:value, SecureRandom.urlsafe_base64)
+    |> put_change(:name, "refresh_token")
+    |> put_change(:expires_at, :os.system_time(:seconds) + 7 * 24 * 60 * 60) # TODO: temp: valid for 1 month
+    |> unique_constraint(:value, name: :tokens_value_name_index)
   end
 
   defp access_token_changeset(%Token{} = token, attrs) do

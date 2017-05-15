@@ -38,12 +38,23 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
 
   defp create_access_token({:error, err, code}, _required_scopes), do: {:error, err, code}
   defp create_access_token({:ok, token}, required_scopes) do
+    {:ok, refresh_token} = Mithril.TokenAPI.create_refresh_token(%{
+      user_id: token.user_id,
+      details: %{
+        grant_type: "authorization_code",
+        client_id: token.details["client_id"],
+        scope: required_scopes,
+        redirect_uri: token.details["redirect_uri"]
+      }
+    })
+
     Mithril.TokenAPI.create_access_token(%{
       user_id: token.user_id,
       details: %{
         grant_type: "authorization_code",
         client_id: token.details["client_id"],
         scope: required_scopes,
+        refresh_token: refresh_token.value,
         redirect_uri: token.details["redirect_uri"]
       }
     })

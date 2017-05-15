@@ -28,6 +28,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     assert token.expires_at
     assert token.user_id == user.id
     assert token.details.client_id == client.id
+    assert token.details.refresh_token
     assert token.details.grant_type == "authorization_code"
     assert token.details.redirect_uri == client.redirect_uri
     assert token.details.scope == "some_api:read"
