@@ -49,7 +49,9 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
 
     assert [redirect_uri] = get_resp_header(approval_response, "location")
 
-    # 3. After user-agent is redirected to client server, client issues an access_token request
+    # 3. After authorization server responds and
+    # user-agent is redirected to client server,
+    # client issues an access_token request
     tokens_request_body = %{
       "token" => %{
         "grant_type": "authorization_code",
