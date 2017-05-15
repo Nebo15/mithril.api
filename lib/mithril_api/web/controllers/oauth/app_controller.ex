@@ -12,7 +12,6 @@ defmodule Mithril.OAuth.AppController do
         |> put_resp_header("location", generate_location(token))
         |> render(Mithril.Web.TokenView, "show.json", token: token)
       {:error, {http_status_code, errors}} ->
-        # TODO: Add tests for this branch
         conn
         |> put_status(http_status_code)
         |> render(Mithril.Web.TokenView, http_status_code, %{errors: errors})
