@@ -1,7 +1,7 @@
 defmodule Mithril.Mixfile do
   use Mix.Project
 
-  @version "0.1.35"
+  @version "0.1.37"
 
   def project do
     [app: :mithril_api,
@@ -27,7 +27,7 @@ defmodule Mithril.Mixfile do
     [extra_applications: [:logger, :logger_json, :confex, :runtime_tools,
                           :ecto, :postgrex,
                           :cowboy, :httpoison, :poison,
-                          :phoenix, :phoenix_ecto, :eview],
+                          :phoenix, :phoenix_ecto, :eview, :authable],
      mod: {Mithril, []}]
   end
 

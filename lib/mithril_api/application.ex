@@ -16,15 +16,12 @@ defmodule Mithril do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
-      supervisor(Mithril.Repo, []),
+      # supervisor(Mithril.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Endpoint, []),
       # Starts a worker by calling: Mithril.Worker.start_link(arg1, arg2, arg3)
       # worker(Mithril.Worker, [arg1, arg2, arg3]),
     ]
-
-
-
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
