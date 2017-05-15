@@ -47,6 +47,19 @@ defmodule Mithril.TokenAPI do
     token_changeset(token, %{})
   end
 
+  def verify(token_value) do
+    token = get_token_by_value!(token_value)
+
+    with false <- expired?(token),
+         app <- Mithril.AppAPI.approval(token.user_id, token.details["client_id"]) do
+        {:ok, token}
+    else
+      _ ->
+        message = "Token expired or client approval was revoked."
+        Mithril.Authorization.GrantType.Error.invalid_grant(message)
+    end
+  end
+
   def expired?(%Token{} = token) do
     token.expires_at < :os.system_time(:seconds)
   end

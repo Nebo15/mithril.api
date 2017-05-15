@@ -36,6 +36,10 @@ defmodule Mithril.AppAPI do
     app_changeset(app, %{})
   end
 
+  def approval(user_id, client_id) do
+    get_app_by(user_id: user_id, client_id: client_id)
+  end
+
   # TODO: add constraint validations
   defp app_changeset(%App{} = app, attrs) do
     app

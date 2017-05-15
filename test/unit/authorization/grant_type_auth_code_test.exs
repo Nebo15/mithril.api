@@ -3,6 +3,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
 
   alias Mithril.Authorization.GrantType.AuthorizationCode, as: AuthorizationCodeGrantType
 
+  # TODO: remove as this has been extracted into a fixture
   def code_grant_token(client, user, expires_at \\ 2000000000) do
     Mithril.TokenAPI.create_token(%{
       details: %{

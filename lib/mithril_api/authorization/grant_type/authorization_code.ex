@@ -55,7 +55,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   defp validate_app_authorization({:error, err, code}),
     do: {:error, err, code}
   defp validate_app_authorization({:ok, token}) do
-    if app = get_app(token.user_id, token.details["client_id"]) do
+    if app = Mithril.AppAPI.approval(token.user_id, token.details["client_id"]) do
       {:ok, token, app}
     else
       GrantTypeError.access_denied("Resource owner revoked access for the client.")
@@ -103,9 +103,5 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     else
       {:ok, token}
     end
-  end
-
-  defp get_app(user_id, client_id) do
-    Mithril.AppAPI.get_app_by(user_id: user_id, client_id: client_id)
   end
 end
