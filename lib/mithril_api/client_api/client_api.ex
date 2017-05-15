@@ -16,13 +16,31 @@ defmodule Mithril.ClientAPI do
   end
 
   def get_client!(id), do: Repo.get!(Client, id)
-
   def get_client(id), do: Repo.get(Client, id)
+
   def get_client_by(attrs), do: Repo.get_by(Client, attrs)
 
-  def create_client(attrs \\ %{}) do
-    changeset = client_changeset(%Client{}, attrs)
 
+  def edit_client(id, attrs \\ %{}) do
+    case Repo.get(Client, id) do
+      nil                -> create_client(id, attrs)
+      %Client{} = client -> update_client(client, attrs)
+    end
+  end
+
+  def create_client do
+    %Client{}
+    |> client_changeset(%{})
+    |> create_client()
+  end
+
+  def create_client(id, attrs) do
+    %Client{id: id}
+    |> client_changeset(attrs)
+    |> create_client()
+  end
+
+  def create_client(%Ecto.Changeset{} = changeset) do
     result =
       Ecto.Multi.new()
       |> Ecto.Multi.insert(:client, changeset)
@@ -65,6 +83,12 @@ defmodule Mithril.ClientAPI do
       {:error, :client, data, _} ->
         {:error, data}
     end
+  end
+
+  def create_client(attrs) when is_map(attrs) do
+    %Client{}
+    |> client_changeset(attrs)
+    |> create_client()
   end
 
   def update_client(%Client{} = client, attrs) do

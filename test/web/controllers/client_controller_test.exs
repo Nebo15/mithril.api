@@ -1,6 +1,7 @@
 defmodule Mithril.Web.ClientControllerTest do
   use Mithril.Web.ConnCase
 
+  alias Ecto.UUID
   alias Mithril.ClientAPI
   alias Mithril.ClientAPI.Client
 
@@ -63,6 +64,22 @@ defmodule Mithril.Web.ClientControllerTest do
   test "does not create client and renders errors when data is invalid", %{conn: conn} do
     conn = post conn, client_path(conn, :create), client: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
+  end
+
+  test "put new client with id", %{conn: conn} do
+    %Client{client_type_id: client_type_id, user_id: user_id} = fixture(:client)
+
+    update_attrs = Map.merge(@update_attrs, %{
+      client_type_id: client_type_id,
+      user_id: user_id
+    })
+
+    id = UUID.generate()
+    conn = put conn, client_path(conn, :update, %Client{id: id}), client: update_attrs
+    assert %{"id" => ^id} = json_response(conn, 200)["data"]
+
+    conn = get conn, client_path(conn, :show, id)
+    assert %{"id" => ^id} = json_response(conn, 200)["data"]
   end
 
   test "updates chosen client and renders client when data is valid", %{conn: conn} do
