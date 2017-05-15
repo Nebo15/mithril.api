@@ -20,7 +20,6 @@ defmodule Mithril.ClientAPI do
 
   def get_client_by(attrs), do: Repo.get_by(Client, attrs)
 
-
   def edit_client(id, attrs \\ %{}) do
     case Repo.get(Client, id) do
       nil                -> create_client(id, attrs)
