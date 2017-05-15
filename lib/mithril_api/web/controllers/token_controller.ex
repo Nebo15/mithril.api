@@ -25,14 +25,6 @@ defmodule Mithril.Web.TokenController do
     render(conn, "show.json", token: token)
   end
 
-  # Make verification stronger? Or have it on gateway?:
-  #
-  #   - load & check that that token exists
-  #   - check that token is not expired
-  #   - check that client_id exists
-  #   - check that app exists
-  #
-  # Check Authable.Plug for more details.
   def verify(conn, %{"token_id" => value}) do
     case TokenAPI.verify(value) do
       {:ok, token} ->
@@ -43,12 +35,6 @@ defmodule Mithril.Web.TokenController do
         |> render(Mithril.Web.TokenView, http_status_code, errors: errors)
     end
   end
-
-  # TODO: render the fact that user exists
-  # def verify(conn, %{"email" => email, "password" => "password"}) do
-  #   token = TokenAPI.get_token_by_value!(value)
-  #   render(conn, "show.json", token: token)
-  # end
 
   def update(conn, %{"id" => id, "token" => token_params}) do
     token = TokenAPI.get_token!(id)
