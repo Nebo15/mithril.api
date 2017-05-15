@@ -1,19 +1,4 @@
 defmodule Mithril.Fixtures do
-  def create_token(details) do
-    token_attrs = %{
-      user_id: create_user().id,
-      details: details
-    }
-
-    changeset =
-      Authable.Model.Token.access_token_changeset(%Authable.Model.Token{}, token_attrs)
-
-    {:ok, token} =
-      Mithril.Repo.insert(changeset)
-
-    token
-  end
-
   def create_client(attrs \\ %{}) do
     {:ok, client} =
       client_create_attrs()
@@ -23,9 +8,10 @@ defmodule Mithril.Fixtures do
     client
   end
 
-  def create_user do
+  def create_user(attrs \\ %{}) do
     {:ok, user} =
       user_create_attrs()
+      |> Map.merge(attrs)
       |> Mithril.Web.UserAPI.create_user()
 
     user
@@ -85,5 +71,20 @@ defmodule Mithril.Fixtures do
       password: "some password",
       settings: %{}
     }
+  end
+
+  def create_code_grant_token(client, user, expires_at \\ 2000000000) do
+    Mithril.TokenAPI.create_token(%{
+      details: %{
+        scope: "app:authorize",
+        client_id: client.id,
+        grant_type: "password",
+        redirect_uri: client.redirect_uri
+      },
+      user_id: user.id,
+      expires_at: expires_at,
+      name: "authorization_code",
+      value: "some_short_lived_code"
+    })
   end
 end

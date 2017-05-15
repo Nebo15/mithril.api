@@ -20,7 +20,9 @@ defmodule Mithril.Web.UserAPI do
   end
   defp filter_by_email(query, _), do: query
 
+  def get_user(id), do: Repo.get(User, id)
   def get_user!(id), do: Repo.get!(User, id)
+  def get_user_by(attrs), do: Repo.get_by(User, attrs)
 
   def create_user(attrs \\ %{}) do
     %User{}

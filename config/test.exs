@@ -19,12 +19,3 @@ config :logger, level: :warn
 
 # Run acceptance test in concurrent mode
 config :mithril_api, sql_sandbox: true
-
-config :authable, Authable.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "mithril_api_test",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: 10

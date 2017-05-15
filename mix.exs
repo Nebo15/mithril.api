@@ -27,7 +27,7 @@ defmodule Mithril.Mixfile do
     [extra_applications: [:logger, :logger_json, :confex, :runtime_tools,
                           :ecto, :postgrex,
                           :cowboy, :httpoison, :poison,
-                          :phoenix, :phoenix_ecto, :eview, :authable],
+                          :phoenix, :phoenix_ecto, :eview],
      mod: {Mithril, []}]
   end
 
@@ -62,7 +62,7 @@ defmodule Mithril.Mixfile do
      {:phoenix_ecto, "~> 3.2"},
      {:ecto_paging, ">= 0.0.0"},
      {:comeonin, ">= 0.0.0"},
-     {:authable, ">= 0.0.0", runtime: false},
+     {:secure_random, ">= 0.0.0"},
      {:benchfella, ">= 0.3.4", only: [:dev, :test]},
      {:ex_doc, ">= 0.15.0", only: [:dev, :test]},
      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},
