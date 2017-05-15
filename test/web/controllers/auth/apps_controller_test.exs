@@ -87,7 +87,6 @@ defmodule Mithril.OAuth.AppControllerTest do
     end
   end
 
-  @tag pending: true
   test "errors are rendered as json", %{conn: conn} do
     request = %{
       "app" => %{
@@ -99,7 +98,8 @@ defmodule Mithril.OAuth.AppControllerTest do
       conn
       |> put_req_header("x-consumer-id", "F003D59D-3E7A-40E0-8207-7EC05C3303FF")
       |> post("/oauth/apps/authorize", Poison.encode!(request))
-      #
-    # TODO: assert that rendered json has "errors" key with expected value
+
+    assert result = json_response(conn, 400)["error"]
+    assert result["invalid_client"] == "Request must include at least client_id, redirect_uri and scopes parameters."
   end
 end

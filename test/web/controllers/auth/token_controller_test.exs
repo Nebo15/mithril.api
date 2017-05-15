@@ -76,7 +76,6 @@ defmodule Mithril.OAuth.TokenControllerTest do
     end
   end
 
-  @tag pending: true
   test "errors are rendered as json", %{conn: conn} do
     request = %{
       "token" => %{
@@ -86,6 +85,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
 
     conn = post(conn, "/oauth/tokens", Poison.encode!(request))
 
-    # TODO: assert that rendered json has "errors" key with expected value
+    assert result = json_response(conn, 400)["error"]
+    assert result["invalid_client"] == "Request must include grant_type."
   end
 end

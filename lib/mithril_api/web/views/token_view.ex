@@ -21,7 +21,15 @@ defmodule Mithril.Web.TokenView do
       details: token.details}
   end
 
-  def render("unprocessable_entity.json", errors), do: errors
-  def render("unauthorized.json", errors), do: errors
-  def render("bad_request.json", errors), do: errors
+  def render("unprocessable_entity.json", %{errors: errors}) do
+    errors
+  end
+
+  def render("unauthorized.json", %{errors: errors}) do
+    errors
+  end
+
+  def render("bad_request.json", %{errors: errors}) do
+    errors
+  end
 end

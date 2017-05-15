@@ -11,7 +11,7 @@ defmodule Mithril.OAuth.TokenController do
         # TODO: Add tests for this branch
         conn
         |> put_status(http_status_code)
-        |> render(Mithril.Web.TokenView, http_status_code, %{errors: errors})
+        |> render(Mithril.Web.TokenView, http_status_code, errors: errors)
     end
   end
 
