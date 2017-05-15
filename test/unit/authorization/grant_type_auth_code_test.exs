@@ -3,22 +3,6 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
 
   alias Mithril.Authorization.GrantType.AuthorizationCode, as: AuthorizationCodeGrantType
 
-  # TODO: remove as this has been extracted into a fixture
-  def code_grant_token(client, user, expires_at \\ 2000000000) do
-    Mithril.TokenAPI.create_token(%{
-      details: %{
-        scope: "app:authorize",
-        client_id: client.id,
-        grant_type: "password",
-        redirect_uri: client.redirect_uri
-      },
-      user_id: user.id,
-      expires_at: expires_at,
-      name: "authorization_code",
-      value: "some_short_lived_code"
-    })
-  end
-
   test "creates code-granted access token" do
     client = Mithril.Fixtures.create_client()
     user   = Mithril.Fixtures.create_user()
@@ -29,7 +13,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       scope: "some_api:read some_api:write"
     })
 
-    {:ok, code_grant} = code_grant_token(client, user)
+    {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)
 
     {:ok, token} = AuthorizationCodeGrantType.authorize(%{
       "client_id" => client.id,
@@ -93,7 +77,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     client = Mithril.Fixtures.create_client()
     user   = Mithril.Fixtures.create_user()
 
-    {:ok, code_grant} = code_grant_token(client, user)
+    {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)
 
     {:error, errors, code} = AuthorizationCodeGrantType.authorize(%{
       "client_id" => client.id,
@@ -117,7 +101,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       scope: "some_api:read some_api:write"
     })
 
-    {:ok, code_grant} = code_grant_token(client, user)
+    {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)
 
     {:error, errors, code} = AuthorizationCodeGrantType.authorize(%{
       "client_id" => client.id,
@@ -141,7 +125,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       scope: "some_api:read some_api:write"
     })
 
-    {:ok, code_grant} = code_grant_token(client, user, 0)
+    {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user, 0)
 
     {:error, errors, code} = AuthorizationCodeGrantType.authorize(%{
       "client_id" => client.id,
@@ -166,7 +150,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     })
 
     client2 = Mithril.Fixtures.create_client(%{name: "Another name"})
-    {:ok, code_grant} = code_grant_token(client2, user)
+    {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client2, user)
 
     {:error, errors, code} = AuthorizationCodeGrantType.authorize(%{
       "client_id" => client.id,
