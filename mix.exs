@@ -27,7 +27,7 @@ defmodule Mithril.Mixfile do
     [extra_applications: [:logger, :logger_json, :confex, :runtime_tools,
                           :ecto, :postgrex,
                           :cowboy, :httpoison, :poison,
-                          :phoenix, :phoenix_ecto, :eview, :authable],
+                          :phoenix, :phoenix_ecto, :eview],
      mod: {Mithril, []}]
   end
 
