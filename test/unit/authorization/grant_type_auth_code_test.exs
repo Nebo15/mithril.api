@@ -26,7 +26,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read,some_api:write"
+      scope: "some_api:read some_api:write"
     })
 
     {:ok, code_grant} = code_grant_token(client, user)
@@ -114,7 +114,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read,some_api:write"
+      scope: "some_api:read some_api:write"
     })
 
     {:ok, code_grant} = code_grant_token(client, user)
@@ -138,7 +138,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read,some_api:write"
+      scope: "some_api:read some_api:write"
     })
 
     {:ok, code_grant} = code_grant_token(client, user, 0)
@@ -162,7 +162,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read,some_api:write"
+      scope: "some_api:read some_api:write"
     })
 
     client2 = Mithril.Fixtures.create_client(%{name: "Another name"})

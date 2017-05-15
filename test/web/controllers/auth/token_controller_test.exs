@@ -40,7 +40,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read,some_api:write"
+      scope: "some_api:read some_api:write"
     })
 
     {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)

@@ -1,11 +1,6 @@
 defmodule Mithril.Utils.String do
   @moduledoc false
 
-  def comma_split(str), do: trim_split(str, ",")
-
-  defp trim_split(str, char) do
-    str
-    |> String.replace(~r/([\s]+)/, "")
-    |> String.split(char, trim: true)
-  end
+  # TODO: just use this directly, no need to have it module
+  def comma_split(str), do: String.split(str, " ", trim: true)
 end
