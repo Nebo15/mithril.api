@@ -20,7 +20,9 @@ defmodule Mithril.Web.UserAPI do
   end
   defp filter_by_email(query, _), do: query
 
+  def get_user(id), do: Repo.get(User, id)
   def get_user!(id), do: Repo.get!(User, id)
+  def get_user_by(attrs), do: Repo.get_by(User, attrs)
 
   def create_user(attrs \\ %{}) do
     %User{}
@@ -46,5 +48,16 @@ defmodule Mithril.Web.UserAPI do
     user
     |> cast(attrs, [:email, :password, :settings])
     |> validate_required([:email, :password])
+    |> put_password()
+  end
+
+  defp put_password(changeset) do
+    if password = get_change(changeset, :password) do
+      secured_password = Comeonin.Bcrypt.hashpwsalt(password)
+
+      put_change(changeset, :password, secured_password)
+    else
+      changeset
+    end
   end
 end

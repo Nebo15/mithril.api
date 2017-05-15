@@ -1,7 +1,7 @@
 defmodule Mithril.Mixfile do
   use Mix.Project
 
-  @version "0.1.33"
+  @version "0.1.38"
 
   def project do
     [app: :mithril_api,
@@ -61,7 +61,8 @@ defmodule Mithril.Mixfile do
      {:eview, "~> 0.10.7"},
      {:phoenix_ecto, "~> 3.2"},
      {:ecto_paging, ">= 0.0.0"},
-     {:authable, ">= 0.0.0"},
+     {:comeonin, ">= 0.0.0"},
+     {:secure_random, ">= 0.0.0"},
      {:benchfella, ">= 0.3.4", only: [:dev, :test]},
      {:ex_doc, ">= 0.15.0", only: [:dev, :test]},
      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},

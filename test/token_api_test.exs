@@ -26,7 +26,8 @@ defmodule Mithril.TokenAPITest do
   }
 
   def fixture(:token, attrs \\ @create_attrs) do
-    {:ok, token} = TokenAPI.create_token(attrs)
+    user = Mithril.Fixtures.create_user()
+    {:ok, token} = TokenAPI.create_token(Map.put_new(attrs, :user_id, user.id))
     token
   end
 
@@ -41,7 +42,9 @@ defmodule Mithril.TokenAPITest do
   end
 
   test "create_token/1 with valid data creates a token" do
-    assert {:ok, %Token{} = token} = TokenAPI.create_token(@create_attrs)
+    user = Mithril.Fixtures.create_user()
+
+    assert {:ok, %Token{} = token} = TokenAPI.create_token(Map.put_new(@create_attrs, :user_id, user.id))
     assert token.details == %{}
     assert token.expires_at == 42
     assert token.name == "some name"
