@@ -34,6 +34,7 @@ defmodule Mithril.ClientAPI do
   def create_client(id, attrs) do
     %Client{id: id}
     |> client_changeset(attrs)
+    |> create_client()
   end
 
   def create_client(%Ecto.Changeset{} = changeset) do
