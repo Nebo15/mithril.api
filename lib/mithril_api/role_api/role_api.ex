@@ -2,11 +2,12 @@ defmodule Mithril.RoleAPI do
   @moduledoc """
   The boundary for the RoleAPI system.
   """
-
+  use Mithril.Search
   import Ecto.{Query, Changeset}, warn: false
   alias Mithril.Repo
 
   alias Mithril.RoleAPI.Role
+  alias Mithril.RoleAPI.RoleSearch
 
   @doc """
   Returns the list of roles.
@@ -17,8 +18,10 @@ defmodule Mithril.RoleAPI do
       [%Role{}, ...]
 
   """
-  def list_roles do
-    Repo.all(Role)
+  def list_roles(params \\ %{}) do
+    %RoleSearch{}
+    |> role_changeset(params)
+    |> search(params, Role, 50)
   end
 
   @doc """
@@ -106,5 +109,9 @@ defmodule Mithril.RoleAPI do
     role
     |> cast(attrs, [:name, :scope])
     |> validate_required([:name, :scope])
+  end
+
+  defp role_changeset(%RoleSearch{} = role, attrs) do
+    cast(role, attrs, [:name])
   end
 end

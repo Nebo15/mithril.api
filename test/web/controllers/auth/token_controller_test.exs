@@ -85,7 +85,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
 
     conn = post(conn, "/oauth/tokens", Poison.encode!(request))
 
-    assert result = json_response(conn, 400)["error"]
+    result = json_response(conn, 400)["error"]
     assert result["invalid_client"] == "Request must include grant_type."
   end
 end
