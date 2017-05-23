@@ -2,17 +2,18 @@ defmodule Mithril.UserRoleAPI do
   @moduledoc """
   The boundary for the UserRoleAPI system.
   """
+  use Mithril.Search
 
   import Ecto.{Query, Changeset}, warn: false
+
   alias Mithril.Repo
-
   alias Mithril.UserRoleAPI.UserRole
+  alias Mithril.UserRoleAPI.UserRoleSearch
 
-  def list_user_roles(user_id) do
-    query =
-      from ur in UserRole, where: ur.user_id == ^user_id
-
-    Repo.all(query)
+  def list_user_roles(params \\ %{}) do
+    %UserRoleSearch{}
+    |> user_role_changeset(params)
+    |> search(params, UserRole, 50)
   end
 
   def get_user_role!(id), do: Repo.get!(UserRole, id) # get_by
@@ -31,5 +32,13 @@ defmodule Mithril.UserRoleAPI do
     user_role
     |> cast(attrs, [:user_id, :role_id, :client_id])
     |> validate_required([:user_id, :role_id, :client_id])
+    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:client_id)
+  end
+
+  defp user_role_changeset(%UserRoleSearch{} = user_role, attrs) do
+    user_role
+    |> cast(attrs, [:user_id, :role_id, :client_id])
+    |> validate_required([:user_id])
   end
 end

@@ -9,8 +9,8 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :mithril_api, Mithril.Web.Endpoint,
-  http: [port: 4000],
-  debug_errors: true,
+  http: [port: 4002],
+  debug_errors: false,
   code_reloader: true,
   check_origin: false,
   watchers: []

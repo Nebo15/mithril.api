@@ -15,7 +15,8 @@ defmodule Mithril.RoleAPITest do
 
   test "list_roles/1 returns all roles" do
     role = fixture(:role)
-    assert RoleAPI.list_roles() == [role]
+    assert {roles, %Ecto.Paging{}} = RoleAPI.list_roles()
+    assert List.first(roles) == role
   end
 
   test "get_role! returns the role with given id" do

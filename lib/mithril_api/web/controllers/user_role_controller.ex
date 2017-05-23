@@ -6,10 +6,10 @@ defmodule Mithril.Web.UserRoleController do
 
   action_fallback Mithril.Web.FallbackController
 
-  def index(conn, %{"user_id" => user_id}) do
-    user_roles = UserRoleAPI.list_user_roles(user_id)
-
-    render(conn, "index.json", user_roles: user_roles)
+  def index(conn, params) do
+    with {user_roles, %Ecto.Paging{} = paging} <- UserRoleAPI.list_user_roles(params) do
+      render(conn, "index.json", user_roles: user_roles, paging: paging)
+    end
   end
 
   def create(conn, %{"user_id" => user_id, "user_role" => user_role_params}) do

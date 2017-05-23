@@ -12,7 +12,8 @@ defmodule Mithril.UserRoleAPITest do
 
   test "list_user_roles/1 returns all user_roles" do
     user_role = fixture(:user_role)
-    assert UserRoleAPI.list_user_roles(user_role.user_id) == [user_role]
+    assert {user_roles, %Ecto.Paging{}} = UserRoleAPI.list_user_roles(%{"user_id" => user_role.user_id})
+    assert List.first(user_roles) == user_role
   end
 
   test "get_user_role! returns the user_role with given id" do
