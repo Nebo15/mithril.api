@@ -32,6 +32,8 @@ defmodule Mithril.UserRoleAPI do
     user_role
     |> cast(attrs, [:user_id, :role_id, :client_id])
     |> validate_required([:user_id, :role_id, :client_id])
+    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:client_id)
   end
 
   defp user_role_changeset(%UserRoleSearch{} = user_role, attrs) do
