@@ -59,6 +59,7 @@ defmodule Mithril.TokenAPI do
 
     with false <- expired?(token),
          _app <- Mithril.AppAPI.approval(token.user_id, token.details["client_id"]) do
+           # if token is authorization_code or password - make sure was not used previously
         {:ok, token}
     else
       _ ->

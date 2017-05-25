@@ -112,6 +112,7 @@ defmodule Mithril.ClientAPI do
 
     cast(client, attrs, fields)
   end
+  # TODO: redirect must have schema component!
   defp client_changeset(%Client{} = client, attrs) do
     client
     |> cast(attrs, [:name, :user_id, :redirect_uri, :settings, :priv_settings, :client_type_id])

@@ -60,6 +60,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     })
   end
 
+  # NOTE: Instead of deleting token, mark it as used.
   defp delete_code_grant_token({:error, err, code}), do: {:error, err, code}
   defp delete_code_grant_token({:ok, token, _app}), do: Mithril.TokenAPI.delete_token(token)
 

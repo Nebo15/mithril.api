@@ -3,7 +3,9 @@ defmodule Mithril.Authorization.App do
 
   @scopes Application.get_env(:mithril_api, :scopes)
 
-  # NOTE: On every approval a new token is created.
+  # NOTE: Mark password token as used.
+  #
+  # On every approval a new token is created.
   # Current (session) token with it's scopes is still valid until it expires.
   # E.g. session expiration should be sufficiently short
   #
