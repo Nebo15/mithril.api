@@ -19,7 +19,8 @@ defmodule Mithril.Authorization.GrantType.Password do
     end
   end
   def authorize(_) do
-    GrantTypeError.invalid_request("Request must include at least email, password, client_id, client_secret and scope parameters.")
+    message = "Request must include at least email, password, client_id, client_secret and scope parameters."
+    GrantTypeError.invalid_request(message)
   end
 
   defp allowed_to_login?(nil, _),

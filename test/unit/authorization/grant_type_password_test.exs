@@ -92,7 +92,8 @@ some_api:read, some_api:write, legal_entity:read, legal_entity:write, employee_r
   test "it returns insufficient parameters error" do
     {:error, errors, code} = PasswordGrantType.authorize(%{})
 
-    assert %{invalid_request: "Request must include at least email, password, client_id, client_secret and scope parameters."} = errors
+    message = "Request must include at least email, password, client_id, client_secret and scope parameters."
+    assert %{invalid_request: message} = errors
     assert :bad_request = code
   end
 end
