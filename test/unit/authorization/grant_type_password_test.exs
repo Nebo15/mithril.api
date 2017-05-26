@@ -4,13 +4,14 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
   alias Mithril.Authorization.GrantType.Password, as: PasswordGrantType
 
   test "creates password-granted access token" do
-    client = Mithril.Fixtures.create_client()
+    client = Mithril.Fixtures.create_client(%{settings: %{"allowed_grant_types" => ["password"]}})
     user   = Mithril.Fixtures.create_user(%{password: "somepa$$word"})
 
     {:ok, token} = PasswordGrantType.authorize(%{
       "email" => user.email,
       "password" => "somepa$$word",
       "client_id" => client.id,
+      "client_secret" => client.secret,
       "scope" => "some_api:read",
     })
 
@@ -25,13 +26,14 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
   end
 
   test "it returns Incorrect password error" do
-    client = Mithril.Fixtures.create_client()
+    client = Mithril.Fixtures.create_client(%{settings: %{"allowed_grant_types" => ["password"]}})
     user   = Mithril.Fixtures.create_user(%{password: "somepa$$word"})
 
     {:error, errors, code} = PasswordGrantType.authorize(%{
       "email" => user.email,
       "password" => "incorrect_password",
       "client_id" => client.id,
+      "client_secret" => client.secret,
       "scope" => "some_api:read",
     })
 
@@ -40,12 +42,13 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
   end
 
   test "it returns User Not Found error" do
-    client = Mithril.Fixtures.create_client()
+    client = Mithril.Fixtures.create_client(%{settings: %{"allowed_grant_types" => ["password"]}})
 
     {:error, errors, code} = PasswordGrantType.authorize(%{
       "email" => "non_existing_email",
       "password" => "incorrect_password",
       "client_id" => client.id,
+      "client_secret" => client.secret,
       "scope" => "some_api:read",
     })
 
@@ -60,6 +63,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => user.email,
       "password" => "somepa$$word",
       "client_id" => "391374D3-A05D-403B-9290-E0BAAC5CCA21",
+      "client_secret" => "some_secret",
       "scope" => "some_api:read"
     })
 
@@ -68,13 +72,14 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
   end
 
   test "it returns Incorrect Scopes error" do
-    client = Mithril.Fixtures.create_client()
+    client = Mithril.Fixtures.create_client(%{settings: %{"allowed_grant_types" => ["password"]}})
     user   = Mithril.Fixtures.create_user(%{password: "somepa$$word"})
 
     {:error, errors, code} = PasswordGrantType.authorize(%{
       "email" => user.email,
       "password" => "somepa$$word",
       "client_id" => client.id,
+      "client_secret" => client.secret,
       "scope" => "some_hidden_api:read",
     })
 
@@ -87,7 +92,8 @@ some_api:read, some_api:write, legal_entity:read, legal_entity:write, employee_r
   test "it returns insufficient parameters error" do
     {:error, errors, code} = PasswordGrantType.authorize(%{})
 
-    assert %{invalid_request: "Request must include at least email, password, client_id and scope parameters."} = errors
+    message = "Request must include at least email, password, client_id, client_secret and scope parameters."
+    assert %{invalid_request: message} = errors
     assert :bad_request = code
   end
 end
