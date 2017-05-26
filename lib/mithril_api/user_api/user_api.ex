@@ -48,6 +48,7 @@ defmodule Mithril.Web.UserAPI do
     user
     |> cast(attrs, [:email, :password, :settings])
     |> validate_required([:email, :password])
+    |> unique_constraint(:email)
     |> put_password()
   end
 
