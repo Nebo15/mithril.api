@@ -11,7 +11,6 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => user.email,
       "password" => "somepa$$word",
       "client_id" => client.id,
-      "client_secret" => client.secret,
       "scope" => "some_api:read",
     })
 
@@ -33,7 +32,6 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => user.email,
       "password" => "incorrect_password",
       "client_id" => client.id,
-      "client_secret" => client.secret,
       "scope" => "some_api:read",
     })
 
@@ -48,7 +46,6 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => "non_existing_email",
       "password" => "incorrect_password",
       "client_id" => client.id,
-      "client_secret" => client.secret,
       "scope" => "some_api:read",
     })
 
@@ -63,7 +60,6 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => user.email,
       "password" => "somepa$$word",
       "client_id" => "391374D3-A05D-403B-9290-E0BAAC5CCA21",
-      "client_secret" => "some_secret",
       "scope" => "some_api:read"
     })
 
@@ -79,7 +75,6 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => user.email,
       "password" => "somepa$$word",
       "client_id" => client.id,
-      "client_secret" => client.secret,
       "scope" => "some_hidden_api:read",
     })
 
@@ -92,7 +87,7 @@ some_api:read, some_api:write, legal_entity:read, legal_entity:write, employee_r
   test "it returns insufficient parameters error" do
     {:error, errors, code} = PasswordGrantType.authorize(%{})
 
-    message = "Request must include at least email, password, client_id, client_secret and scope parameters."
+    message = "Request must include at least email, password, client_id and scope parameters."
     assert %{invalid_request: message} = errors
     assert :bad_request = code
   end

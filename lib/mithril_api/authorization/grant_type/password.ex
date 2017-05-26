@@ -5,12 +5,10 @@ defmodule Mithril.Authorization.GrantType.Password do
 
   alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 
-  def authorize(%{"email" => email, "password" => password,
-                  "client_id" => client_id, "scope" => scopes,
-                  "client_secret" => client_secret}) do
+  def authorize(%{"email" => email, "password" => password, "client_id" => client_id, "scope" => scopes}) do
     client = Mithril.ClientAPI.get_client(client_id)
 
-    case allowed_to_login?(client, client_secret) do
+    case allowed_to_login?(client) do
       :ok ->
         user = Mithril.Web.UserAPI.get_user_by([email: email])
         create_token(client, user, password, scopes)
@@ -19,23 +17,19 @@ defmodule Mithril.Authorization.GrantType.Password do
     end
   end
   def authorize(_) do
-    message = "Request must include at least email, password, client_id, client_secret and scope parameters."
+    message = "Request must include at least email, password, client_id and scope parameters."
     GrantTypeError.invalid_request(message)
   end
 
-  defp allowed_to_login?(nil, _),
+  defp allowed_to_login?(nil),
     do: {:error, "Invalid client id."}
-  defp allowed_to_login?(client, secret) do
+  defp allowed_to_login?(client) do
     allowed_grant_types = Map.get(client.settings, "allowed_grant_types", [])
 
-    if client.secret == secret do
-      if "password" in allowed_grant_types do
-        :ok
-      else
-        {:error, "Client is not allowed to issue login token."}
-      end
+    if "password" in allowed_grant_types do
+      :ok
     else
-      {:error, "Client password is not correct."}
+      {:error, "Client is not allowed to issue login token."}
     end
   end
 
