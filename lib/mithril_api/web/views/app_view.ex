@@ -11,7 +11,11 @@ defmodule Mithril.Web.AppView do
   end
 
   def render("app.json", %{app: app}) do
-    %{id: app.id,
-      scope: app.scope}
+    %{
+      id: app.id,
+      scope: app.scope,
+      scope: app.user_id,
+      scope: app.client_id
+    }
   end
 end

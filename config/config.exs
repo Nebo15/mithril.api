@@ -75,10 +75,11 @@ import_config "#{Mix.env}.exs"
 
 config :mithril_api, :scopes, ~w(
   app:authorize
-  some_api:read
-  some_api:write
   legal_entity:read
   legal_entity:write
   employee_request:write
   employee_request:read
+  employee:read
+  employee:write
+  address:read
 )
