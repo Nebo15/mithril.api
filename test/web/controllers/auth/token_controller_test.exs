@@ -15,8 +15,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
         "email": user.email,
         "password": "secret_password",
         "client_id": client.id,
-        "scope": "app:authorize",
-        "client_secret": client.secret
+        "scope": "app:authorize"
       }
     }
 
