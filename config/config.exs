@@ -83,3 +83,8 @@ config :mithril_api, :scopes, ~w(
   employee:write
   address:read
 )
+
+config :mithril_api, :token_lifetime,
+  code: 5 * 60,
+  access: 30 * 24 * 60 * 60,
+  refresh: 7 * 24 * 60 * 60

@@ -6,6 +6,11 @@ defmodule Mithril.TokenAPI do
 
   alias Mithril.TokenAPI.Token
 
+  @token_lifetime Application.get_env(:mithril_api, :token_lifetime)
+  @access_token_lifetime Keyword.get(@token_lifetime, :access)
+  @refresh_token_lifetime Keyword.get(@token_lifetime, :refresh)
+  @auth_code_lifetime Keyword.get(@token_lifetime, :code)
+
   def list_tokens do
     Repo.all(Token)
   end
@@ -84,7 +89,7 @@ defmodule Mithril.TokenAPI do
     |> validate_required([:user_id])
     |> put_change(:value, SecureRandom.urlsafe_base64)
     |> put_change(:name, "refresh_token")
-    |> put_change(:expires_at, :os.system_time(:seconds) + 7 * 24 * 60 * 60) # TODO: temp: valid for 1 month
+    |> put_change(:expires_at, :os.system_time(:seconds) + @refresh_token_lifetime)
     |> unique_constraint(:value, name: :tokens_value_name_index)
   end
 
@@ -94,7 +99,7 @@ defmodule Mithril.TokenAPI do
     |> validate_required([:user_id])
     |> put_change(:value, SecureRandom.urlsafe_base64)
     |> put_change(:name, "access_token")
-    |> put_change(:expires_at, :os.system_time(:seconds) + 30 * 24 * 60 * 60) # TODO: temp: valid for 1 month
+    |> put_change(:expires_at, :os.system_time(:seconds) + @access_token_lifetime)
     |> unique_constraint(:value, name: :tokens_value_name_index)
   end
 
@@ -104,7 +109,7 @@ defmodule Mithril.TokenAPI do
     |> validate_required([:user_id])
     |> put_change(:value, SecureRandom.urlsafe_base64)
     |> put_change(:name, "authorization_code")
-    |> put_change(:expires_at, :os.system_time(:seconds) + 5 * 60) # valid for 5 minutes
+    |> put_change(:expires_at, :os.system_time(:seconds) + @auth_code_lifetime)
     |> unique_constraint(:value, name: :tokens_value_name_index)
   end
 end
