@@ -8,7 +8,7 @@ defmodule Mithril.Web.ClientControllerTest do
   @update_attrs %{
     name: "some updated name",
     priv_settings: %{},
-    redirect_uri: "some updated redirect_uri",
+    redirect_uri: "https://localhost",
     secret: "some updated secret",
     settings: %{}
   }
@@ -57,7 +57,7 @@ defmodule Mithril.Web.ClientControllerTest do
     resp = json_response(conn, 200)["data"]
 
     assert id == resp["id"]
-    assert "localhost" == resp["redirect_uri"]
+    assert "http://localhost" == resp["redirect_uri"]
     assert %{} == resp["priv_settings"]
   end
 
@@ -92,7 +92,7 @@ defmodule Mithril.Web.ClientControllerTest do
       "id" => id,
       "name" => "some updated name",
       "priv_settings" => %{},
-      "redirect_uri" => "some updated redirect_uri",
+      "redirect_uri" => "https://localhost",
       "secret" => client.secret,
       "settings" => %{},
       "type" => "client"}

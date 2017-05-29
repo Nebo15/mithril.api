@@ -7,7 +7,7 @@ defmodule Mithril.ClientAPITest do
   @update_attrs %{
     name: "some updated name",
     priv_settings: %{},
-    redirect_uri: "some updated redirect_uri",
+    redirect_uri: "https://localhost",
     secret: "some updated secret",
     settings: %{}
   }
@@ -42,7 +42,7 @@ defmodule Mithril.ClientAPITest do
     assert {:ok, %Client{} = client} = ClientAPI.create_client(attrs)
     assert client.name == "some name"
     assert client.priv_settings == %{}
-    assert client.redirect_uri == "localhost"
+    assert client.redirect_uri == "http://localhost"
     assert client.secret
     assert client.settings == %{}
   end
@@ -63,7 +63,7 @@ defmodule Mithril.ClientAPITest do
     assert %Client{} = client
     assert client.name == "some updated name"
     assert client.priv_settings == %{}
-    assert client.redirect_uri == "some updated redirect_uri"
+    assert client.redirect_uri == "https://localhost"
     assert client.settings == %{}
   end
 

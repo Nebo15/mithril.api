@@ -118,6 +118,7 @@ defmodule Mithril.ClientAPI do
     |> cast(attrs, [:name, :user_id, :redirect_uri, :settings, :priv_settings, :client_type_id])
     |> put_secret()
     |> validate_required([:name, :user_id, :redirect_uri, :settings, :priv_settings])
+    |> validate_format(:redirect_uri, ~r{https?://.+})
     |> validate_client_type()
     |> unique_constraint(:name)
     |> assoc_constraint(:user)

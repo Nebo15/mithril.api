@@ -53,7 +53,7 @@ defmodule Mithril.Fixtures do
       name: name,
       redirect_uri: "",
       user_id: create_user().id,
-      redirect_uri: "localhost",
+      redirect_uri: "http://localhost",
       client_type_id: create_client_type().id
     }
   end
