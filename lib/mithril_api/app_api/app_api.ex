@@ -40,10 +40,10 @@ defmodule Mithril.AppAPI do
     get_app_by(user_id: user_id, client_id: client_id)
   end
 
-  # TODO: add constraint validations
   defp app_changeset(%App{} = app, attrs) do
     app
     |> cast(attrs, [:user_id, :client_id, :scope])
+    |> unique_constraint(:user_id, name: "apps_user_id_client_id_index")
     |> validate_required([:user_id, :client_id, :scope])
   end
 end
