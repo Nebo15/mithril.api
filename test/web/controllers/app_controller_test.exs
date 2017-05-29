@@ -38,6 +38,8 @@ defmodule Mithril.Web.AppControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => id,
       "scope" => "some scope",
+      "user_id" => user.id,
+      "client_id" => client.id,
       "type" => "app"}
   end
 
@@ -55,6 +57,8 @@ defmodule Mithril.Web.AppControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => id,
       "scope" => "some updated scope",
+      "user_id" => app.user_id,
+      "client_id" => app.client_id,
       "type" => "app"}
   end
 

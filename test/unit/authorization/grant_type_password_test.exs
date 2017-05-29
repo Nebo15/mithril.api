@@ -11,7 +11,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => user.email,
       "password" => "somepa$$word",
       "client_id" => client.id,
-      "scope" => "some_api:read",
+      "scope" => "legal_entity:read",
     })
 
     assert token.name == "access_token"
@@ -21,7 +21,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
     assert token.details.client_id == client.id
     assert token.details.grant_type == "password"
     assert token.details.redirect_uri == client.redirect_uri
-    assert token.details.scope == "some_api:read"
+    assert token.details.scope == "legal_entity:read"
   end
 
   test "it returns Incorrect password error" do
@@ -32,7 +32,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => user.email,
       "password" => "incorrect_password",
       "client_id" => client.id,
-      "scope" => "some_api:read",
+      "scope" => "legal_entity:read",
     })
 
     assert %{invalid_grant: "Identity, password combination is wrong."} = errors
@@ -46,7 +46,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => "non_existing_email",
       "password" => "incorrect_password",
       "client_id" => client.id,
-      "scope" => "some_api:read",
+      "scope" => "legal_entity:read",
     })
 
     assert %{invalid_grant: "Identity not found."} = errors
@@ -60,7 +60,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "email" => user.email,
       "password" => "somepa$$word",
       "client_id" => "391374D3-A05D-403B-9290-E0BAAC5CCA21",
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     assert %{invalid_client: "Invalid client id."} = errors
@@ -79,7 +79,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
     })
 
     message = "Allowed scopes for the token are app:authorize, \
-some_api:read, some_api:write, legal_entity:read, legal_entity:write, employee_request:write, employee_request:read."
+legal_entity:read, legal_entity:write, legal_entity:read, legal_entity:write, employee_request:write, employee_request:read."
     assert %{invalid_scope: message} = errors
     assert :bad_request = code
   end

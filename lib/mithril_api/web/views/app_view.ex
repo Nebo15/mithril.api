@@ -14,8 +14,8 @@ defmodule Mithril.Web.AppView do
     %{
       id: app.id,
       scope: app.scope,
-      scope: app.user_id,
-      scope: app.client_id
+      user_id: app.user_id,
+      client_id: app.client_id
     }
   end
 end

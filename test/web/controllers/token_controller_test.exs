@@ -82,7 +82,7 @@ defmodule Mithril.Web.TokenControllerTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read,some_api:write"
+      scope: "legal_entity:read,legal_entity:write"
     })
 
     {:ok, token} = Mithril.Fixtures.create_code_grant_token(client, user)

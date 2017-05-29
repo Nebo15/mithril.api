@@ -13,7 +13,7 @@ defmodule Mithril.OAuth.AppControllerTest do
       app: %{
         client_id: client.id,
         redirect_uri: client.redirect_uri,
-        scope: "some_api:read,some_api:write",
+        scope: "legal_entity:read,legal_entity:write",
       }
     }
 
@@ -43,7 +43,7 @@ defmodule Mithril.OAuth.AppControllerTest do
 
     assert app.user_id == user.id
     assert app.client_id == client.id
-    assert app.scope == "some_api:read,some_api:write"
+    assert app.scope == "legal_entity:read,legal_entity:write"
   end
 
   test "successfully updates existing approval with more scopes", %{conn: conn} do
@@ -53,14 +53,14 @@ defmodule Mithril.OAuth.AppControllerTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read"
+      scope: "legal_entity:read"
     })
 
     request = %{
       app: %{
         client_id: client.id,
         redirect_uri: client.redirect_uri,
-        scope: "some_api:write",
+        scope: "legal_entity:write",
       }
     }
 
@@ -78,19 +78,19 @@ defmodule Mithril.OAuth.AppControllerTest do
 
     assert app.user_id == user.id
     assert app.client_id == client.id
-    assert app.scope == "some_api:read,some_api:write"
+    assert app.scope == "legal_entity:read,legal_entity:write"
   end
 
   test "incorrectly crafted body is still treated nicely", %{conn: conn} do
     assert_error_sent 400, fn ->
-      conn = post(conn, "/oauth/apps/authorize", Poison.encode!(%{"scope" => "some_api:read"}))
+      conn = post(conn, "/oauth/apps/authorize", Poison.encode!(%{"scope" => "legal_entity:read"}))
     end
   end
 
   test "errors are rendered as json", %{conn: conn} do
     request = %{
       "app" => %{
-        "scope" => "some_api:read"
+        "scope" => "legal_entity:read"
       }
     }
 

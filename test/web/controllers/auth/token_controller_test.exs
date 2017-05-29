@@ -40,7 +40,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read some_api:write"
+      scope: "legal_entity:read legal_entity:write"
     })
 
     {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)
@@ -52,7 +52,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
         "client_secret" => client.secret,
         "redirect_uri" => client.redirect_uri,
         "code" => code_grant.value,
-        "scope" => "some_api:read"
+        "scope" => "legal_entity:read"
       }
     }
 
@@ -67,19 +67,19 @@ defmodule Mithril.OAuth.TokenControllerTest do
     assert token["details"]["client_id"] == client.id
     assert token["details"]["grant_type"] == "authorization_code"
     assert token["details"]["redirect_uri"] == client.redirect_uri
-    assert token["details"]["scope"] == "some_api:read"
+    assert token["details"]["scope"] == "legal_entity:read"
   end
 
   test "incorrectly crafted body is still treated nicely", %{conn: conn} do
     assert_error_sent 400, fn ->
-      conn = post(conn, "/oauth/tokens", Poison.encode!(%{"scope" => "some_api:read"}))
+      conn = post(conn, "/oauth/tokens", Poison.encode!(%{"scope" => "legal_entity:read"}))
     end
   end
 
   test "errors are rendered as json", %{conn: conn} do
     request = %{
       "token" => %{
-        "scope" => "some_api:read"
+        "scope" => "legal_entity:read"
       }
     }
 

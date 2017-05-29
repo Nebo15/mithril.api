@@ -29,7 +29,7 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
       "app" => %{
         "client_id": client.id,
         "redirect_uri": client.redirect_uri,
-        "scope": "some_api:read,some_api:write"
+        "scope": "legal_entity:read,legal_entity:write"
       }
     }
 
@@ -58,7 +58,7 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
         "client_id": client.id,
         "client_secret": client.secret,
         "code": code_grant,
-        "scope": "some_api:read,some_api:write",
+        "scope": "legal_entity:read,legal_entity:write",
         "redirect_uri": client.redirect_uri
       }
     }

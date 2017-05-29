@@ -10,7 +10,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read some_api:write"
+      scope: "legal_entity:read legal_entity:write"
     })
 
     {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)
@@ -20,7 +20,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_secret" => client.secret,
       "code" => code_grant.value,
       "redirect_uri" => client.redirect_uri,
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     assert token.name == "access_token"
@@ -31,12 +31,12 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     assert token.details.refresh_token
     assert token.details.grant_type == "authorization_code"
     assert token.details.redirect_uri == client.redirect_uri
-    assert token.details.scope == "some_api:read"
+    assert token.details.scope == "legal_entity:read"
   end
 
   test "it returns Request must include at least... error" do
     {:error, errors, code} = AuthorizationCodeGrantType.authorize(%{
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     message = "Request must include at least client_id, client_secret, code, scopes and redirect_uri parameters."
@@ -52,7 +52,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_secret" => client.secret,
       "code" => "some_code",
       "redirect_uri" => client.redirect_uri,
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     assert %{invalid_client: "Invalid client id or secret."} = errors
@@ -67,7 +67,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_secret" => client.secret,
       "code" => "some_code",
       "redirect_uri" => client.redirect_uri,
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     assert %{invalid_token: "Token not found."} = errors
@@ -85,7 +85,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_secret" => client.secret,
       "code" => code_grant.value,
       "redirect_uri" => client.redirect_uri,
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     assert %{access_denied: "Resource owner revoked access for the client."} = errors
@@ -99,7 +99,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read some_api:write"
+      scope: "legal_entity:read legal_entity:write"
     })
 
     {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)
@@ -109,7 +109,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_secret" => client.secret,
       "code" => code_grant.value,
       "redirect_uri" => "some_suspicios_uri",
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     assert %{invalid_client: "The redirection URI provided does not match a pre-registered value."} = errors
@@ -123,7 +123,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read some_api:write"
+      scope: "legal_entity:read legal_entity:write"
     })
 
     {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user, 0)
@@ -133,7 +133,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_secret" => client.secret,
       "code" => code_grant.value,
       "redirect_uri" => client.redirect_uri,
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     assert %{invalid_grant: "Token expired."} = errors
@@ -147,7 +147,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     Mithril.AppAPI.create_app(%{
       user_id: user.id,
       client_id: client.id,
-      scope: "some_api:read some_api:write"
+      scope: "legal_entity:read legal_entity:write"
     })
 
     client2 = Mithril.Fixtures.create_client(%{name: "Another name"})
@@ -158,7 +158,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_secret" => client.secret,
       "code" => code_grant.value,
       "redirect_uri" => client.redirect_uri,
-      "scope" => "some_api:read"
+      "scope" => "legal_entity:read"
     })
 
     assert %{invalid_grant: "Token not found or expired."} = errors
