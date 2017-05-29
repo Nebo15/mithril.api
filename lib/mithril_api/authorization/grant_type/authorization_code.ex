@@ -93,7 +93,9 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
 
   defp validate_token_is_not_used({:error, err, code}), do: {:error, err, code}
   defp validate_token_is_not_used({:ok, token}) do
-    if !Map.get(token.details, "used", false) do
+    not_used = !Map.get(token.details, "used", false)
+
+    if not_used do
       {:ok, token}
     else
       GrantTypeError.access_denied("Token has already been used.")
