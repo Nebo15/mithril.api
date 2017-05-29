@@ -81,4 +81,10 @@ defmodule Mithril.TokenAPITest do
     token = fixture(:token)
     assert %Ecto.Changeset{} = TokenAPI.change_token(token)
   end
+
+  test "user_id is validated" do
+    assert {:error, changeset} = TokenAPI.create_token(%{user_id: "something"})
+
+    assert {"has invalid format", _} = Keyword.get(changeset.errors, :user_id)
+  end
 end

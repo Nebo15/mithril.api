@@ -77,9 +77,12 @@ defmodule Mithril.TokenAPI do
     token.expires_at < :os.system_time(:seconds)
   end
 
+  @uuid_regex ~r|[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}|
+
   defp token_changeset(%Token{} = token, attrs) do
     token
     |> cast(attrs, [:name, :user_id, :value, :expires_at, :details])
+    |> validate_format(:user_id, @uuid_regex)
     |> validate_required([:name, :user_id, :value, :expires_at, :details])
   end
 
