@@ -79,7 +79,8 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
     })
 
     message = "Allowed scopes for the token are app:authorize, \
-legal_entity:read, legal_entity:write, legal_entity:read, legal_entity:write, employee_request:write, employee_request:read."
+legal_entity:read, legal_entity:write, legal_entity:read, \
+legal_entity:write, employee_request:write, employee_request:read."
     assert %{invalid_scope: message} = errors
     assert :bad_request = code
   end

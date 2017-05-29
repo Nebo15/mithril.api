@@ -32,6 +32,8 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     assert token.details.grant_type == "authorization_code"
     assert token.details.redirect_uri == client.redirect_uri
     assert token.details.scope == "legal_entity:read"
+
+    assert true = Mithril.TokenAPI.get_token!(code_grant.id).details["used"]
   end
 
   test "it returns Request must include at least... error" do
@@ -162,6 +164,32 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     })
 
     assert %{invalid_grant: "Token not found or expired."} = errors
+    assert :unauthorized = code
+  end
+
+  test "it returns token was used error" do
+    client = Mithril.Fixtures.create_client()
+    user   = Mithril.Fixtures.create_user()
+
+    Mithril.AppAPI.create_app(%{
+      user_id: user.id,
+      client_id: client.id,
+      scope: "legal_entity:read legal_entity:write"
+    })
+
+    {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)
+    {:ok, code_grant} =
+      Mithril.TokenAPI.update_token(code_grant, %{details: Map.put_new(code_grant.details, :used, true)})
+
+    {:error, errors, code} = AuthorizationCodeGrantType.authorize(%{
+      "client_id" => client.id,
+      "client_secret" => client.secret,
+      "code" => code_grant.value,
+      "redirect_uri" => client.redirect_uri,
+      "scope" => "legal_entity:read"
+    })
+
+    assert %{access_denied: "Token has already been used."} = errors
     assert :unauthorized = code
   end
 end

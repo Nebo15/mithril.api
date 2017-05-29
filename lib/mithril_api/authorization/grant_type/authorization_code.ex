@@ -32,7 +32,8 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     |> validate_token_redirect_uri(redirect_uri)
     |> validate_app_authorization
     |> validate_requested_scopes(required_scopes)
-    |> delete_code_grant_token
+    |> validate_token_is_not_used()
+    |> mark_token_as_used()
     |> create_access_token(required_scopes)
   end
 
@@ -60,9 +61,10 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     })
   end
 
-  # NOTE: Instead of deleting token, mark it as used.
-  defp delete_code_grant_token({:error, err, code}), do: {:error, err, code}
-  defp delete_code_grant_token({:ok, token, _app}), do: Mithril.TokenAPI.delete_token(token)
+  defp mark_token_as_used({:error, err, code}), do: {:error, err, code}
+  defp mark_token_as_used({:ok, token}) do
+    Mithril.TokenAPI.update_token(token, %{details: Map.put_new(token.details, :used, true)})
+  end
 
   defp validate_app_authorization({:error, err, code}),
     do: {:error, err, code}
@@ -83,9 +85,20 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     scopes = Mithril.Utils.String.comma_split(app.scope)
     required_scopes = Mithril.Utils.String.comma_split(required_scopes)
     if Mithril.Utils.List.subset?(scopes, required_scopes) do
-      {:ok, token, app}
+      {:ok, token}
     else
       GrantTypeError.invalid_scope(scopes)
+    end
+  end
+
+  defp validate_token_is_not_used({:error, err, code}), do: {:error, err, code}
+  defp validate_token_is_not_used({:ok, token}) do
+    not_used = !Map.get(token.details, "used", false)
+
+    if not_used do
+      {:ok, token}
+    else
+      GrantTypeError.access_denied("Token has already been used.")
     end
   end
 
