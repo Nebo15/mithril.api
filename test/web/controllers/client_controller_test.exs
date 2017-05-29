@@ -95,7 +95,7 @@ defmodule Mithril.Web.ClientControllerTest do
       "redirect_uri" => "https://localhost",
       "secret" => client.secret,
       "settings" => %{},
-      "type" => "client"}
+    }
   end
 
   test "does not update chosen client and renders errors when data is invalid", %{conn: conn} do

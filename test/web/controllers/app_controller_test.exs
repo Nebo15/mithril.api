@@ -39,8 +39,8 @@ defmodule Mithril.Web.AppControllerTest do
       "id" => id,
       "scope" => "some scope",
       "user_id" => user.id,
-      "client_id" => client.id,
-      "type" => "app"}
+      "client_id" => client.id
+    }
   end
 
   test "does not create app and renders errors when data is invalid", %{conn: conn} do
@@ -59,7 +59,7 @@ defmodule Mithril.Web.AppControllerTest do
       "scope" => "some updated scope",
       "user_id" => app.user_id,
       "client_id" => app.client_id,
-      "type" => "app"}
+    }
   end
 
   test "does not update chosen app and renders errors when data is invalid", %{conn: conn} do

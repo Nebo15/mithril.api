@@ -31,7 +31,7 @@ defmodule Mithril.Web.RoleControllerTest do
       "id" => id,
       "name" => "some name",
       "scope" => "some scope",
-      "type" => "role"}
+    }
   end
 
   test "does not create role and renders errors when data is invalid", %{conn: conn} do
@@ -49,7 +49,7 @@ defmodule Mithril.Web.RoleControllerTest do
       "id" => id,
       "name" => "some updated name",
       "scope" => "some updated scope",
-      "type" => "role"}
+    }
   end
 
   test "does not update chosen role and renders errors when data is invalid", %{conn: conn} do

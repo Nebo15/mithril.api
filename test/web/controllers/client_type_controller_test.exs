@@ -44,7 +44,7 @@ defmodule Mithril.Web.ClientTypeControllerTest do
       "id" => id,
       "name" => "some name",
       "scope" => "some scope",
-      "type" => "client_type"}
+    }
   end
 
   test "does not create client_type and renders errors when data is invalid", %{conn: conn} do
@@ -62,7 +62,7 @@ defmodule Mithril.Web.ClientTypeControllerTest do
       "id" => id,
       "name" => "some updated name",
       "scope" => "some updated scope",
-      "type" => "client_type"}
+    }
   end
 
   test "does not update chosen client_type and renders errors when data is invalid", %{conn: conn} do

@@ -26,7 +26,7 @@ defmodule Mithril.Web.UserRoleControllerTest do
       "client_id" => create_attrs.client_id,
       "role_id" => create_attrs.role_id,
       "user_id" => create_attrs.user_id,
-      "type" => "user_role"}
+    }
   end
 
   test "does not create user_role and renders errors when data is invalid", %{user_id: user_id, conn: conn} do

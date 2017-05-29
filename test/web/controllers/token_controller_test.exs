@@ -35,7 +35,6 @@ defmodule Mithril.Web.TokenControllerTest do
       "expires_at" => 42,
       "name" => "some name",
       "value" => "some value",
-      "type" => "token",
       "user_id" => user.id}
   end
 
@@ -56,7 +55,6 @@ defmodule Mithril.Web.TokenControllerTest do
       "expires_at" => 43,
       "name" => "some updated name",
       "value" => "some updated value",
-      "type" => "token",
       "user_id" => token.user_id}
   end
 

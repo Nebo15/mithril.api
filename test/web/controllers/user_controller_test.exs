@@ -43,7 +43,7 @@ defmodule Mithril.Web.UserControllerTest do
       "id" => id,
       "email" => "some email",
       "settings" => %{},
-      "type" => "user"}
+    }
   end
 
   test "does not create user and renders errors when data is invalid", %{conn: conn} do
@@ -61,7 +61,7 @@ defmodule Mithril.Web.UserControllerTest do
       "id" => id,
       "email" => "some updated email",
       "settings" => %{},
-      "type" => "user"}
+    }
   end
 
   test "does not update chosen user and renders errors when data is invalid", %{conn: conn} do
