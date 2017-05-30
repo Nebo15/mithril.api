@@ -43,3 +43,11 @@ If you want to run migrations when container starts, use a `DB_MIGRATE` variable
 | PORT          | `4000`        | HTTP host for web app to listen on. |
 | HOST          | `localhost`   | HTTP port for web app to listen on. |
 | SECRET_KEY    | `mFd1nWJ1KUxj`.. | Phoenix [`:secret_key_base`](https://hexdocs.pm/phoenix/Phoenix.Endpoint.html). **Make sure that default value is changed in production.** |
+
+## Token lifetime in seconds
+
+| VAR_NAME                    | Default Value    | Description              |
+| --------------------------- | ---------------- | ------------------------ |
+| AUTH_CODE_GRANT_LIFETIME    | 300              | Lifetime of code grant   |
+| AUTH_ACCESS_TOKEN_LIFETIME  | 2592000          | Lifetime of access token |
+| AUTH_REFRESH_TOKEN_LIFETIME | 604800           | Lifetime of secret token |

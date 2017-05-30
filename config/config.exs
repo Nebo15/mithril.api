@@ -79,7 +79,8 @@ config :mithril_api, :scopes, ~w(
   address:read
 )
 
-config :mithril_api, :token_lifetime,
-  code: 5 * 60,
-  access: 30 * 24 * 60 * 60,
-  refresh: 7 * 24 * 60 * 60
+config :mithril_api, :token_lifetime, %{
+  code: {:system, "AUTH_CODE_GRANT_LIFETIME", 5 * 60},
+  access: {:system, "AUTH_ACCESS_TOKEN_LIFETIME", 30 * 24 * 60 * 60},
+  refresh: {:system, "AUTH_REFRESH_TOKEN_LIFETIME", 7 * 24 * 60 * 60}
+}

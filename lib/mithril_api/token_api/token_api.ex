@@ -6,7 +6,7 @@ defmodule Mithril.TokenAPI do
 
   alias Mithril.TokenAPI.Token
 
-  @token_lifetime Application.get_env(:mithril_api, :token_lifetime)
+  @token_lifetime Confex.get_map(:mithril_api, :token_lifetime)
   @access_token_lifetime Keyword.get(@token_lifetime, :access)
   @refresh_token_lifetime Keyword.get(@token_lifetime, :refresh)
   @auth_code_lifetime Keyword.get(@token_lifetime, :code)
