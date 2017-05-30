@@ -17,4 +17,16 @@ defmodule Mithril.Web.UserView do
       email: user.email,
       settings: user.settings}
   end
+
+  def render("urgent.json", %{user: user, urgent: true, expiration: expiration}) do
+    %{
+      id: user.id,
+      email: user.email,
+      settings: user.settings,
+      urgent: %{
+        roles: render_many(user.roles, Mithril.Web.RoleView, "show.json"),
+        expiration: expiration
+      }
+    }
+  end
 end

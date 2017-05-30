@@ -34,6 +34,7 @@ defmodule Mithril.Web.Router do
 
     resources "/tokens", TokenController, except: [:new, :edit] do
       get "/verify", TokenController, :verify, as: :verify
+      get "/user", TokenController, :user, as: :user
     end
     resources "/apps", AppController, except: [:new, :edit]
     resources "/client_types", ClientTypeController, except: [:new, :edit]
