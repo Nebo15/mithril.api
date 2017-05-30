@@ -18,6 +18,7 @@ defmodule Mithril.Web.UserView do
       settings: user.settings}
   end
 
+  # TODO continue here
   def render("urgent.json", %{user: user, urgent: true, expiration: expiration}) do
     %{
       id: user.id,
