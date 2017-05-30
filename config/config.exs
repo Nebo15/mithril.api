@@ -66,11 +66,6 @@ config :logger_json, :backend,
 # here (which is why it is important to import them last).
 #
 
-config :mithril_api, :generators,
-  migration: false,
-  binary_id: true,
-  sample_binary_id: "11111111-1111-1111-1111-111111111111"
-
 import_config "#{Mix.env}.exs"
 
 config :mithril_api, :scopes, ~w(
