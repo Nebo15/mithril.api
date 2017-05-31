@@ -39,9 +39,9 @@ defmodule Mithril.Web.TokenController do
   def user(conn, %{"token_id" => value}) do
     case TokenAPI.verify(value) do
       {:ok, token} ->
-        user = Mithril.UserAPI.get_full_user(token.user_id, token.client_id)
+        user = Mithril.Web.UserAPI.get_full_user(token.user_id, token.details["client_id"])
 
-        render(conn, Mithril.Web.UserView, "show.json", user: user, urgent: true)
+        render(conn, Mithril.Web.UserView, "urgent.json", user: user, urgent: true, expires_at: token.expires_at)
       {:error, errors, http_status_code} ->
         conn
         |> put_status(http_status_code)
