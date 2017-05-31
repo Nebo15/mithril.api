@@ -87,4 +87,18 @@ defmodule Mithril.Fixtures do
       value: "some_short_lived_code"
     })
   end
+
+  def create_refresh_token(client, user, expires_at \\ 2000000000) do
+    Mithril.TokenAPI.create_token(%{
+      details: %{
+        scope: "legal_entity:read legal_entity:write",
+        client_id: client.id,
+        grant_type: "authorization_code",
+      },
+      user_id: user.id,
+      expires_at: expires_at,
+      name: "refresh_token",
+      value: "some_refresh_token_code"
+    })
+  end
 end
