@@ -6,6 +6,7 @@ defmodule Mithril.Authorization.Token do
 
   alias Mithril.Authorization.GrantType.Password
   alias Mithril.Authorization.GrantType.AuthorizationCode
+  alias Mithril.Authorization.GrantType.RefreshToken
 
   # TODO:
   # rename grant_type to response_type
@@ -17,12 +18,11 @@ defmodule Mithril.Authorization.Token do
     AuthorizationCode.authorize(params)
   end
 
+  def authorize(%{"grant_type" => "refresh_token"} = params) do
+    RefreshToken.authorize(params)
+  end
+
   def authorize(_) do
     {:error, %{invalid_client: "Request must include grant_type."}, :bad_request}
   end
-
-  # TODO
-  # def authorize(%{"grant_type" => "refresh_token"} = params) do
-  #   RefreshToken.authorize(params)
-  # end
 end

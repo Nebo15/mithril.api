@@ -24,7 +24,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     create_token(token, client, redirect_uri, scopes)
   end
 
-  defp create_token(nil, _, _, _), do: {:error, %{invalid_token: "Token not found."}, :unauthorized}
+  defp create_token(nil, _, _, _), do: GrantTypeError.invalid_grant("Token not found.")
   defp create_token(token, client, redirect_uri, required_scopes) do
     {:ok, token}
     |> validate_client_match(client)
@@ -44,8 +44,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
       details: %{
         grant_type: "authorization_code",
         client_id: token.details["client_id"],
-        scope: required_scopes,
-        redirect_uri: token.details["redirect_uri"]
+        scope: required_scopes
       }
     })
 
