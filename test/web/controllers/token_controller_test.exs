@@ -73,6 +73,37 @@ defmodule Mithril.Web.TokenControllerTest do
     end
   end
 
+  test "render additional info about user", %{conn: conn} do
+    client = Mithril.Fixtures.create_client()
+    user   = Mithril.Fixtures.create_user()
+
+    {:ok, role} = Mithril.RoleAPI.create_role(%{name: "Some role", scope: "legal_entity:read"})
+    {:ok, _} = Mithril.UserRoleAPI.create_user_role(%{
+      client_id: client.id,
+      user_id: user.id,
+      role_id: role.id
+    })
+
+    Mithril.AppAPI.create_app(%{
+      user_id: user.id,
+      client_id: client.id,
+      scope: "legal_entity:read,legal_entity:write"
+    })
+
+    {:ok, token} = Mithril.Fixtures.create_access_token(client, user)
+
+    conn = get conn, token_user_path(conn, :user, token.value)
+
+    response = json_response(conn, 200)["data"]
+
+    assert response["id"] == user.id
+    assert response["email"] == user.email
+    assert response["settings"] == %{}
+    assert hd(response["urgent"]["roles"])["name"] == "Some role"
+    assert hd(response["urgent"]["roles"])["scope"] == "legal_entity:read"
+    assert response["urgent"]["token"]["expires_at"] == token.expires_at
+  end
+
   test "verify token using token value", %{conn: conn} do
     client = Mithril.Fixtures.create_client()
     user   = Mithril.Fixtures.create_user()
