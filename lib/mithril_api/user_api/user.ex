@@ -10,6 +10,9 @@ defmodule Mithril.Web.UserAPI.User do
     field :settings, :map, default: %{}
     field :priv_settings, :map, default: %{}
 
+    has_many :user_roles, Mithril.UserRoleAPI.UserRole
+    has_many :roles, through: [:user_roles, :role]
+
     timestamps()
   end
 end

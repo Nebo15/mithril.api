@@ -24,6 +24,17 @@ defmodule Mithril.Web.UserAPI do
   def get_user!(id), do: Repo.get!(User, id)
   def get_user_by(attrs), do: Repo.get_by(User, attrs)
 
+  def get_full_user(user_id, client_id) do
+    query = from u in User,
+      left_join: ur in assoc(u, :user_roles),
+      left_join: r in assoc(ur, :role),
+      preload: [roles: r],
+      where: ur.user_id == ^user_id,
+      where: ur.client_id == ^client_id
+
+    Repo.one(query)
+  end
+
   def create_user(attrs \\ %{}) do
     %User{}
     |> user_changeset(attrs)
