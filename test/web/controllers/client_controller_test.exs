@@ -95,6 +95,7 @@ defmodule Mithril.Web.ClientControllerTest do
       "name" => "some updated name",
       "priv_settings" => %{},
       "redirect_uri" => "https://localhost",
+      "secret" => client.secret,
       "settings" => %{},
     }
   end
