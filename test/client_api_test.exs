@@ -95,10 +95,18 @@ defmodule Mithril.ClientAPITest do
       client_type_id: client_type.id,
       priv_settings: %{},
       redirect_uri: "https://localhost",
-      secret: "some secret",
       settings: %{}
     })
 
     assert client_id == client.id
+
+    initial_secret = client.secret
+
+    {:ok, client} = ClientAPI.edit_client(client_id, %{
+      secret: "attempt to update secret"
+    })
+
+    # secret did not change
+    assert initial_secret == client.secret
   end
 end
