@@ -48,6 +48,18 @@ defmodule Mithril.Web.ClientControllerTest do
     refute resp["paging"]["has_more"]
   end
 
+  test "show client details", %{conn: conn} do
+    client = fixture(:client)
+
+    conn = get conn, client_details_path(conn, :details, client.id)
+    assert json_response(conn, 200)["data"] == %{
+      "id" => client.id,
+      "name" => client.name,
+      "settings" => client.settings,
+      "redirect_uri" => client.redirect_uri
+    }
+  end
+
   test "creates client and renders client when data is valid", %{conn: conn} do
     attrs = Mithril.Fixtures.client_create_attrs()
     conn = post conn, client_path(conn, :create), client: attrs

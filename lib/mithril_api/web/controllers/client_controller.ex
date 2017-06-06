@@ -26,6 +26,11 @@ defmodule Mithril.Web.ClientController do
     render(conn, "show.json", client: client)
   end
 
+  def details(conn, %{"client_id" => id}) do
+    client = ClientAPI.get_client!(id)
+    render(conn, "details.json", client: client)
+  end
+
   def update(conn, %{"id" => id, "client" => client_params}) do
     with {:ok, %Client{} = client} <- ClientAPI.edit_client(id, client_params) do
       render(conn, "show.json", client: client)
