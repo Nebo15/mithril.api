@@ -53,14 +53,16 @@ defmodule Mithril.Web.ClientControllerTest do
     conn = post conn, client_path(conn, :create), client: attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
 
+    name = attrs.name
     conn = get conn, client_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{
+    assert %{
       "id" => id,
-      "name" => attrs.name,
+      "name" => name,
+      "secret" => _,
       "settings" => %{},
       "priv_settings" => %{},
       "redirect_uri" => "http://localhost"
-    }
+    } = json_response(conn, 200)["data"]
   end
 
   test "does not create client and renders errors when data is invalid", %{conn: conn} do
