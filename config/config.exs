@@ -80,6 +80,8 @@ config :mithril_api, :scopes, ~w(
   employee:read
   dictionary:read
   address:read
+  division:read
+  division:write
 )
 
 config :mithril_api, :token_lifetime, %{
