@@ -28,7 +28,10 @@ defmodule Mithril.Web.ClientController do
 
   def details(conn, %{"client_id" => id}) do
     client = ClientAPI.get_client!(id)
-    render(conn, "details.json", client: client)
+
+    client_type_name = ClientAPI.get_client_type!(id)
+
+    render(conn, "details.json", client: client, client_type_name: client_type_name)
   end
 
   def update(conn, %{"id" => id, "client" => client_params}) do

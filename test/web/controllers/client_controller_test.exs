@@ -56,7 +56,8 @@ defmodule Mithril.Web.ClientControllerTest do
       "id" => client.id,
       "name" => client.name,
       "settings" => client.settings,
-      "redirect_uri" => client.redirect_uri
+      "redirect_uri" => client.redirect_uri,
+      "client_type_name" => "some_kind_of_client"
     }
   end
 
