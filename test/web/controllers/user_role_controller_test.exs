@@ -4,6 +4,14 @@ defmodule Mithril.Web.UserRoleControllerTest do
   alias Mithril.Web.UserAPI.User
   alias Mithril.UserRoleAPI
 
+  def fixture(:user_role, user_id) do
+    {:ok, user_role} =
+      user_id
+      |> Mithril.Fixtures.user_role_attrs()
+      |> UserRoleAPI.create_user_role()
+    user_role
+  end
+
   setup %{conn: conn} do
     {:ok, user} = Mithril.Web.UserAPI.create_user(%{email: "some email", password: "some password", settings: %{}})
 
@@ -11,8 +19,35 @@ defmodule Mithril.Web.UserRoleControllerTest do
   end
 
   test "lists all entries on index", %{user_id: user_id, conn: conn} do
+    fixture(:user_role, user_id)
+    fixture(:user_role, user_id)
+    fixture(:user_role, user_id)
     conn = get conn, user_role_path(conn, :index, %User{id: user_id})
-    assert json_response(conn, 200)["data"] == []
+    assert 3 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when limit is set", %{user_id: user_id, conn: conn} do
+    fixture(:user_role, user_id)
+    fixture(:user_role, user_id)
+    fixture(:user_role, user_id)
+    conn = get conn, user_role_path(conn, :index, %User{id: user_id}), %{limit: 2}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when starting_after is set", %{user_id: user_id, conn: conn} do
+    user_role = fixture(:user_role, user_id)
+    fixture(:user_role, user_id)
+    fixture(:user_role, user_id)
+    conn = get conn, user_role_path(conn, :index, %User{id: user_id}), %{starting_after: user_role.id}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when ending_before is set", %{user_id: user_id, conn: conn} do
+    fixture(:user_role, user_id)
+    fixture(:user_role, user_id)
+    user_role = fixture(:user_role, user_id)
+    conn = get conn, user_role_path(conn, :index, %User{id: user_id}), %{ending_before: user_role.id}
+    assert 2 == length(json_response(conn, 200)["data"])
   end
 
   test "creates user_role and renders user_role when data is valid", %{user_id: user_id, conn: conn} do

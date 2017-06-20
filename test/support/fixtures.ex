@@ -40,9 +40,9 @@ defmodule Mithril.Fixtures do
     }
   end
 
-  def user_role_attrs do
+  def user_role_attrs(user_id \\ create_user().id) do
     %{
-      user_id: create_user().id,
+      user_id: user_id,
       client_id: create_client().id,
       role_id: create_role().id
     }
