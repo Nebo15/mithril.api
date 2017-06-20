@@ -2,8 +2,8 @@ defmodule Mithril.TokenAPI do
   @moduledoc false
 
   import Ecto.{Query, Changeset}, warn: false
-  import Mithril.Paging
 
+  alias Mithril.Paging
   alias Mithril.Repo
   alias Mithril.TokenAPI.Token
 
@@ -13,7 +13,7 @@ defmodule Mithril.TokenAPI do
   @auth_code_lifetime Keyword.get(@token_lifetime, :code)
 
   def list_tokens(params) do
-    Repo.page(Token, get_paging(params, 50))
+    Repo.page(Token, Paging.get_paging(params, 50))
   end
 
   def get_token!(id), do: Repo.get!(Token, id)

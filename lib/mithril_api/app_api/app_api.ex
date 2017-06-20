@@ -4,13 +4,13 @@ defmodule Mithril.AppAPI do
   """
 
   import Ecto.{Query, Changeset}, warn: false
-  import Mithril.Paging
 
+  alias Mithril.Paging
   alias Mithril.Repo
   alias Mithril.AppAPI.App
 
   def list_apps(params) do
-    Repo.page(App, get_paging(params, 50))
+    Repo.page(App, Paging.get_paging(params, 50))
   end
 
   def get_app!(id), do: Repo.get!(App, id)
