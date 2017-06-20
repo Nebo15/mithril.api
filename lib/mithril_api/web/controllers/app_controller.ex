@@ -6,9 +6,10 @@ defmodule Mithril.Web.AppController do
 
   action_fallback Mithril.Web.FallbackController
 
-  def index(conn, _params) do
-    apps = AppAPI.list_apps()
-    render(conn, "index.json", apps: apps)
+  def index(conn, params) do
+    with {apps, %Ecto.Paging{} = paging} <- AppAPI.list_apps(params) do
+      render(conn, "index.json", apps: apps, paging: paging)
+    end
   end
 
   def create(conn, %{"app" => app_params}) do

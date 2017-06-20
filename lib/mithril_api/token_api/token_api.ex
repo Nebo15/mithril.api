@@ -2,8 +2,9 @@ defmodule Mithril.TokenAPI do
   @moduledoc false
 
   import Ecto.{Query, Changeset}, warn: false
-  alias Mithril.Repo
+  import Mithril.Paging
 
+  alias Mithril.Repo
   alias Mithril.TokenAPI.Token
 
   @token_lifetime Confex.get_map(:mithril_api, :token_lifetime)
@@ -11,8 +12,8 @@ defmodule Mithril.TokenAPI do
   @refresh_token_lifetime Keyword.get(@token_lifetime, :refresh)
   @auth_code_lifetime Keyword.get(@token_lifetime, :code)
 
-  def list_tokens do
-    Repo.all(Token)
+  def list_tokens(params) do
+    Repo.page(Token, get_paging(params, 50))
   end
 
   def get_token!(id), do: Repo.get!(Token, id)
