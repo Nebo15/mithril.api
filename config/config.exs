@@ -82,6 +82,8 @@ config :mithril_api, :scopes, ~w(
   address:read
   division:read
   division:write
+  declaration_request:read
+  declaration_request:write
 )
 
 config :mithril_api, :token_lifetime, %{
