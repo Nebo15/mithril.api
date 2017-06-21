@@ -18,8 +18,35 @@ defmodule Mithril.Web.RoleControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
+    fixture(:role)
+    fixture(:role)
+    fixture(:role)
     conn = get conn, role_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert 3 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when limit is set", %{conn: conn} do
+    fixture(:role)
+    fixture(:role)
+    fixture(:role)
+    conn = get conn, role_path(conn, :index), %{limit: 2}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when starting_after is set", %{conn: conn} do
+    role = fixture(:role)
+    fixture(:role)
+    fixture(:role)
+    conn = get conn, role_path(conn, :index), %{starting_after: role.id}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when ending_before is set", %{conn: conn} do
+    fixture(:role)
+    fixture(:role)
+    role = fixture(:role)
+    conn = get conn, role_path(conn, :index), %{ending_before: role.id}
+    assert 2 == length(json_response(conn, 200)["data"])
   end
 
   test "creates role and renders role when data is valid", %{conn: conn} do

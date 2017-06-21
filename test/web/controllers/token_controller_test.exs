@@ -8,9 +8,13 @@ defmodule Mithril.Web.TokenControllerTest do
   @update_attrs %{details: %{}, expires_at: 43, name: "some updated name", value: "some updated value"}
   @invalid_attrs %{details: nil, expires_at: nil, name: nil, value: nil}
 
-  def fixture(:token) do
+  def fixture(:token, name \\ "some name") do
     user = Mithril.Fixtures.create_user()
-    {:ok, token} = TokenAPI.create_token(Map.put_new(@create_attrs, :user_id, user.id))
+    {:ok, token} =
+      @create_attrs
+      |> Map.put_new(:user_id, user.id)
+      |> Map.put(:name, name)
+      |> TokenAPI.create_token()
     token
   end
 
@@ -19,8 +23,35 @@ defmodule Mithril.Web.TokenControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
+    fixture(:token, "1")
+    fixture(:token, "2")
+    fixture(:token, "3")
     conn = get conn, token_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert 3 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when limit is set", %{conn: conn} do
+    fixture(:token, "1")
+    fixture(:token, "2")
+    fixture(:token, "3")
+    conn = get conn, token_path(conn, :index), %{limit: 2}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when starting_after is set", %{conn: conn} do
+    token = fixture(:token, "1")
+    fixture(:token, "2")
+    fixture(:token, "3")
+    conn = get conn, token_path(conn, :index), %{starting_after: token.id}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when ending_before is set", %{conn: conn} do
+    fixture(:token, "1")
+    fixture(:token, "2")
+    token = fixture(:token, "3")
+    conn = get conn, token_path(conn, :index), %{ending_before: token.id}
+    assert 2 == length(json_response(conn, 200)["data"])
   end
 
   test "creates token and renders token when data is valid", %{conn: conn} do

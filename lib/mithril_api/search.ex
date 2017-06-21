@@ -6,14 +6,14 @@ defmodule Mithril.Search do
   defmacro __using__(_) do
     quote  do
       import Ecto.{Query, Changeset}, warn: false
-      import Mithril.Paging
 
+      alias Mithril.Paging
       alias Mithril.Repo
 
       def search(%Ecto.Changeset{valid?: true, changes: changes}, search_params, entity, default_limit) do
         entity
         |> get_search_query(changes)
-        |> Repo.page(get_paging(search_params, default_limit))
+        |> Repo.page(Paging.get_paging(search_params, default_limit))
       end
 
       def search(%Ecto.Changeset{valid?: false} = changeset, _search_params, _entity, _default_limit) do

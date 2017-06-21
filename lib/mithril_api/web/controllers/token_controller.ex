@@ -6,9 +6,10 @@ defmodule Mithril.Web.TokenController do
 
   action_fallback Mithril.Web.FallbackController
 
-  def index(conn, _params) do
-    tokens = TokenAPI.list_tokens()
-    render(conn, "index.json", tokens: tokens)
+  def index(conn, params) do
+    with {tokens, %Ecto.Paging{} = paging} <- TokenAPI.list_tokens(params) do
+      render(conn, "index.json", tokens: tokens, paging: paging)
+    end
   end
 
   def create(conn, %{"token" => token_params}) do

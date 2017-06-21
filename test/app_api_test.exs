@@ -19,7 +19,8 @@ defmodule Mithril.AppAPITest do
 
   test "list_apps/1 returns all apps" do
     app = fixture(:app)
-    assert AppAPI.list_apps() == [app]
+    paging = %Ecto.Paging{cursors: %Ecto.Paging.Cursors{starting_after: app.id}, has_more: false}
+    assert AppAPI.list_apps(%{}) == {[app], paging}
   end
 
   test "get_app! returns the app with given id" do
