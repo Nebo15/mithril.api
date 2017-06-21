@@ -117,12 +117,9 @@ defmodule Mithril.ClientAPI do
   end
 
   defp client_changeset(%ClientSearch{} = client, attrs) do
-    fields = ~W(
-      name
-      user_id
-    )
-
-    cast(client, attrs, fields)
+    client
+    |> cast(attrs, [:name, :user_id])
+    |> set_like_attributes([:name])
   end
   defp client_changeset(%Client{} = client, attrs) do
     client
