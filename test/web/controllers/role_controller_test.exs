@@ -8,13 +8,24 @@ defmodule Mithril.Web.RoleControllerTest do
   @update_attrs %{name: "some updated name", scope: "some updated scope"}
   @invalid_attrs %{name: nil, scope: nil}
 
-  def fixture(:role) do
-    {:ok, role} = RoleAPI.create_role(@create_attrs)
+  def fixture(:role, name \\ "some name") do
+    {:ok, role} =
+      @create_attrs
+      |> Map.put(:name, name)
+      |> RoleAPI.create_role()
     role
   end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+  end
+
+  test "search by name by like works", %{conn: conn} do
+    fixture(:role, "admin")
+    fixture(:role, "administrator")
+    fixture(:role, "user")
+    conn = get conn, role_path(conn, :index), %{name: "min"}
+    assert 2 == length(json_response(conn, 200)["data"])
   end
 
   test "lists all entries on index", %{conn: conn} do

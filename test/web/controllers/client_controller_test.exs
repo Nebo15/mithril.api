@@ -20,14 +20,24 @@ defmodule Mithril.Web.ClientControllerTest do
     settings: nil
   }
 
-  def fixture(:client) do
-    attrs = Mithril.Fixtures.client_create_attrs()
-    {:ok, client} = ClientAPI.create_client(attrs)
+  def fixture(:client, name \\ "some_name") do
+    {:ok, client} =
+      name
+      |> Mithril.Fixtures.client_create_attrs()
+      |> ClientAPI.create_client()
     client
   end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+  end
+
+  test "search by name by like works", %{conn: conn} do
+    fixture(:client, "john")
+    fixture(:client, "simon")
+    fixture(:client, "monica")
+    conn = get conn, client_path(conn, :index), %{name: "mon"}
+    assert 2 == length(json_response(conn, 200)["data"])
   end
 
   test "lists all entries on index", %{conn: conn} do
