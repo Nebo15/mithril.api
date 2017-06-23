@@ -30,7 +30,7 @@ defmodule Mithril.Search do
       end
 
       def get_search_query(entity, changes) when map_size(changes) > 0 do
-        params = Enum.filter(changes, fn({key, value}) -> is_binary(value) end)
+        params = Enum.filter(changes, fn({key, value}) -> !is_tuple(value) end)
 
         q = from e in entity,
           where: ^params
