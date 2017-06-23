@@ -40,6 +40,21 @@ defmodule Mithril.Web.ClientControllerTest do
     assert 2 == length(json_response(conn, 200)["data"])
   end
 
+  test "search by name by like is skipped when other params are invalid", %{conn: conn} do
+    fixture(:client, "john")
+    fixture(:client, "simon")
+    fixture(:client, "monica")
+    conn = get conn, client_path(conn, :index), %{user_id: "111", name: "mon"}
+    resp = json_response(conn, 422)
+    assert Map.has_key?(resp, "error")
+    error = resp["error"]
+    assert Map.has_key?(error, "invalid")
+    invalid = error["invalid"]
+    assert 1 == length(invalid)
+    invalid = Enum.at(invalid, 0)
+    assert "$.user_id" == invalid["entry"]
+  end
+
   test "lists all entries on index", %{conn: conn} do
     fixture(:client)
     fixture(:client)
