@@ -1,4 +1,4 @@
-FROM nebo15/alpine-elixir:1.4.4-19.3.4
+FROM nebo15/alpine-elixir:1.4.2
 
 RUN apk add --update make g++
 
