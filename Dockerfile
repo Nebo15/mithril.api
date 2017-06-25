@@ -1,6 +1,6 @@
-FROM nebo15/alpine-elixir:1.4.2
+FROM nebo15/alpine-elixir:latest
 
-RUN apk add --update make g++
+RUN apk add --no-cache --update --virtual .build-deps musl=1.1.16-r10 make g++
 
 # Maintainers
 MAINTAINER Nebo#15 support@nebo15.com
@@ -15,6 +15,8 @@ WORKDIR ${HOME}
 # Install deps and compile project
 COPY . .
 RUN mix do deps.get, compile, release --verbose
+
+RUN apk del --no-cache .build-deps
 
 # Move release to /opt/$APP_NAME
 RUN \
