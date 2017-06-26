@@ -83,7 +83,7 @@ defmodule Mithril.OAuth.AppControllerTest do
 
   test "incorrectly crafted body is still treated nicely", %{conn: conn} do
     assert_error_sent 400, fn ->
-      conn = post(conn, "/oauth/apps/authorize", Poison.encode!(%{"scope" => "legal_entity:read"}))
+      post(conn, "/oauth/apps/authorize", Poison.encode!(%{"scope" => "legal_entity:read"}))
     end
   end
 
@@ -99,7 +99,7 @@ defmodule Mithril.OAuth.AppControllerTest do
       |> put_req_header("x-consumer-id", "F003D59D-3E7A-40E0-8207-7EC05C3303FF")
       |> post("/oauth/apps/authorize", Poison.encode!(request))
 
-    assert result = json_response(conn, 400)["error"]
+    result = json_response(conn, 400)["error"]
     assert result["invalid_client"] == "Request must include at least client_id, redirect_uri and scopes parameters."
   end
 end
