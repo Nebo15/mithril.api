@@ -1,11 +1,13 @@
 defmodule Mithril.TokenAPI do
   @moduledoc false
 
+  use Mithril.Search
   import Ecto.{Query, Changeset}, warn: false
 
   alias Mithril.Paging
   alias Mithril.Repo
   alias Mithril.TokenAPI.Token
+  alias Mithril.TokenAPI.TokenSearch
 
   @token_lifetime Confex.get_map(:mithril_api, :token_lifetime)
   @access_token_lifetime Keyword.get(@token_lifetime, :access)
@@ -13,7 +15,9 @@ defmodule Mithril.TokenAPI do
   @auth_code_lifetime Keyword.get(@token_lifetime, :code)
 
   def list_tokens(params) do
-    Repo.page(Token, Paging.get_paging(params, 50))
+    %TokenSearch{}
+    |> token_changeset(params)
+    |> search(params, Token, 50)
   end
 
   def get_token!(id), do: Repo.get!(Token, id)
@@ -85,6 +89,13 @@ defmodule Mithril.TokenAPI do
     |> cast(attrs, [:name, :user_id, :value, :expires_at, :details])
     |> validate_format(:user_id, @uuid_regex)
     |> validate_required([:name, :user_id, :value, :expires_at, :details])
+  end
+
+  defp token_changeset(%TokenSearch{} = token, attrs) do
+    token
+    |> cast(attrs, [:name, :value, :user_id])
+    |> validate_format(:user_id, @uuid_regex)
+    |> set_like_attributes([:name, :value])
   end
 
   defp refresh_token_changeset(%Token{} = token, attrs) do
