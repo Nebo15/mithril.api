@@ -1,16 +1,16 @@
-# Environment Variables
+## Environment Variables
 
 This environment variables can be used to configure released docker container at start time.
 Also sample `.env` can be used as payload for `docker run` cli.
 
-## General
+### General
 
 | VAR_NAME      | Default Value           | Description |
 | ------------- | ----------------------- | ----------- |
 | ERLANG_COOKIE | `mFd1nWJ1KUxj`.. | Erlang [distribution cookie](http://erlang.org/doc/reference_manual/distributed.html). **Make sure that default value is changed in production.** |
 | LOG_LEVEL     | `info` | Elixir Logger severity level. Possible values: `debug`, `info`, `warn`, `error`. |
 
-## Database
+### Database
 
 Currently there are two options to set DB connections settings.
 
@@ -36,7 +36,7 @@ If you want to run migrations when container starts, use a `DB_MIGRATE` variable
 | ------------- | ------------- | ----------- |
 | DB_MIGRATE    | `true`        | Migrate database when container starts. |
 
-## Phoenix HTTP Endpoint
+### Phoenix HTTP Endpoint
 
 | VAR_NAME      | Default Value | Description |
 | ------------- | ------------- | ----------- |

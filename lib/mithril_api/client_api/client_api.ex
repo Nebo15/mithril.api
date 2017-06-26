@@ -104,13 +104,22 @@ defmodule Mithril.ClientAPI do
     client_changeset(client, %{})
   end
 
-  defp client_changeset(%ClientSearch{} = client, attrs) do
-    fields = ~W(
-      name
-      user_id
-    )
+  def get_client_type!(id) do
+    {:ok, uuid} = Ecto.UUID.dump(id)
 
-    cast(client, attrs, fields)
+    query =
+      from ctt in "client_client_types",
+        join: ct in Mithril.ClientTypeAPI.ClientType, on: ct.id == ctt.client_type_id,
+        where: ctt.client_id == ^uuid,
+        select: ct.name
+
+    Repo.one(query)
+  end
+
+  defp client_changeset(%ClientSearch{} = client, attrs) do
+    client
+    |> cast(attrs, [:name, :user_id])
+    |> set_like_attributes([:name])
   end
   defp client_changeset(%Client{} = client, attrs) do
     client

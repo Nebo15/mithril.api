@@ -18,4 +18,13 @@ defmodule Mithril.Web.ClientView do
       settings: client.settings,
       priv_settings: client.priv_settings}
   end
+
+  def render("details.json", %{client: client, client_type_name: client_type_name}) do
+    %{id: client.id,
+      name: client.name,
+      redirect_uri: client.redirect_uri,
+      settings: client.settings,
+      client_type_name: client_type_name
+    }
+  end
 end

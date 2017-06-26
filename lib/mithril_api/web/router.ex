@@ -30,10 +30,13 @@ defmodule Mithril.Web.Router do
       resources "/roles", UserRoleController, except: [:new, :edit, :update], as: :role
     end
 
-    resources "/clients", ClientController, except: [:new, :edit]
+    resources "/clients", ClientController, except: [:new, :edit] do
+      get "/details", ClientController, :details, as: :details
+    end
 
     resources "/tokens", TokenController, except: [:new, :edit] do
       get "/verify", TokenController, :verify, as: :verify
+      get "/user", TokenController, :user, as: :user
     end
     resources "/apps", AppController, except: [:new, :edit]
     resources "/client_types", ClientTypeController, except: [:new, :edit]

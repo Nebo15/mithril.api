@@ -13,7 +13,7 @@ defmodule Mithril.OAuth.AppControllerTest do
       app: %{
         client_id: client.id,
         redirect_uri: client.redirect_uri,
-        scope: "legal_entity:read,legal_entity:write",
+        scope: "legal_entity:read legal_entity:write",
       }
     }
 
@@ -43,7 +43,7 @@ defmodule Mithril.OAuth.AppControllerTest do
 
     assert app.user_id == user.id
     assert app.client_id == client.id
-    assert app.scope == "legal_entity:read,legal_entity:write"
+    assert app.scope == "legal_entity:read legal_entity:write"
   end
 
   test "successfully updates existing approval with more scopes", %{conn: conn} do
@@ -78,7 +78,7 @@ defmodule Mithril.OAuth.AppControllerTest do
 
     assert app.user_id == user.id
     assert app.client_id == client.id
-    assert app.scope == "legal_entity:read,legal_entity:write"
+    assert app.scope == "legal_entity:read legal_entity:write"
   end
 
   test "incorrectly crafted body is still treated nicely", %{conn: conn} do

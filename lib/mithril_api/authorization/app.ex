@@ -66,7 +66,7 @@ defmodule Mithril.Authorization.App do
         |> Enum.concat(Mithril.Utils.String.comma_split(app.scope))
         |> Enum.uniq()
       scope = @scopes -- (@scopes -- scope)
-      Mithril.AppAPI.update_app(app, %{scope: Enum.join(scope, ",")})
+      Mithril.AppAPI.update_app(app, %{scope: Enum.join(scope, " ")})
     else
       app
     end

@@ -6,9 +6,10 @@ defmodule Mithril.Web.TokenController do
 
   action_fallback Mithril.Web.FallbackController
 
-  def index(conn, _params) do
-    tokens = TokenAPI.list_tokens()
-    render(conn, "index.json", tokens: tokens)
+  def index(conn, params) do
+    with {tokens, %Ecto.Paging{} = paging} <- TokenAPI.list_tokens(params) do
+      render(conn, "index.json", tokens: tokens, paging: paging)
+    end
   end
 
   def create(conn, %{"token" => token_params}) do
@@ -29,6 +30,19 @@ defmodule Mithril.Web.TokenController do
     case TokenAPI.verify(value) do
       {:ok, token} ->
         render(conn, "show.json", token: token)
+      {:error, errors, http_status_code} ->
+        conn
+        |> put_status(http_status_code)
+        |> render(Mithril.Web.TokenView, http_status_code, errors: errors)
+    end
+  end
+
+  def user(conn, %{"token_id" => value}) do
+    case TokenAPI.verify(value) do
+      {:ok, token} ->
+        user = Mithril.Web.UserAPI.get_full_user(token.user_id, token.details["client_id"])
+
+        render(conn, Mithril.Web.UserView, "urgent.json", user: user, urgent: true, expires_at: token.expires_at)
       {:error, errors, http_status_code} ->
         conn
         |> put_status(http_status_code)

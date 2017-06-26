@@ -40,9 +40,9 @@ defmodule Mithril.Fixtures do
     }
   end
 
-  def user_role_attrs do
+  def user_role_attrs(user_id \\ create_user().id) do
     %{
-      user_id: create_user().id,
+      user_id: user_id,
       client_id: create_client().id,
       role_id: create_role().id
     }
@@ -85,6 +85,34 @@ defmodule Mithril.Fixtures do
       expires_at: expires_at,
       name: "authorization_code",
       value: "some_short_lived_code"
+    })
+  end
+
+  def create_refresh_token(client, user, expires_at \\ 2000000000) do
+    Mithril.TokenAPI.create_token(%{
+      details: %{
+        scope: "legal_entity:read legal_entity:write",
+        client_id: client.id,
+        grant_type: "authorization_code",
+      },
+      user_id: user.id,
+      expires_at: expires_at,
+      name: "refresh_token",
+      value: "some_refresh_token_code"
+    })
+  end
+
+  def create_access_token(client, user, expires_at \\ 2000000000) do
+    Mithril.TokenAPI.create_token(%{
+      details: %{
+        scope: "legal_entity:read legal_entity:write",
+        client_id: client.id,
+        grant_type: "refresh_token",
+      },
+      user_id: user.id,
+      expires_at: expires_at,
+      name: "access_token",
+      value: "some_access_token"
     })
   end
 end

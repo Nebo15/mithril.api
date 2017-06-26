@@ -18,8 +18,35 @@ defmodule Mithril.Web.ClientTypeControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
+    fixture(:client_type)
+    fixture(:client_type)
+    fixture(:client_type)
     conn = get conn, client_type_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert 3 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when limit is set", %{conn: conn} do
+    fixture(:client_type)
+    fixture(:client_type)
+    fixture(:client_type)
+    conn = get conn, client_type_path(conn, :index), %{limit: 2}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when starting_after is set", %{conn: conn} do
+    client_type = fixture(:client_type)
+    fixture(:client_type)
+    fixture(:client_type)
+    conn = get conn, client_type_path(conn, :index), %{starting_after: client_type.id}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when ending_before is set", %{conn: conn} do
+    fixture(:client_type)
+    fixture(:client_type)
+    client_type = fixture(:client_type)
+    conn = get conn, client_type_path(conn, :index), %{ending_before: client_type.id}
+    assert 2 == length(json_response(conn, 200)["data"])
   end
 
   test "search client types by name", %{conn: conn} do

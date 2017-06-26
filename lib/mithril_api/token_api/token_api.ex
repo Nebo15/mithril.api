@@ -2,8 +2,9 @@ defmodule Mithril.TokenAPI do
   @moduledoc false
 
   import Ecto.{Query, Changeset}, warn: false
-  alias Mithril.Repo
 
+  alias Mithril.Paging
+  alias Mithril.Repo
   alias Mithril.TokenAPI.Token
 
   @token_lifetime Confex.get_map(:mithril_api, :token_lifetime)
@@ -11,8 +12,8 @@ defmodule Mithril.TokenAPI do
   @refresh_token_lifetime Keyword.get(@token_lifetime, :refresh)
   @auth_code_lifetime Keyword.get(@token_lifetime, :code)
 
-  def list_tokens do
-    Repo.all(Token)
+  def list_tokens(params) do
+    Repo.page(Token, Paging.get_paging(params, 50))
   end
 
   def get_token!(id), do: Repo.get!(Token, id)
@@ -63,7 +64,7 @@ defmodule Mithril.TokenAPI do
     token = get_token_by_value!(token_value)
 
     with false <- expired?(token),
-         _app <- Mithril.AppAPI.approval(token.user_id, token.details["client_id"]) do
+         %Mithril.AppAPI.App{} <- Mithril.AppAPI.approval(token.user_id, token.details["client_id"]) do
            # if token is authorization_code or password - make sure was not used previously
         {:ok, token}
     else

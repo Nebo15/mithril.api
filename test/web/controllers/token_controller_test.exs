@@ -8,9 +8,13 @@ defmodule Mithril.Web.TokenControllerTest do
   @update_attrs %{details: %{}, expires_at: 43, name: "some updated name", value: "some updated value"}
   @invalid_attrs %{details: nil, expires_at: nil, name: nil, value: nil}
 
-  def fixture(:token) do
+  def fixture(:token, name \\ "some name") do
     user = Mithril.Fixtures.create_user()
-    {:ok, token} = TokenAPI.create_token(Map.put_new(@create_attrs, :user_id, user.id))
+    {:ok, token} =
+      @create_attrs
+      |> Map.put_new(:user_id, user.id)
+      |> Map.put(:name, name)
+      |> TokenAPI.create_token()
     token
   end
 
@@ -19,8 +23,35 @@ defmodule Mithril.Web.TokenControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
+    fixture(:token, "1")
+    fixture(:token, "2")
+    fixture(:token, "3")
     conn = get conn, token_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert 3 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when limit is set", %{conn: conn} do
+    fixture(:token, "1")
+    fixture(:token, "2")
+    fixture(:token, "3")
+    conn = get conn, token_path(conn, :index), %{limit: 2}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when starting_after is set", %{conn: conn} do
+    token = fixture(:token, "1")
+    fixture(:token, "2")
+    fixture(:token, "3")
+    conn = get conn, token_path(conn, :index), %{starting_after: token.id}
+    assert 2 == length(json_response(conn, 200)["data"])
+  end
+
+  test "does not list all entries on index when ending_before is set", %{conn: conn} do
+    fixture(:token, "1")
+    fixture(:token, "2")
+    token = fixture(:token, "3")
+    conn = get conn, token_path(conn, :index), %{ending_before: token.id}
+    assert 2 == length(json_response(conn, 200)["data"])
   end
 
   test "creates token and renders token when data is valid", %{conn: conn} do
@@ -71,6 +102,37 @@ defmodule Mithril.Web.TokenControllerTest do
     assert_error_sent 404, fn ->
       get conn, token_path(conn, :show, token)
     end
+  end
+
+  test "render additional info about user", %{conn: conn} do
+    client = Mithril.Fixtures.create_client()
+    user   = Mithril.Fixtures.create_user()
+
+    {:ok, role} = Mithril.RoleAPI.create_role(%{name: "Some role", scope: "legal_entity:read"})
+    {:ok, _} = Mithril.UserRoleAPI.create_user_role(%{
+      client_id: client.id,
+      user_id: user.id,
+      role_id: role.id
+    })
+
+    Mithril.AppAPI.create_app(%{
+      user_id: user.id,
+      client_id: client.id,
+      scope: "legal_entity:read,legal_entity:write"
+    })
+
+    {:ok, token} = Mithril.Fixtures.create_access_token(client, user)
+
+    conn = get conn, token_user_path(conn, :user, token.value)
+
+    response = json_response(conn, 200)["data"]
+
+    assert response["id"] == user.id
+    assert response["email"] == user.email
+    assert response["settings"] == %{}
+    assert hd(response["urgent"]["roles"])["name"] == "Some role"
+    assert hd(response["urgent"]["roles"])["scope"] == "legal_entity:read"
+    assert response["urgent"]["token"]["expires_at"] == token.expires_at
   end
 
   test "verify token using token value", %{conn: conn} do

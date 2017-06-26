@@ -72,7 +72,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "scope" => "legal_entity:read"
     })
 
-    assert %{invalid_token: "Token not found."} = errors
+    assert %{invalid_grant: "Token not found."} = errors
     assert :unauthorized = code
   end
 
