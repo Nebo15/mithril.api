@@ -1,6 +1,7 @@
 defmodule Mithril.Web.TokenControllerTest do
   use Mithril.Web.ConnCase
 
+  alias Ecto.UUID
   alias Mithril.TokenAPI
   alias Mithril.TokenAPI.Token
 
@@ -8,13 +9,14 @@ defmodule Mithril.Web.TokenControllerTest do
   @update_attrs %{details: %{}, expires_at: 43, name: "some updated name", value: "some updated value"}
   @invalid_attrs %{details: nil, expires_at: nil, name: nil, value: nil}
 
-  def fixture(:token, name \\ "some name", value \\ "some_value") do
+  def fixture(:token, name \\ "some name", value \\ "some_value", details \\ %{}) do
     user = Mithril.Fixtures.create_user()
     {:ok, token} =
       @create_attrs
       |> Map.put_new(:user_id, user.id)
       |> Map.put(:name, name)
       |> Map.put(:value, value)
+      |> Map.put(:details, details)
       |> TokenAPI.create_token()
     token
   end
@@ -29,6 +31,18 @@ defmodule Mithril.Web.TokenControllerTest do
     fixture(:token, "3")
     conn = get conn, token_path(conn, :index)
     assert 3 == length(json_response(conn, 200)["data"])
+  end
+
+  test "lists with filter by client_id", %{conn: conn} do
+    client_1 = UUID.generate()
+    client_2 = UUID.generate()
+
+    fixture(:token, "1", "val", %{"client_id" => client_1})
+    fixture(:token, "2", "val", %{"client_id" => client_1})
+    fixture(:token, "3", "val", %{"client_id" => client_2})
+
+    conn = get conn, token_path(conn, :index), %{"details" => %{"client_id" => client_1}}
+    assert 2 == length(json_response(conn, 200)["data"])
   end
 
   test "does not list all entries on index when limit is set", %{conn: conn} do
