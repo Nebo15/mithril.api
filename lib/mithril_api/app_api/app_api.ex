@@ -2,15 +2,18 @@ defmodule Mithril.AppAPI do
   @moduledoc """
   The boundary for the AppAPI system.
   """
-
+  use Mithril.Search
   import Ecto.{Query, Changeset}, warn: false
 
   alias Mithril.Paging
   alias Mithril.Repo
   alias Mithril.AppAPI.App
+  alias Mithril.AppAPI.AppSearch
 
   def list_apps(params) do
-    Repo.page(App, Paging.get_paging(params, 50))
+    %AppSearch{}
+    |> app_changeset(params)
+    |> search(params, App, 50)
   end
 
   def get_app!(id), do: Repo.get!(App, id)
@@ -46,5 +49,9 @@ defmodule Mithril.AppAPI do
     |> cast(attrs, [:user_id, :client_id, :scope])
     |> unique_constraint(:user_id, name: "apps_user_id_client_id_index")
     |> validate_required([:user_id, :client_id, :scope])
+  end
+
+  defp app_changeset(%AppSearch{} = app, attrs) do
+    cast(app, attrs, [:user_id, :client_id])
   end
 end
