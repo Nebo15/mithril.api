@@ -70,6 +70,7 @@ import_config "#{Mix.env}.exs"
 
 config :mithril_api, :scopes, ~w(
   app:authorize
+  app:read
   legal_entity:read
   legal_entity:write
   employee_request:write
@@ -84,6 +85,8 @@ config :mithril_api, :scopes, ~w(
   division:write
   declaration_request:read
   declaration_request:write
+  role:read
+  token:read
 )
 
 config :mithril_api, :token_lifetime, %{
