@@ -12,8 +12,12 @@ ENV MIX_ENV=prod \
 
 WORKDIR ${HOME}
 
+RUN apk add --update --no-cache --virtual .build-deps \
+  musl=1.1.16-r10
+  
 # Install deps and compile project
 COPY . .
+
 RUN mix do deps.get, compile, release --verbose
 
 RUN apk del --no-cache .build-deps
