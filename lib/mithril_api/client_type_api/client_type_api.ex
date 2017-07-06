@@ -113,10 +113,6 @@ defmodule Mithril.ClientTypeAPI do
   end
 
   defp client_type_changeset(%ClientTypeSearch{} = client_type, attrs) do
-    fields = ~W(
-      name
-    )
-
-    cast(client_type, attrs, fields)
+    cast(client_type, attrs, [:name, :scope])
   end
 end

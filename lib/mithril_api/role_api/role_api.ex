@@ -113,7 +113,7 @@ defmodule Mithril.RoleAPI do
 
   defp role_changeset(%RoleSearch{} = role, attrs) do
     role
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :scope])
     |> set_like_attributes([:name])
   end
 end
