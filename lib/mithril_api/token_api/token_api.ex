@@ -40,7 +40,7 @@ defmodule Mithril.TokenAPI do
 
     Enum.reduce(changes, q, fn({key, val}, query) ->
       case val do
-        {value, :like} -> where(q, [r], ilike(field(r, ^key), ^("%" <> value <> "%")))
+        {value, :like} -> where(query, [r], ilike(field(r, ^key), ^("%" <> value <> "%")))
         _ -> query
       end
     end)
