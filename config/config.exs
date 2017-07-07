@@ -73,6 +73,7 @@ config :mithril_api, :scopes, ~w(
   app:read
   legal_entity:read
   legal_entity:write
+  legal_entity:deactivate
   employee_request:write
   employee_request:reject
   employee_request:read
