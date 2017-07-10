@@ -19,7 +19,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_id" => client.id,
       "client_secret" => client.secret,
       "code" => code_grant.value,
-      "redirect_uri" => client.redirect_uri,
+      "redirect_uri" => client.redirect_uri <> "#world",
       "scope" => "legal_entity:read"
     })
 

@@ -104,10 +104,10 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   defp validate_token_redirect_uri({:error, err, code}, _),
     do: {:error, err, code}
   defp validate_token_redirect_uri({:ok, token}, redirect_uri) do
-    if token.details["redirect_uri"] != redirect_uri do
-      GrantTypeError.invalid_client("The redirection URI provided does not match a pre-registered value.")
-    else
+    if String.starts_with?(redirect_uri, token.details["redirect_uri"]) do
       {:ok, token}
+    else
+      GrantTypeError.invalid_client("The redirection URI provided does not match a pre-registered value.")
     end
   end
 
