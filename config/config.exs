@@ -75,6 +75,7 @@ config :mithril_api, :scopes, ~w(
   legal_entity:write
   legal_entity:deactivate
   legal_entity:mis_verify
+  legal_entity:nhs_verify
   employee_request:write
   employee_request:reject
   employee_request:read
