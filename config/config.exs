@@ -84,6 +84,7 @@ config :mithril_api, :scopes, ~w(
   employee:deactivate
   dictionary:read
   address:read
+  address:write
   division:read
   division:write
   declaration_request:read
