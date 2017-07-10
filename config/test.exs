@@ -17,5 +17,7 @@ config :mithril_api, Mithril.Web.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+config :comeonin, :bcrypt_log_rounds, 1
+
 # Run acceptance test in concurrent mode
 config :mithril_api, sql_sandbox: true
