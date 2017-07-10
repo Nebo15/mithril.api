@@ -16,10 +16,9 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
       }
     }
 
-    login_response =
-      conn
-      |> put_req_header("accept", "application/json")
-      |> post("/oauth/tokens", Poison.encode!(login_request_body))
+    conn
+    |> put_req_header("accept", "application/json")
+    |> post("/oauth/tokens", Poison.encode!(login_request_body))
 
     # 2. After login user is presented with a list of scopes
     # The request goes through gateway, which
@@ -45,9 +44,9 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
       |> Poison.decode!
       |> get_in(["data", "value"])
 
-    redirect_uri = "localhost?#{code_grant}"
+    redirect_uri = "http://localhost?code=#{code_grant}"
 
-    assert [redirect_uri] = get_resp_header(approval_response, "location")
+    assert [^redirect_uri] = get_resp_header(approval_response, "location")
 
     # 3. After authorization server responds and
     # user-agent is redirected to client server,

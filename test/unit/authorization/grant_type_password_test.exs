@@ -78,10 +78,7 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "scope" => "some_hidden_api:read",
     })
 
-    message = "Allowed scopes for the token are app:authorize, \
-legal_entity:read, legal_entity:write, legal_entity:read, \
-legal_entity:write, employee_request:write, employee_request:read."
-    assert %{invalid_scope: message} = errors
+    assert %{invalid_scope: "Allowed scopes for the token are app:authorize" <> _} = errors
     assert :bad_request = code
   end
 
@@ -89,7 +86,7 @@ legal_entity:write, employee_request:write, employee_request:read."
     {:error, errors, code} = PasswordGrantType.authorize(%{})
 
     message = "Request must include at least email, password, client_id and scope parameters."
-    assert %{invalid_request: message} = errors
+    assert %{invalid_request: ^message} = errors
     assert :bad_request = code
   end
 end
