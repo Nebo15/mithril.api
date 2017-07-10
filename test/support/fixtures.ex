@@ -17,17 +17,19 @@ defmodule Mithril.Fixtures do
     user
   end
 
-  def create_client_type do
+  def create_client_type(attrs \\ %{}) do
     {:ok, client_type} =
       client_type_attrs()
+      |> Map.merge(attrs)
       |> Mithril.ClientTypeAPI.create_client_type()
 
     client_type
   end
 
-  def create_role do
+  def create_role(attrs \\ %{}) do
     {:ok, role} =
       role_attrs()
+      |> Map.merge(attrs)
       |> Mithril.RoleAPI.create_role()
 
     role
@@ -51,7 +53,6 @@ defmodule Mithril.Fixtures do
   def client_create_attrs(name \\ "some name") do
     %{
       name: name,
-      redirect_uri: "",
       user_id: create_user().id,
       redirect_uri: "http://localhost",
       client_type_id: create_client_type().id
@@ -61,7 +62,7 @@ defmodule Mithril.Fixtures do
   def client_type_attrs(name \\ "some_kind_of_client") do
     %{
       name: name,
-      scope: "some, scope"
+      scope: "some scope"
     }
   end
 
