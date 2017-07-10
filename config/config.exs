@@ -90,6 +90,8 @@ config :mithril_api, :scopes, ~w(
   declaration_request:write
   role:read
   token:read
+  otp:read
+  otp:write
 )
 
 config :mithril_api, :token_lifetime, %{
