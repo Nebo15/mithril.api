@@ -90,6 +90,7 @@ config :mithril_api, :scopes, ~w(
   division:write
   declaration_request:read
   declaration_request:write
+  declaration:read
   role:read
   token:read
   otp:read
