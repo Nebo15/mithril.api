@@ -9,8 +9,9 @@ defmodule Mithril.ClientAPI.Client do
     field :redirect_uri, :string
     field :secret, :string
     field :settings, :map, default: %{}
-    field :client_type_id, :binary_id, virtual: true
 
+    belongs_to :client_type, Mithril.ClientTypeAPI.ClientType
+    # TODO: Remove Web prefix
     belongs_to :user, Mithril.Web.UserAPI.User
 
     timestamps()

@@ -27,11 +27,10 @@ defmodule Mithril.Web.ClientController do
   end
 
   def details(conn, %{"client_id" => id}) do
-    client = ClientAPI.get_client!(id)
-
-    client_type_name = ClientAPI.get_client_type!(id)
-
-    render(conn, "details.json", client: client, client_type_name: client_type_name)
+    case ClientAPI.get_client_with_type(id) do
+      nil -> {:error, :not_found}
+      client -> render(conn, "details.json", client: client, client_type_name: client.client_type.name)
+    end
   end
 
   def update(conn, %{"id" => id, "client" => client_params}) do

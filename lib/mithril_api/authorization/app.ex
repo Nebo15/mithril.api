@@ -17,6 +17,7 @@ defmodule Mithril.Authorization.App do
     |> find_client()
     |> find_user()
     |> validate_redirect_uri()
+    |> validate_client_scope()
     |> validate_user_scope()
     |> update_or_create_app()
     |> create_token()
@@ -42,10 +43,7 @@ defmodule Mithril.Authorization.App do
   end
 
   defp validate_redirect_uri({:error, errors, status}), do: {:error, errors, status}
-  defp validate_redirect_uri(params) do
-    client = Map.fetch!(params, "client")
-    redirect_uri = Map.fetch!(params, "redirect_uri")
-
+  defp validate_redirect_uri(%{"client" => client, "redirect_uri" => redirect_uri} = params) do
     if String.starts_with?(redirect_uri, client.redirect_uri) do
       params
     else
@@ -54,19 +52,28 @@ defmodule Mithril.Authorization.App do
     end
   end
 
-  defp validate_user_scope({:error, errors, status}), do: {:error, errors, status}
-  defp validate_user_scope(params) do
-    user = Map.fetch!(params, "user")
-    allowed_scopes = user.roles |> Enum.map_join(" ", &(&1.scope)) |> Mithril.Utils.String.comma_split()
-    requested_scopes = params |> Map.fetch!("scope") |> Mithril.Utils.String.comma_split()
+  defp validate_client_scope({:error, errors, status}), do: {:error, errors, status}
+  defp validate_client_scope(%{"client" => %{client_type: %{scope: client_type_scope}}, "scope" => scope} = params) do
+    allowed_scopes = String.split(client_type_scope, " ", trim: true)
+    requested_scopes = String.split(scope, " ", trim: true)
     if Mithril.Utils.List.subset?(allowed_scopes, requested_scopes) do
       params
     else
-      message = "User requested scope is not allowed by role based access policies."
+      message = "Scope is not allowed by client type."
       {:error, %{invalid_client: message}, :unprocessable_entity}
     end
   end
 
+  defp validate_user_scope({:error, errors, status}), do: {:error, errors, status}
+  defp validate_user_scope(%{"user" => %{roles: user_roles}, "scope" => scope} = params) do
+    allowed_scopes = user_roles |> Enum.map_join(" ", &(&1.scope)) |> String.split(" ", trim: true)
+    requested_scopes = String.split(scope, " ", trim: true)
+    if Mithril.Utils.List.subset?(allowed_scopes, requested_scopes) do
+      params
+    else
+      message = "User requested scope that is not allowed by role based access policies."
+      {:error, %{invalid_client: message}, :unprocessable_entity}
+    end
   end
 
   defp update_or_create_app({:error, errors, status}), do: {:error, errors, status}

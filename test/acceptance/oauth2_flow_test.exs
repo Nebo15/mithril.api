@@ -3,7 +3,7 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
 
   test "client successfully obtain an access_token API calls", %{conn: conn} do
     client_type = Mithril.Fixtures.create_client_type(%{scope: "legal_entity:read legal_entity:write"})
-    client = Mithril.Fixtures.create_client(%{redirect_uri: "http://localhost"})
+    client = Mithril.Fixtures.create_client(%{redirect_uri: "http://localhost", client_type_id: client_type.id})
     user   = Mithril.Fixtures.create_user(%{password: "super$ecre7"})
     user_role = Mithril.Fixtures.create_role(%{scope: "legal_entity:read legal_entity:write"})
     Mithril.UserRoleAPI.create_user_role(%{user_id: user.id, role_id: user_role.id, client_id: client.id})
