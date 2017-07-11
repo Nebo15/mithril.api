@@ -81,8 +81,8 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   # Also, probably no need to pass redirect_uri once again
   defp validate_requested_scopes({:error, err, code}, _), do: {:error, err, code}
   defp validate_requested_scopes({:ok, token, app}, required_scopes) do
-    scopes = Mithril.Utils.String.comma_split(app.scope)
-    required_scopes = Mithril.Utils.String.comma_split(required_scopes)
+    scopes = String.split(app.scope, " ", trim: true)
+    required_scopes = String.split(required_scopes, " ", trim: true)
     if Mithril.Utils.List.subset?(scopes, required_scopes) do
       {:ok, token}
     else
