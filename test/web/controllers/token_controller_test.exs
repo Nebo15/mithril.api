@@ -41,7 +41,7 @@ defmodule Mithril.Web.TokenControllerTest do
     fixture(:token, "2", "val", %{"client_id" => client_1})
     fixture(:token, "3", "val", %{"client_id" => client_2})
 
-    conn = get conn, token_path(conn, :index), %{"details" => %{"client_id" => client_1}}
+    conn = get conn, token_path(conn, :index), %{"client_id" => client_1}
     assert 2 == length(json_response(conn, 200)["data"])
   end
 
