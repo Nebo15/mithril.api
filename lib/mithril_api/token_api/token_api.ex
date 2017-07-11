@@ -8,7 +8,6 @@ defmodule Mithril.TokenAPI do
   alias Mithril.Repo
   alias Mithril.TokenAPI.Token
   alias Mithril.TokenAPI.TokenSearch
-  alias Mithril.TokenAPI.TokenSearch.Details
 
   @token_lifetime Confex.get_map(:mithril_api, :token_lifetime)
   @access_token_lifetime Keyword.get(@token_lifetime, :access)
@@ -21,31 +20,18 @@ defmodule Mithril.TokenAPI do
     |> search(params, Token, 50)
   end
 
-  def get_search_query(entity, %{details: %{changes: details_changes}} = changes) do
+  def get_search_query(entity, %{client_id: client_id} = changes) do
     params =
       changes
-      |> Map.delete(:details)
+      |> Map.delete(:client_id)
       |> Map.to_list()
 
-    details_params = for {key, val} <- details_changes, into: %{}, do: {Atom.to_string(key), val}
+    details_params = %{client_id: client_id}
     from e in entity,
       where: ^params,
       where: fragment("? @> ?", e.details, ^details_params)
   end
-  def get_search_query(entity, changes) when map_size(changes) > 0 do
-    params = Enum.filter(changes, fn({key, value}) -> !is_tuple(value) end)
-
-    q = from e in entity,
-      where: ^params
-
-    Enum.reduce(changes, q, fn({key, val}, query) ->
-      case val do
-        {value, :like} -> where(query, [r], ilike(field(r, ^key), ^("%" <> value <> "%")))
-        _ -> query
-      end
-    end)
-  end
-  def get_search_query(entity, _changes), do: from e in entity
+  def get_search_query(entity, changes), do: super(entity, changes)
 
   def get_token!(id), do: Repo.get!(Token, id)
 
@@ -120,14 +106,9 @@ defmodule Mithril.TokenAPI do
 
   defp token_changeset(%TokenSearch{} = token, attrs) do
     token
-    |> cast(attrs, [:name, :value, :user_id])
-    |> cast_embed(:details, with: &details_changeset/2)
+    |> cast(attrs, [:name, :value, :user_id, :client_id])
     |> validate_format(:user_id, @uuid_regex)
     |> set_like_attributes([:name, :value])
-  end
-
-  def details_changeset(%Details{} = details, attrs) do
-    cast(details, attrs, [:client_id])
   end
 
   defp refresh_token_changeset(%Token{} = token, attrs) do
