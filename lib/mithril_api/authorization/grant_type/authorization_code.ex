@@ -7,44 +7,42 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
       "client_id" => client_id,
       "client_secret" => client_secret,
       "code" => code,
-      "redirect_uri" => redirect_uri,
-      "scope" => scopes}) do
+      "redirect_uri" => redirect_uri}) do
     client = Mithril.ClientAPI.get_client_by(id: client_id, secret: client_secret)
-    do_authorize(client, code, redirect_uri, scopes)
+    do_authorize(client, code, redirect_uri)
   end
   def authorize(_) do
     message = "Request must include at least client_id, client_secret, code, scopes and redirect_uri parameters."
     GrantTypeError.invalid_request(message)
   end
 
-  defp do_authorize(nil, _, _, _),
+  defp do_authorize(nil, _, _),
     do: GrantTypeError.invalid_client("Invalid client id or secret.")
-  defp do_authorize(client, code, redirect_uri, scopes) do
+  defp do_authorize(client, code, redirect_uri) do
     token = Mithril.TokenAPI.get_token_by(value: code, name: "authorization_code")
-    create_token(token, client, redirect_uri, scopes)
+    create_token(token, client, redirect_uri)
   end
 
-  defp create_token(nil, _, _, _), do: GrantTypeError.invalid_grant("Token not found.")
-  defp create_token(token, client, redirect_uri, required_scopes) do
+  defp create_token(nil, _, _), do: GrantTypeError.invalid_grant("Token not found.")
+  defp create_token(token, client, redirect_uri) do
     {:ok, token}
     |> validate_client_match(client)
     |> validate_token_expiration
     |> validate_token_redirect_uri(redirect_uri)
-    |> validate_app_authorization
-    |> validate_requested_scopes(required_scopes)
+    |> validate_app_authorization()
     |> validate_token_is_not_used()
     |> mark_token_as_used()
-    |> create_access_token(required_scopes)
+    |> create_access_token()
   end
 
-  defp create_access_token({:error, err, code}, _required_scopes), do: {:error, err, code}
-  defp create_access_token({:ok, token}, required_scopes) do
+  defp create_access_token({:error, err, code}), do: {:error, err, code}
+  defp create_access_token({:ok, token, app}) do
     {:ok, refresh_token} = Mithril.TokenAPI.create_refresh_token(%{
       user_id: token.user_id,
       details: %{
         grant_type: "authorization_code",
         client_id: token.details["client_id"],
-        scope: required_scopes
+        scope: app.scope
       }
     })
 
@@ -53,7 +51,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
       details: %{
         grant_type: "authorization_code",
         client_id: token.details["client_id"],
-        scope: required_scopes,
+        scope: app.scope,
         refresh_token: refresh_token.value,
         redirect_uri: token.details["redirect_uri"]
       }
@@ -61,8 +59,9 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
   end
 
   defp mark_token_as_used({:error, err, code}), do: {:error, err, code}
-  defp mark_token_as_used({:ok, token}) do
-    Mithril.TokenAPI.update_token(token, %{details: Map.put_new(token.details, :used, true)})
+  defp mark_token_as_used({:ok, token, app}) do
+    {:ok, token} = Mithril.TokenAPI.update_token(token, %{details: Map.put_new(token.details, :used, true)})
+    {:ok, token, app}
   end
 
   defp validate_app_authorization({:error, err, code}),
@@ -75,27 +74,12 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
     end
   end
 
-  # TODO: Probably no need to do this at all. When client exchanges code for token,
-  # client doesn't have to pass scopes once again.
-  #
-  # Also, probably no need to pass redirect_uri once again
-  defp validate_requested_scopes({:error, err, code}, _), do: {:error, err, code}
-  defp validate_requested_scopes({:ok, token, app}, required_scopes) do
-    scopes = String.split(app.scope, " ", trim: true)
-    required_scopes = String.split(required_scopes, " ", trim: true)
-    if Mithril.Utils.List.subset?(scopes, required_scopes) do
-      {:ok, token}
-    else
-      GrantTypeError.invalid_scope(scopes)
-    end
-  end
-
   defp validate_token_is_not_used({:error, err, code}), do: {:error, err, code}
-  defp validate_token_is_not_used({:ok, token}) do
+  defp validate_token_is_not_used({:ok, token, app}) do
     not_used = !Map.get(token.details, "used", false)
 
     if not_used do
-      {:ok, token}
+      {:ok, token, app}
     else
       GrantTypeError.access_denied("Token has already been used.")
     end
