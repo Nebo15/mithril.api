@@ -68,35 +68,6 @@ config :logger_json, :backend,
 
 import_config "#{Mix.env}.exs"
 
-config :mithril_api, :scopes, {:system, :list, "KNOWN_SCOPES", ~w(
-  app:authorize
-  app:read
-  legal_entity:read
-  legal_entity:write
-  legal_entity:deactivate
-  legal_entity:mis_verify
-  legal_entity:nhs_verify
-  employee_request:write
-  employee_request:reject
-  employee_request:read
-  employee_request:approve
-  employee:write
-  employee:read
-  employee:deactivate
-  dictionary:read
-  address:read
-  address:write
-  division:read
-  division:write
-  declaration_request:read
-  declaration_request:write
-  declaration:read
-  role:read
-  token:read
-  otp:read
-  otp:write
-)}
-
 config :mithril_api, :token_lifetime, %{
   code: {:system, "AUTH_CODE_GRANT_LIFETIME", 5 * 60},
   access: {:system, "AUTH_ACCESS_TOKEN_LIFETIME", 30 * 24 * 60 * 60},

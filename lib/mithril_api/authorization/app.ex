@@ -79,26 +79,10 @@ defmodule Mithril.Authorization.App do
 
           app
         app ->
-          update_app_scopes({app, scope})
+          Mithril.AppAPI.update_app(app, %{scope: scope})
       end
+
     Map.put(params, "app", app)
-  end
-
-  defp update_app_scopes({app, scope}) do
-    known_scopes = Confex.fetch_env!(:mithril_api, :scopes)
-
-    if app.scope != scope do
-      scope =
-        scope
-        |> String.split(" ", trim: true)
-        |> Enum.concat(String.split(app.scope, " ", trim: true))
-        |> Enum.uniq()
-
-      scope = known_scopes -- (known_scopes -- scope)
-      Mithril.AppAPI.update_app(app, %{scope: Enum.join(scope, " ")})
-    else
-      app
-    end
   end
 
   defp create_token({:error, errors, status}), do: {:error, errors, status}

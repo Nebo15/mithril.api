@@ -66,7 +66,7 @@ defmodule Mithril.Authorization.GrantType.RefreshToken do
   end
 
   defp create_access_token({:error, _, _} = error), do: error
-  defp create_access_token({:ok, client, token, app}) do
+  defp create_access_token({:ok, client, token, _app}) do
     Mithril.TokenAPI.create_access_token(%{
       user_id: token.user_id,
       details: %{
