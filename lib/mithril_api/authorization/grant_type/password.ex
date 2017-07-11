@@ -2,13 +2,13 @@ defmodule Mithril.Authorization.GrantType.Password do
   @moduledoc false
   alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 
-  def authorize(%{"email" => email, "password" => password, "client_id" => client_id, "scope" => scopes}) do
+  def authorize(%{"email" => email, "password" => password, "client_id" => client_id, "scope" => scope}) do
     client = Mithril.ClientAPI.get_client_with_type(client_id)
 
     case allowed_to_login?(client) do
       :ok ->
         user = Mithril.UserAPI.get_user_by([email: email])
-        create_token(client, user, password, scopes)
+        create_token(client, user, password, scope)
       {:error, message} ->
         GrantTypeError.invalid_client(message)
     end
@@ -32,11 +32,11 @@ defmodule Mithril.Authorization.GrantType.Password do
 
   defp create_token(_, nil, _, _),
     do: GrantTypeError.invalid_grant("Identity not found.")
-  defp create_token(client, user, password, scopes) do
+  defp create_token(client, user, password, scope) do
     {:ok, user}
     |> match_with_user_password(password)
-    |> validate_token_scope(client.client_type.scope, scopes)
-    |> create_access_token(client, scopes)
+    |> validate_token_scope(client.client_type.scope, scope)
+    |> create_access_token(client, scope)
   end
 
   defp create_access_token({:error, err, code}, _, _), do: {:error, err, code}
@@ -53,9 +53,9 @@ defmodule Mithril.Authorization.GrantType.Password do
   end
 
   defp validate_token_scope({:error, err, code}, _, _), do: {:error, err, code}
-  defp validate_token_scope({:ok, user}, client_scope, required_scopes) do
+  defp validate_token_scope({:ok, user}, client_scope, required_scope) do
     allowed_scopes = String.split(client_scope, " ", trim: true)
-    required_scopes = String.split(required_scopes, " ", trim: true)
+    required_scopes = String.split(required_scope, " ", trim: true)
     if Mithril.Utils.List.subset?(allowed_scopes, required_scopes) do
       {:ok, user}
     else
