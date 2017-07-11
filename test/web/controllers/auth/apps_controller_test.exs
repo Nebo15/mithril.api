@@ -91,7 +91,7 @@ defmodule Mithril.OAuth.AppControllerTest do
 
     assert app.user_id == user.id
     assert app.client_id == client.id
-    assert app.scope == "legal_entity:write"
+    assert app.scope == "legal_entity:write legal_entity:read"
   end
 
   test "incorrectly crafted body is still treated nicely", %{conn: conn} do

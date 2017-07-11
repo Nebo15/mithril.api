@@ -79,7 +79,10 @@ defmodule Mithril.Authorization.App do
 
           app
         app ->
-          Mithril.AppAPI.update_app(app, %{scope: scope})
+          aggregated_scopes = String.split(scope, " ", trim: true) ++ String.split(app.scope, " ", trim: true)
+          aggregated_scope = aggregated_scopes |> Enum.uniq() |> Enum.join(" ")
+
+          Mithril.AppAPI.update_app(app, %{scope: aggregated_scope})
       end
 
     Map.put(params, "app", app)
