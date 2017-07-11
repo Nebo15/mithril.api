@@ -32,6 +32,7 @@ defmodule Mithril.UserRoleAPI do
     user_role
     |> cast(attrs, [:user_id, :role_id, :client_id])
     |> validate_required([:user_id, :role_id, :client_id])
+    |> unique_constraint(:user_roles, name: :user_roles_user_id_role_id_client_id_index)
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:client_id)
   end

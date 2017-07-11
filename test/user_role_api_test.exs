@@ -30,6 +30,12 @@ defmodule Mithril.UserRoleAPITest do
     assert user_role.user_id == attrs.user_id
   end
 
+  test "create_user_role/1 with duplicate data returns error changeset" do
+    attrs = Mithril.Fixtures.user_role_attrs()
+    assert {:ok, %UserRole{}} = UserRoleAPI.create_user_role(attrs)
+    assert {:error, %Ecto.Changeset{}} = UserRoleAPI.create_user_role(attrs)
+  end
+
   test "create_user_role/1 with invalid data returns error changeset" do
     assert {:error, %Ecto.Changeset{}} = UserRoleAPI.create_user_role(%{client_id: nil, role_id: nil, user_id: nil})
   end
