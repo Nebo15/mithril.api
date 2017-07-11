@@ -50,14 +50,14 @@ defmodule Mithril.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:distillery, "~> 1.2"},
-     {:confex, "~> 1.4"},
+     {:confex, "~> 3.2"},
      {:ecto, "~> 2.1"},
      {:postgrex, "~> 0.13.2"},
      {:cowboy, "~> 1.1"},
-     {:httpoison, "~> 0.11.2"},
+     {:httpoison, "~> 0.12.0"},
      {:poison, "~> 3.1"},
      {:phoenix, "~> 1.3.0-rc"},
-     {:logger_json, "~> 0.4.0"},
+     {:logger_json, "~> 0.5.0"},
      {:eview, "~> 0.11"},
      {:phoenix_ecto, "~> 3.2"},
      {:ecto_paging, ">= 0.0.0"},

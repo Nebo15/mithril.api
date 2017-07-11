@@ -9,11 +9,6 @@ defmodule Mithril.TokenAPI do
   alias Mithril.TokenAPI.Token
   alias Mithril.TokenAPI.TokenSearch
 
-  @token_lifetime Confex.get_map(:mithril_api, :token_lifetime)
-  @access_token_lifetime Keyword.get(@token_lifetime, :access)
-  @refresh_token_lifetime Keyword.get(@token_lifetime, :refresh)
-  @auth_code_lifetime Keyword.get(@token_lifetime, :code)
-
   def list_tokens(params) do
     %TokenSearch{}
     |> token_changeset(params)
@@ -117,7 +112,7 @@ defmodule Mithril.TokenAPI do
     |> validate_required([:user_id])
     |> put_change(:value, SecureRandom.urlsafe_base64)
     |> put_change(:name, "refresh_token")
-    |> put_change(:expires_at, :os.system_time(:seconds) + @refresh_token_lifetime)
+    |> put_change(:expires_at, :os.system_time(:seconds) + Map.fetch!(get_token_lifetime(), :refresh))
     |> unique_constraint(:value, name: :tokens_value_name_index)
   end
 
@@ -127,7 +122,7 @@ defmodule Mithril.TokenAPI do
     |> validate_required([:user_id])
     |> put_change(:value, SecureRandom.urlsafe_base64)
     |> put_change(:name, "access_token")
-    |> put_change(:expires_at, :os.system_time(:seconds) + @access_token_lifetime)
+    |> put_change(:expires_at, :os.system_time(:seconds) + Map.fetch!(get_token_lifetime(), :access))
     |> unique_constraint(:value, name: :tokens_value_name_index)
   end
 
@@ -137,7 +132,10 @@ defmodule Mithril.TokenAPI do
     |> validate_required([:user_id])
     |> put_change(:value, SecureRandom.urlsafe_base64)
     |> put_change(:name, "authorization_code")
-    |> put_change(:expires_at, :os.system_time(:seconds) + @auth_code_lifetime)
+    |> put_change(:expires_at, :os.system_time(:seconds) + Map.fetch!(get_token_lifetime(), :code))
     |> unique_constraint(:value, name: :tokens_value_name_index)
   end
+
+  defp get_token_lifetime,
+    do: Confex.fetch_env!(:mithril_api, :token_lifetime)
 end

@@ -1,8 +1,6 @@
 defmodule Mithril.Authorization.App do
   @moduledoc false
 
-  @scopes Application.get_env(:mithril_api, :scopes)
-
   # NOTE: Mark password token as used.
   #
   # On every approval a new token is created.
@@ -92,13 +90,16 @@ defmodule Mithril.Authorization.App do
   end
 
   defp update_app_scopes({app, scope}) do
+    known_scopes = Confex.fetch_env!(:mithril_api, :scopes)
+
     if app.scope != scope do
       scope =
         scope
         |> Mithril.Utils.String.comma_split
         |> Enum.concat(Mithril.Utils.String.comma_split(app.scope))
         |> Enum.uniq()
-      scope = @scopes -- (@scopes -- scope)
+
+      scope = known_scopes -- (known_scopes -- scope)
       Mithril.AppAPI.update_app(app, %{scope: Enum.join(scope, " ")})
     else
       app

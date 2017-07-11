@@ -1,8 +1,5 @@
 defmodule Mithril.Authorization.GrantType.Password do
   @moduledoc false
-
-  @scopes Application.get_env(:mithril_api, :scopes)
-
   alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 
   def authorize(%{"email" => email, "password" => password, "client_id" => client_id, "scope" => scopes}) do
@@ -57,8 +54,8 @@ defmodule Mithril.Authorization.GrantType.Password do
 
   defp validate_token_scope({:error, err, code}, _), do: {:error, err, code}
   defp validate_token_scope({:ok, user}, required_scopes) do
-    scopes = @scopes
-    required_scopes = Mithril.Utils.String.comma_split(required_scopes)
+    scopes = Confex.fetch_env!(:mithril_api, :scopes)
+    required_scopes = String.split(required_scopes, " ", trim: true)
     if Mithril.Utils.List.subset?(scopes, required_scopes) do
       {:ok, user}
     else
