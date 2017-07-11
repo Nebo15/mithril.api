@@ -72,7 +72,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
 
   test "incorrectly crafted body is still treated nicely", %{conn: conn} do
     assert_error_sent 400, fn ->
-      conn = post(conn, "/oauth/tokens", Poison.encode!(%{"scope" => "legal_entity:read"}))
+      post(conn, "/oauth/tokens", Poison.encode!(%{"scope" => "legal_entity:read"}))
     end
   end
 

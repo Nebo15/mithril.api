@@ -121,9 +121,9 @@ defmodule Mithril.Web.ClientControllerTest do
     name = attrs.name
     conn = get conn, client_path(conn, :show, id)
     assert %{
-      "id" => id,
-      "name" => name,
-      "secret" => _,
+      "id" => ^id,
+      "name" => ^name,
+      "secret" => _secret,
       "settings" => %{},
       "priv_settings" => %{},
       "redirect_uri" => "http://localhost"

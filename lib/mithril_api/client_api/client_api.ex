@@ -1,6 +1,5 @@
 defmodule Mithril.ClientAPI do
   @moduledoc false
-
   use Mithril.Search
 
   import Ecto.{Query, Changeset}, warn: false
@@ -17,6 +16,16 @@ defmodule Mithril.ClientAPI do
 
   def get_client!(id), do: Repo.get!(Client, id)
   def get_client(id), do: Repo.get(Client, id)
+
+  def get_client_with_type(id) do
+    query =
+      from c in Client,
+        left_join: ct in assoc(c, :client_type), on: ct.id == c.client_type_id,
+        where: c.id == ^id,
+        preload: [client_type: ct]
+
+    Repo.one(query)
+  end
 
   def get_client_by(attrs), do: Repo.get_by(Client, attrs)
 
@@ -40,48 +49,7 @@ defmodule Mithril.ClientAPI do
   end
 
   def create_client(%Ecto.Changeset{} = changeset) do
-    result =
-      Ecto.Multi.new()
-      |> Ecto.Multi.insert(:client, changeset)
-      |> Ecto.Multi.run(:client_type, fn %{client: client} ->
-           id =
-             Ecto.UUID.generate()
-             |> Ecto.UUID.dump()
-             |> elem(1)
-
-           client_id =
-             client.id
-             |> Ecto.UUID.dump()
-             |> elem(1)
-
-           client_type_id =
-             changeset.changes.client_type_id
-             |> Ecto.UUID.dump()
-             |> elem(1)
-
-           record = [
-             id:             id,
-             client_id:      client_id,
-             client_type_id: client_type_id,
-             inserted_at:    DateTime.utc_now(),
-             updated_at:     DateTime.utc_now()
-           ]
-
-           case Repo.insert_all("client_client_types", [record]) do
-             {_n, _} ->
-               {:ok, :client_type}
-             _ ->
-               {:error, :error}
-           end
-         end)
-      |> Repo.transaction()
-
-    case result do
-      {:ok, %{client: client}} ->
-        {:ok, client}
-      {:error, :client, data, _} ->
-        {:error, data}
-    end
+    Repo.insert(changeset)
   end
 
   def create_client(attrs) when is_map(attrs) do
@@ -104,18 +72,6 @@ defmodule Mithril.ClientAPI do
     client_changeset(client, %{})
   end
 
-  def get_client_type!(id) do
-    {:ok, uuid} = Ecto.UUID.dump(id)
-
-    query =
-      from ctt in "client_client_types",
-        join: ct in Mithril.ClientTypeAPI.ClientType, on: ct.id == ctt.client_type_id,
-        where: ctt.client_id == ^uuid,
-        select: ct.name
-
-    Repo.one(query)
-  end
-
   defp client_changeset(%ClientSearch{} = client, attrs) do
     client
     |> cast(attrs, [:name, :user_id])
@@ -125,11 +81,11 @@ defmodule Mithril.ClientAPI do
     client
     |> cast(attrs, [:name, :user_id, :redirect_uri, :settings, :priv_settings, :client_type_id])
     |> put_secret()
-    |> validate_required([:name, :user_id, :redirect_uri, :settings, :priv_settings])
+    |> validate_required([:name, :user_id, :redirect_uri, :settings, :priv_settings, :client_type_id])
     |> validate_format(:redirect_uri, ~r{^https?://.+})
-    |> validate_client_type()
     |> unique_constraint(:name)
     |> assoc_constraint(:user)
+    |> assoc_constraint(:client_type)
   end
 
   defp put_secret(changeset) do
@@ -137,15 +93,6 @@ defmodule Mithril.ClientAPI do
       {:data, nil} ->
         put_change(changeset, :secret, SecureRandom.urlsafe_base64)
       _ ->
-        changeset
-    end
-  end
-
-  defp validate_client_type(changeset) do
-    case fetch_field(changeset, :id) do
-      {:data, nil} ->
-        validate_required(changeset, [:client_type_id])
-      {:data, _} ->
         changeset
     end
   end

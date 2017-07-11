@@ -34,8 +34,8 @@ defmodule Mithril.Authorization.GrantType.RefreshTokenTest do
     {:error, errors, code} = RefreshTokenGrantType.authorize(%{})
 
     message = "Request must include at least client_id, client_secret and refresh_token parameters."
-    assert %{invalid_request: message} = errors
-    assert :bad_request = code
+    assert %{invalid_request: ^message} = errors
+    assert :bad_request == code
   end
 
   test "it returns invalid client id or secret error" do

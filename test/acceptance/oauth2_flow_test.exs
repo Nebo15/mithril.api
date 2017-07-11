@@ -2,8 +2,11 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
   use Mithril.Web.ConnCase
 
   test "client successfully obtain an access_token API calls", %{conn: conn} do
-    user  = Mithril.Fixtures.create_user(%{password: "super$ecre7"})
-    client = Mithril.Fixtures.create_client()
+    client_type = Mithril.Fixtures.create_client_type(%{scope: "legal_entity:read legal_entity:write"})
+    client = Mithril.Fixtures.create_client(%{redirect_uri: "http://localhost", client_type_id: client_type.id})
+    user   = Mithril.Fixtures.create_user(%{password: "super$ecre7"})
+    user_role = Mithril.Fixtures.create_role(%{scope: "legal_entity:read legal_entity:write"})
+    Mithril.UserRoleAPI.create_user_role(%{user_id: user.id, role_id: user_role.id, client_id: client.id})
 
     # 1. User is presented a user-agent and logs in
     login_request_body = %{
@@ -16,10 +19,9 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
       }
     }
 
-    login_response =
-      conn
-      |> put_req_header("accept", "application/json")
-      |> post("/oauth/tokens", Poison.encode!(login_request_body))
+    conn
+    |> put_req_header("accept", "application/json")
+    |> post("/oauth/tokens", Poison.encode!(login_request_body))
 
     # 2. After login user is presented with a list of scopes
     # The request goes through gateway, which
@@ -29,7 +31,7 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
       "app" => %{
         "client_id": client.id,
         "redirect_uri": client.redirect_uri,
-        "scope": "legal_entity:read,legal_entity:write"
+        "scope": "legal_entity:read legal_entity:write"
       }
     }
 
@@ -42,12 +44,12 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
     code_grant =
       approval_response
       |> Map.get(:resp_body)
-      |> Poison.decode!
+      |> Poison.decode!()
       |> get_in(["data", "value"])
 
-    redirect_uri = "localhost?#{code_grant}"
+    redirect_uri = "http://localhost?code=#{code_grant}"
 
-    assert [redirect_uri] = get_resp_header(approval_response, "location")
+    assert [^redirect_uri] = get_resp_header(approval_response, "location")
 
     # 3. After authorization server responds and
     # user-agent is redirected to client server,
@@ -58,7 +60,7 @@ defmodule Mithril.Acceptance.Oauth2FlowTest do
         "client_id": client.id,
         "client_secret": client.secret,
         "code": code_grant,
-        "scope": "legal_entity:read,legal_entity:write",
+        "scope": "legal_entity:read legal_entity:write",
         "redirect_uri": client.redirect_uri
       }
     }

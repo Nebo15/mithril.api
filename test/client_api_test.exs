@@ -28,13 +28,12 @@ defmodule Mithril.ClientAPITest do
   test "list_clients/1 returns all clients" do
     client = fixture(:client)
     {clients, _paging} = ClientAPI.list_clients(%{})
-    assert [%{client | client_type_id: nil}] == clients
-
+    assert [client] == clients
   end
 
   test "get_client! returns the client with given id" do
     client = fixture(:client)
-    assert ClientAPI.get_client!(client.id) == %{client | client_type_id: nil}
+    assert ClientAPI.get_client!(client.id) == client
   end
 
   test "create_client/1 with valid data creates a client" do
@@ -70,7 +69,7 @@ defmodule Mithril.ClientAPITest do
   test "update_client/2 with invalid data returns error changeset" do
     client = fixture(:client)
     assert {:error, %Ecto.Changeset{}} = ClientAPI.update_client(client, @invalid_attrs)
-    assert %{client | client_type_id: nil} == ClientAPI.get_client!(client.id)
+    assert client == ClientAPI.get_client!(client.id)
   end
 
   test "delete_client/1 deletes the client" do

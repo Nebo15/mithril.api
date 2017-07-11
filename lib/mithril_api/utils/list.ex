@@ -2,8 +2,6 @@ defmodule Mithril.Utils.List do
   @moduledoc false
 
   def subset?(super_list, list) do
-    list
-    |> Enum.find(fn(item) -> !Enum.member?(super_list, item) end)
-    |> is_nil
+    Enum.all?(list, &(&1 in super_list))
   end
 end
