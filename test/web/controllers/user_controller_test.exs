@@ -1,8 +1,8 @@
 defmodule Mithril.Web.UserControllerTest do
   use Mithril.Web.ConnCase
 
-  alias Mithril.Web.UserAPI
-  alias Mithril.Web.UserAPI.User
+  alias Mithril.UserAPI
+  alias Mithril.UserAPI.User
 
   @create_attrs %{email: "some email", password: "some password", settings: %{}}
   @update_attrs %{email: "some updated email", password: "some updated password", settings: %{}}

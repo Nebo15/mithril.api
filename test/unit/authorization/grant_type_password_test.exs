@@ -4,8 +4,13 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
   alias Mithril.Authorization.GrantType.Password, as: PasswordGrantType
 
   test "creates password-granted access token" do
-    client = Mithril.Fixtures.create_client(%{settings: %{"allowed_grant_types" => ["password"]}})
-    user   = Mithril.Fixtures.create_user(%{password: "somepa$$word"})
+    allowed_scope = "app:authorize legal_entity:read legal_entity:write"
+    client_type = Mithril.Fixtures.create_client_type(%{scope: allowed_scope})
+    client = Mithril.Fixtures.create_client(%{
+      settings: %{"allowed_grant_types" => ["password"]},
+      client_type_id: client_type.id
+    })
+    user = Mithril.Fixtures.create_user(%{password: "somepa$$word"})
 
     {:ok, token} = PasswordGrantType.authorize(%{
       "email" => user.email,
@@ -68,8 +73,13 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
   end
 
   test "it returns Incorrect Scopes error" do
-    client = Mithril.Fixtures.create_client(%{settings: %{"allowed_grant_types" => ["password"]}})
-    user   = Mithril.Fixtures.create_user(%{password: "somepa$$word"})
+    allowed_scope = "app:authorize legal_entity:read legal_entity:write"
+    client_type = Mithril.Fixtures.create_client_type(%{scope: allowed_scope})
+    client = Mithril.Fixtures.create_client(%{
+      settings: %{"allowed_grant_types" => ["password"]},
+      client_type_id: client_type.id
+    })
+    user = Mithril.Fixtures.create_user(%{password: "somepa$$word"})
 
     {:error, errors, code} = PasswordGrantType.authorize(%{
       "email" => user.email,
@@ -78,7 +88,8 @@ defmodule Mithril.Authorization.GrantType.PasswordTest do
       "scope" => "some_hidden_api:read",
     })
 
-    assert %{invalid_scope: "Allowed scopes for the token are app:authorize" <> _} = errors
+    message = "Allowed scopes for the token are #{Enum.join(String.split(allowed_scope), ", ")}."
+    assert %{invalid_scope: ^message} = errors
     assert :bad_request = code
   end
 

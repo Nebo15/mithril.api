@@ -19,8 +19,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
       "client_id" => client.id,
       "client_secret" => client.secret,
       "code" => code_grant.value,
-      "redirect_uri" => client.redirect_uri <> "#world",
-      "scope" => "legal_entity:read"
+      "redirect_uri" => client.redirect_uri <> "#world"
     })
 
     assert token.name == "access_token"
@@ -31,7 +30,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCodeTest do
     assert token.details.refresh_token
     assert token.details.grant_type == "authorization_code"
     assert token.details.redirect_uri == client.redirect_uri
-    assert token.details.scope == "legal_entity:read"
+    assert token.details.scope == "legal_entity:read legal_entity:write"
 
     assert true = Mithril.TokenAPI.get_token!(code_grant.id).details["used"]
   end

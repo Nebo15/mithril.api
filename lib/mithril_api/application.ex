@@ -39,7 +39,7 @@ defmodule Mithril do
   # Loads configuration in `:on_init` callbacks and replaces `{:system, ..}` tuples via Confex
   @doc false
   def load_from_system_env(config) do
-    {:ok, Confex.process_env(config)}
+    Confex.Resolver.resolve(config)
   end
 
   # Configures Logger level via LOG_LEVEL environment variable.

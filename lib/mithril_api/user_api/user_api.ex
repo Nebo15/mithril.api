@@ -1,4 +1,4 @@
-defmodule Mithril.Web.UserAPI do
+defmodule Mithril.UserAPI do
   @moduledoc """
   The boundary for the UserAPI system.
   """
@@ -7,7 +7,7 @@ defmodule Mithril.Web.UserAPI do
 
   alias Mithril.Paging
   alias Mithril.Repo
-  alias Mithril.Web.UserAPI.User
+  alias Mithril.UserAPI.User
 
   def list_users(params) do
     User

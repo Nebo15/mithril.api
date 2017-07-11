@@ -1,4 +1,4 @@
-defmodule Mithril.Web.UserAPI.User do
+defmodule Mithril.UserAPI.User do
   @moduledoc false
 
   use Ecto.Schema

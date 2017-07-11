@@ -11,8 +11,7 @@ defmodule Mithril.ClientAPI.Client do
     field :settings, :map, default: %{}
 
     belongs_to :client_type, Mithril.ClientTypeAPI.ClientType
-    # TODO: Remove Web prefix
-    belongs_to :user, Mithril.Web.UserAPI.User
+    belongs_to :user, Mithril.UserAPI.User
 
     timestamps()
   end

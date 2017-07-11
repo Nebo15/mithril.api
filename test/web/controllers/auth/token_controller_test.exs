@@ -6,8 +6,13 @@ defmodule Mithril.OAuth.TokenControllerTest do
   end
 
   test "successfully issues new access_token using using password", %{conn: conn} do
-    client = Mithril.Fixtures.create_client(%{settings: %{"allowed_grant_types" => ["password"]}})
-    user   = Mithril.Fixtures.create_user(%{password: "secret_password"})
+    allowed_scope = "app:authorize legal_entity:read legal_entity:write"
+    client_type = Mithril.Fixtures.create_client_type(%{scope: allowed_scope})
+    client = Mithril.Fixtures.create_client(%{
+      settings: %{"allowed_grant_types" => ["password"]},
+      client_type_id: client_type.id
+    })
+    user = Mithril.Fixtures.create_user(%{password: "secret_password"})
 
     request_payload = %{
       "token": %{
@@ -51,8 +56,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
         "client_id" => client.id,
         "client_secret" => client.secret,
         "redirect_uri" => client.redirect_uri,
-        "code" => code_grant.value,
-        "scope" => "legal_entity:read"
+        "code" => code_grant.value
       }
     }
 
@@ -67,7 +71,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
     assert token["details"]["client_id"] == client.id
     assert token["details"]["grant_type"] == "authorization_code"
     assert token["details"]["redirect_uri"] == client.redirect_uri
-    assert token["details"]["scope"] == "legal_entity:read"
+    assert token["details"]["scope"] == "legal_entity:read legal_entity:write"
   end
 
   test "incorrectly crafted body is still treated nicely", %{conn: conn} do

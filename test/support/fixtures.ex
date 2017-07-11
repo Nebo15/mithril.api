@@ -13,7 +13,7 @@ defmodule Mithril.Fixtures do
     {:ok, user} =
       user_create_attrs()
       |> Map.merge(attrs)
-      |> Mithril.Web.UserAPI.create_user()
+      |> Mithril.UserAPI.create_user()
 
     user
   end
