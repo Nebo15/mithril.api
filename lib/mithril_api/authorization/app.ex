@@ -95,8 +95,8 @@ defmodule Mithril.Authorization.App do
     if app.scope != scope do
       scope =
         scope
-        |> Mithril.Utils.String.comma_split
-        |> Enum.concat(Mithril.Utils.String.comma_split(app.scope))
+        |> String.split(" ", trim: true)
+        |> Enum.concat(String.split(app.scope, " ", trim: true))
         |> Enum.uniq()
 
       scope = known_scopes -- (known_scopes -- scope)
