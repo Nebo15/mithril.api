@@ -1,7 +1,7 @@
 defmodule Mithril.Web.UserRoleControllerTest do
   use Mithril.Web.ConnCase
 
-  alias Mithril.Web.UserAPI.User
+  alias Mithril.UserAPI.User
   alias Mithril.UserRoleAPI
 
   def fixture(:user_role, user_id) do
@@ -13,7 +13,7 @@ defmodule Mithril.Web.UserRoleControllerTest do
   end
 
   setup %{conn: conn} do
-    {:ok, user} = Mithril.Web.UserAPI.create_user(%{email: "some email", password: "some password", settings: %{}})
+    {:ok, user} = Mithril.UserAPI.create_user(%{email: "some email", password: "some password", settings: %{}})
 
     {:ok, conn: put_req_header(conn, "accept", "application/json"), user_id: user.id}
   end

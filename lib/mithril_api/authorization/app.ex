@@ -5,11 +5,7 @@ defmodule Mithril.Authorization.App do
   #
   # On every approval a new token is created.
   # Current (session) token with it's scopes is still valid until it expires.
-  # E.g. session expiration should be sufficiently short
-  #
-  # TODO:
-  # After find_client() call, issue a establish_scopes_to_be_granted() call
-  # in order to "clash" 3 things: client_type, user_role and scopes being requested
+  # E.g. session expiration should be sufficiently short.
   def grant(%{"user_id" => _, "client_id" => _, "redirect_uri" => _, "scope" => _} = params) do
     params
     |> find_client()
@@ -34,7 +30,7 @@ defmodule Mithril.Authorization.App do
 
   defp find_user({:error, errors, status}), do: {:error, errors, status}
   defp find_user(%{"user_id" => user_id, "client" => %{id: client_id}} = params) do
-    case Mithril.Web.UserAPI.get_full_user(user_id, client_id) do
+    case Mithril.UserAPI.get_full_user(user_id, client_id) do
       nil -> {:error, %{invalid_client: "User not found"}, :unprocessable_entity}
       user -> Map.put(params, "user", user)
     end
@@ -79,7 +75,6 @@ defmodule Mithril.Authorization.App do
     app =
       case Mithril.AppAPI.get_app_by([user_id: user.id, client_id: client_id]) do
         nil ->
-          # TODO: Check that scopes are allowed by client/user pair
           {:ok, app} = Mithril.AppAPI.create_app(%{user_id: user.id, client_id: client_id, scope: scope})
 
           app

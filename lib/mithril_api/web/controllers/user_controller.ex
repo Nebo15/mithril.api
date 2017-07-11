@@ -3,8 +3,8 @@ defmodule Mithril.Web.UserController do
 
   use Mithril.Web, :controller
 
-  alias Mithril.Web.UserAPI
-  alias Mithril.Web.UserAPI.User
+  alias Mithril.UserAPI
+  alias Mithril.UserAPI.User
 
   action_fallback Mithril.Web.FallbackController
 

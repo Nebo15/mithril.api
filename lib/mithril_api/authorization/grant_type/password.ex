@@ -7,7 +7,7 @@ defmodule Mithril.Authorization.GrantType.Password do
 
     case allowed_to_login?(client) do
       :ok ->
-        user = Mithril.Web.UserAPI.get_user_by([email: email])
+        user = Mithril.UserAPI.get_user_by([email: email])
         create_token(client, user, password, scopes)
       {:error, message} ->
         GrantTypeError.invalid_client(message)
