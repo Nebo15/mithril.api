@@ -72,7 +72,7 @@ defmodule Mithril.Authorization.GrantType.RefreshToken do
       details: %{
         grant_type: "refresh_token",
         client_id: client.id,
-        scope: app.scope
+        scope: token.details["scope"]
       }
     })
   end
