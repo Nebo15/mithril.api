@@ -3,7 +3,7 @@ defmodule Mithril.Authorization.GrantType.Password do
   alias Mithril.Authorization.GrantType.Error, as: GrantTypeError
 
   def authorize(%{"email" => email, "password" => password, "client_id" => client_id, "scope" => scopes}) do
-    client = Mithril.ClientAPI.get_client(client_id)
+    client = Mithril.ClientAPI.get_client_with_type(client_id)
 
     case allowed_to_login?(client) do
       :ok ->
@@ -35,7 +35,7 @@ defmodule Mithril.Authorization.GrantType.Password do
   defp create_token(client, user, password, scopes) do
     {:ok, user}
     |> match_with_user_password(password)
-    |> validate_token_scope(scopes)
+    |> validate_token_scope(client.client_type.scope, scopes)
     |> create_access_token(client, scopes)
   end
 
@@ -52,14 +52,14 @@ defmodule Mithril.Authorization.GrantType.Password do
     })
   end
 
-  defp validate_token_scope({:error, err, code}, _), do: {:error, err, code}
-  defp validate_token_scope({:ok, user}, required_scopes) do
-    scopes = Confex.fetch_env!(:mithril_api, :scopes)
+  defp validate_token_scope({:error, err, code}, _, _), do: {:error, err, code}
+  defp validate_token_scope({:ok, user}, client_scope, required_scopes) do
+    allowed_scopes = String.split(client_scope, " ", trim: true)
     required_scopes = String.split(required_scopes, " ", trim: true)
-    if Mithril.Utils.List.subset?(scopes, required_scopes) do
+    if Mithril.Utils.List.subset?(allowed_scopes, required_scopes) do
       {:ok, user}
     else
-      GrantTypeError.invalid_scope(scopes)
+      GrantTypeError.invalid_scope(allowed_scopes)
     end
   end
 

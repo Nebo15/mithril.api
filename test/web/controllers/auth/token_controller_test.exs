@@ -6,8 +6,13 @@ defmodule Mithril.OAuth.TokenControllerTest do
   end
 
   test "successfully issues new access_token using using password", %{conn: conn} do
-    client = Mithril.Fixtures.create_client(%{settings: %{"allowed_grant_types" => ["password"]}})
-    user   = Mithril.Fixtures.create_user(%{password: "secret_password"})
+    allowed_scope = "app:authorize legal_entity:read legal_entity:write"
+    client_type = Mithril.Fixtures.create_client_type(%{scope: allowed_scope})
+    client = Mithril.Fixtures.create_client(%{
+      settings: %{"allowed_grant_types" => ["password"]},
+      client_type_id: client_type.id
+    })
+    user = Mithril.Fixtures.create_user(%{password: "secret_password"})
 
     request_payload = %{
       "token": %{
