@@ -64,4 +64,10 @@ defmodule Mithril.Web.TokenController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def delete_by_user(conn, %{"user_id" => user_id}) do
+    with {_, nil} <- TokenAPI.delete_tokens_by_user(user_id) do
+      send_resp(conn, :no_content, "")
+    end
+  end
 end

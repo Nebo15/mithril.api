@@ -28,6 +28,11 @@ defmodule Mithril.UserRoleAPI do
     Repo.delete(user_role)
   end
 
+  def delete_user_roles_by_user(user_id) do
+    query = from(u in UserRole, where: u.user_id == ^user_id)
+    Repo.delete_all(query)
+  end
+
   defp user_role_changeset(%UserRole{} = user_role, attrs) do
     user_role
     |> cast(attrs, [:user_id, :role_id, :client_id])

@@ -79,4 +79,20 @@ defmodule Mithril.Web.UserRoleControllerTest do
       get conn, user_role_path(conn, :show, user_role.user_id, user_role.id)
     end
   end
+
+  test "deletes user_roles by user_id", %{user_id: user_id, conn: conn} do
+    fixture(:user_role, user_id)
+    fixture(:user_role, user_id)
+    {:ok, user} = Mithril.UserAPI.create_user(%{email: "email@example.com", password: "some password", settings: %{}})
+    fixture(:user_role, user.id)
+
+    conn = delete conn, user_role_path(conn, :delete_by_user, user_id)
+    assert response(conn, 204)
+
+    conn = get conn, user_role_path(conn, :index, %User{id: user_id})
+    assert [] == json_response(conn, 200)["data"]
+
+    conn = get conn, user_role_path(conn, :index, %User{id: user.id})
+    assert 1 == length(json_response(conn, 200)["data"])
+  end
 end

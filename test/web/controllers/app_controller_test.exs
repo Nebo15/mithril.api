@@ -103,4 +103,24 @@ defmodule Mithril.Web.AppControllerTest do
       get conn, app_path(conn, :show, app)
     end
   end
+
+  test "deletes apps by user", %{conn: conn} do
+    # app 1
+    fixture(:app)
+    # app 2
+    user  = Mithril.Fixtures.create_user()
+    client = Mithril.Fixtures.create_client()
+    attrs = Map.merge(@create_attrs, %{user_id: user.id, client_id: client.id})
+    {:ok, _} = AppAPI.create_app(attrs)
+    # app 3
+    client = Mithril.Fixtures.create_client()
+    attrs = Map.merge(@create_attrs, %{user_id: user.id, client_id: client.id})
+    {:ok, _} = AppAPI.create_app(attrs)
+
+    conn = delete conn, user_app_path(conn, :delete_by_user, user.id)
+    assert response(conn, 204)
+
+    conn = get conn, app_path(conn, :index)
+    assert 1 == length(json_response(conn, 200)["data"])
+  end
 end
