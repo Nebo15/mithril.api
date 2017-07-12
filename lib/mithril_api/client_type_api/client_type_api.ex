@@ -25,6 +25,11 @@ defmodule Mithril.ClientTypeAPI do
     |> search(params, ClientType, 50)
   end
 
+  def get_search_query(entity, %{scope: scopes} = changes) do
+    super(entity, Map.put(changes, :scope, {String.split(scopes, ","), :in}))
+  end
+  def get_search_query(entity, changes), do: super(entity, changes)
+
   @doc """
   Gets a single client_type.
 
@@ -115,6 +120,7 @@ defmodule Mithril.ClientTypeAPI do
   defp client_type_changeset(%ClientTypeSearch{} = client_type, attrs) do
     fields = ~W(
       name
+      scope
     )
 
     cast(client_type, attrs, fields)

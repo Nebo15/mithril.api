@@ -24,6 +24,11 @@ defmodule Mithril.RoleAPI do
     |> search(params, Role, 50)
   end
 
+  def get_search_query(entity, %{scope: scopes} = changes) do
+    super(entity, Map.put(changes, :scope, {String.split(scopes, ","), :in}))
+  end
+  def get_search_query(entity, changes), do: super(entity, changes)
+
   @doc """
   Gets a single role.
 
@@ -113,7 +118,7 @@ defmodule Mithril.RoleAPI do
 
   defp role_changeset(%RoleSearch{} = role, attrs) do
     role
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :scope])
     |> set_like_attributes([:name])
   end
 end
