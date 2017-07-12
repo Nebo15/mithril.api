@@ -28,6 +28,9 @@ defmodule Mithril.Web.Router do
 
     resources "/users", UserController, except: [:new, :edit] do
       resources "/roles", UserRoleController, except: [:new, :edit, :update], as: :role
+      delete "/roles", UserRoleController, :delete_by_user, as: :role
+      delete "/tokens", TokenController, :delete_by_user
+      delete "/apps", AppController, :delete_by_user
     end
 
     resources "/clients", ClientController, except: [:new, :edit] do

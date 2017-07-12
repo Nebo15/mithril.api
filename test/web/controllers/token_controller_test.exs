@@ -9,14 +9,12 @@ defmodule Mithril.Web.TokenControllerTest do
   @update_attrs %{details: %{}, expires_at: 43, name: "some updated name", value: "some updated value"}
   @invalid_attrs %{details: nil, expires_at: nil, name: nil, value: nil}
 
-  def fixture(:token, name \\ "some name", value \\ "some_value", details \\ %{}) do
-    user = Mithril.Fixtures.create_user()
+  def fixture(:token, name \\ "some name", value \\ "some_value", details \\ %{}, user \\ nil) do
+    user = user || Mithril.Fixtures.create_user()
     {:ok, token} =
       @create_attrs
       |> Map.put_new(:user_id, user.id)
-      |> Map.put(:name, name)
-      |> Map.put(:value, value)
-      |> Map.put(:details, details)
+      |> Map.merge(%{name: name, value: value, details: details})
       |> TokenAPI.create_token()
     token
   end
@@ -141,6 +139,19 @@ defmodule Mithril.Web.TokenControllerTest do
     assert_error_sent 404, fn ->
       get conn, token_path(conn, :show, token)
     end
+  end
+
+  test "deletes tokens by user", %{conn: conn} do
+    fixture(:token)
+    user  = Mithril.Fixtures.create_user()
+    fixture(:token, "first", "a", %{}, user)
+    fixture(:token, "second", "b", %{}, user)
+
+    conn = delete conn, user_token_path(conn, :delete_by_user, user.id)
+    assert response(conn, 204)
+
+    conn = get conn, token_path(conn, :index)
+    assert 1 == length(json_response(conn, 200)["data"])
   end
 
   test "render additional info about user", %{conn: conn} do

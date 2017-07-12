@@ -34,4 +34,10 @@ defmodule Mithril.Web.UserRoleController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def delete_by_user(conn, %{"user_id" => user_id}) do
+    with {_, nil} <- UserRoleAPI.delete_user_roles_by_user(user_id) do
+      send_resp(conn, :no_content, "")
+    end
+  end
 end
