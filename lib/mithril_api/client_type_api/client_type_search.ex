@@ -5,5 +5,6 @@ defmodule Mithril.ClientAPI.ClientTypeSearch do
 
   schema "client_type_search" do
     field :name, :string
+    field :scope, :string
   end
 end
