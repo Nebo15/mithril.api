@@ -48,7 +48,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
       scope: "legal_entity:read legal_entity:write"
     })
 
-    {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user)
+    {:ok, code_grant} = Mithril.Fixtures.create_code_grant_token(client, user, "legal_entity:read")
 
     request_payload = %{
       "token": %{
@@ -71,7 +71,7 @@ defmodule Mithril.OAuth.TokenControllerTest do
     assert token["details"]["client_id"] == client.id
     assert token["details"]["grant_type"] == "authorization_code"
     assert token["details"]["redirect_uri"] == client.redirect_uri
-    assert token["details"]["scope"] == "legal_entity:read legal_entity:write"
+    assert token["details"]["scope"] == "legal_entity:read"
   end
 
   test "incorrectly crafted body is still treated nicely", %{conn: conn} do
