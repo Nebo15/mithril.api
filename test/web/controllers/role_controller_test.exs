@@ -63,13 +63,21 @@ defmodule Mithril.Web.RoleControllerTest do
 
     test "list roles by scopes", %{conn: conn} do
       fixture(:role, %{scope: "some scope"})
-      fixture(:role, %{scope: "employee:read"})
-      fixture(:role, %{scope: "employee:write"})
+      fixture(:role, %{scope: "employee:read employee:write"})
+      fixture(:role, %{scope: "employee:read employee:write"})
       scopes = ~w(employee:read employee:write)
       conn = get conn, role_path(conn, :index), %{scope: Enum.join(scopes, ",")}
       resp = json_response(conn, 200)["data"]
+
       assert 2 == length(resp)
-      assert Enum.all?(resp, &(Enum.member?(scopes, Map.get(&1, "scope"))))
+      assert Enum.all?(resp, fn client_type ->
+        client_type["scope"]
+        |> String.split(" ")
+        |> MapSet.new()
+        |> MapSet.intersection(MapSet.new(scopes))
+        |> Enum.empty?
+        |> Kernel.!
+      end)
     end
   end
 

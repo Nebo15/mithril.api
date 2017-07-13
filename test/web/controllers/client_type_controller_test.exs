@@ -65,13 +65,21 @@ defmodule Mithril.Web.ClientTypeControllerTest do
 
     test "list client types by scopes", %{conn: conn} do
       fixture(:client_type, %{scope: "some scope"})
-      fixture(:client_type, %{scope: "employee:read"})
-      fixture(:client_type, %{scope: "employee:write"})
+      fixture(:client_type, %{scope: "employee:read employee:write"})
+      fixture(:client_type, %{scope: "employee:read employee:write"})
       scopes = ~w(employee:read employee:write)
       conn = get conn, client_type_path(conn, :index), %{scope: Enum.join(scopes, ",")}
       resp = json_response(conn, 200)["data"]
+
       assert 2 == length(resp)
-      assert Enum.all?(resp, &(Enum.member?(scopes, Map.get(&1, "scope"))))
+      assert Enum.all?(resp, fn client_type ->
+        client_type["scope"]
+        |> String.split(" ")
+        |> MapSet.new()
+        |> MapSet.intersection(MapSet.new(scopes))
+        |> Enum.empty?
+        |> Kernel.!
+      end)
     end
   end
 
