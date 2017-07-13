@@ -37,7 +37,7 @@ defmodule Mithril.OAuth.AppControllerTest do
     assert result["user_id"]
     assert result["name"] == "authorization_code"
     assert result["expires_at"]
-    assert result["details"]["scope"] == "app:authorize"
+    assert result["details"]["scope"] == "legal_entity:read legal_entity:write"
     assert result["details"]["redirect_uri"]
     assert result["details"]["client_id"]
     assert result["details"]["grant_type"] == "password"
@@ -85,7 +85,7 @@ defmodule Mithril.OAuth.AppControllerTest do
     result = json_response(conn, 201)["data"]
 
     assert result["name"] == "authorization_code"
-    assert result["details"]["scope"] == "app:authorize"
+    assert result["details"]["scope"] == "legal_entity:write"
 
     app = Mithril.AppAPI.get_app_by([user_id: user.id, client_id: client.id])
 

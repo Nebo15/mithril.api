@@ -89,7 +89,7 @@ defmodule Mithril.Authorization.App do
   end
 
   defp create_token({:error, errors, status}), do: {:error, errors, status}
-  defp create_token(%{"user" => user, "client" => client, "redirect_uri" => redirect_uri} = params) do
+  defp create_token(%{"user" => user, "client" => client, "redirect_uri" => redirect_uri, "scope" => scope} = params) do
     {:ok, token} =
       Mithril.TokenAPI.create_authorization_code(%{
         user_id: user.id,
@@ -97,7 +97,7 @@ defmodule Mithril.Authorization.App do
           client_id: client.id,
           grant_type: "password",
           redirect_uri: redirect_uri,
-          scope: "app:authorize"
+          scope: scope
         }
       })
 
