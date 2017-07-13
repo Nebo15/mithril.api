@@ -39,7 +39,7 @@ defmodule Mithril.Search do
         Enum.reduce(changes, q, fn({key, val}, query) ->
           case val do
             {value, :like} -> where(query, [r], ilike(field(r, ^key), ^("%" <> value <> "%")))
-            {value, :in} -> where(query, [r], field(r, ^key) in ^value)
+            {value, :intersect} -> where(query, [r], fragment("string_to_array(?, ' ') && ?", field(r, ^key), ^value))
             _ -> query
           end
         end)
