@@ -42,7 +42,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
       details: %{
         grant_type: "authorization_code",
         client_id: token.details["client_id"],
-        scope: app.scope
+        scope: token.details["scope"]
       }
     })
 
@@ -51,7 +51,7 @@ defmodule Mithril.Authorization.GrantType.AuthorizationCode do
       details: %{
         grant_type: "authorization_code",
         client_id: token.details["client_id"],
-        scope: app.scope,
+        scope: token.details["scope"],
         refresh_token: refresh_token.value,
         redirect_uri: token.details["redirect_uri"]
       }
