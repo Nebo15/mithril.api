@@ -42,4 +42,11 @@ defmodule Mithril.Web.UserController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def change_password(conn, %{"user_id" => id, "user" => user_params}) do
+    user = UserAPI.get_user!(id)
+    with {:ok, %User{} = user} <- UserAPI.change_user_password(user, user_params) do
+      render(conn, "show.json", user: user)
+    end
+  end
 end

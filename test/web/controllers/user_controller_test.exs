@@ -105,4 +105,43 @@ defmodule Mithril.Web.UserControllerTest do
       get conn, user_path(conn, :show, user)
     end
   end
+
+  describe "change password" do
+    test "works with when current password is valid", %{conn: conn} do
+      user = fixture(:user, %{email: "1", password: "hello", settings: %{}})
+
+      update_params = %{user: %{"password" => "world", current_password: "hello"}}
+      conn = put conn, user_path(conn, :update, user) <> "/action/change_password", update_params
+      assert json_response(conn, 200)
+
+      assert Comeonin.Bcrypt.checkpw("world", UserAPI.get_user(user.id).password)
+    end
+
+    test "returns validation error when current password is invalid", %{conn: conn} do
+      user = fixture(:user, %{email: "1", password: "hello", settings: %{}})
+
+      update_params = %{user: %{"password" => "world", current_password: "invalid"}}
+      conn = put conn, user_path(conn, :update, user) <> "/action/change_password", update_params
+      assert [%{"entry" => "$.current_password", "rules" => [%{"rule" => "password"}]}]
+        = json_response(conn, 422)["error"]["invalid"]
+    end
+
+    test "returns validation error when current password is not present", %{conn: conn} do
+      user = fixture(:user, %{email: "1", password: "hello", settings: %{}})
+
+      update_params = %{user: %{"password" => "world"}}
+      conn = put conn, user_path(conn, :update, user) <> "/action/change_password", update_params
+      assert [%{"entry" => "$.current_password", "rules" => [%{"rule" => "required"}]}]
+        = json_response(conn, 422)["error"]["invalid"]
+    end
+
+    test "returns validation error when new password is not present", %{conn: conn} do
+      user = fixture(:user, %{email: "1", password: "hello", settings: %{}})
+
+      update_params = %{user: %{current_password: "hello"}}
+      conn = put conn, user_path(conn, :update, user) <> "/action/change_password", update_params
+      assert [%{"entry" => "$.password", "rules" => [%{"rule" => "required"}]}]
+        = json_response(conn, 422)["error"]["invalid"]
+    end
+  end
 end
