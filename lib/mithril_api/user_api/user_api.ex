@@ -63,7 +63,7 @@ defmodule Mithril.UserAPI do
       |> validate_changed(:password)
       |> validate_passwords_match(:password, :current_password)
 
-    if changeset.valid? == true do
+    if changeset.valid? do
       Repo.update(changeset)
     else
       changeset
