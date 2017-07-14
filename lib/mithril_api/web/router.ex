@@ -32,7 +32,7 @@ defmodule Mithril.Web.Router do
       delete "/tokens", TokenController, :delete_by_user
       delete "/apps", AppController, :delete_by_user
 
-      put "/action/change_password", UserController, :change_password
+      put "/actions/change_password", UserController, :change_password
     end
 
     resources "/clients", ClientController, except: [:new, :edit] do
