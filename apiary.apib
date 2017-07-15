@@ -116,7 +116,7 @@ List of endpoints that is safe to be public and MUST be protected by additional 
 | Users     | Request Password Recovery | `POST /password_recovery_requests`| N/A           | Used to recover forgotten password withoit authentication. |
 | Users     | Reset Password  | `PATCH /users/{id}/actions/reset_password`  | N/A           | Used to reset forgotten password withoit authentication. |
 | Users     | Change Password | `PATCH /users/{id}/actions/change_password` | `user:update` | Used by user to change their credentials. |
-| Approvals | Authorize       | `POST /apps`                                | `apps:create` | Used by User to approve Client access to hes data. First step in oAuth flow. Scopes is set in session token created with `grant_type=password`. |
+| Approvals | Authorize       | `POST /apps` or `PUT /apps`                 | `apps:create` | Used by User to approve Client access to hes data. First step in oAuth flow. Scopes is set in session token created with `grant_type=password`. |
 | Approvals | Get Approvals   | `GET /apps{?client_ids}`                    | `apps:read`   | Used by user to see list of Approvals that he authorized. **Returning list is forse-filtered for owner**. |
 | Approvals | Delete          | `DELETE /apps/{id}`                         | `apps:delete` | Used by user to de-authorize Client from accessing hes data. **Can delete only owned Approvals**. |
 
@@ -384,40 +384,6 @@ Roles are filtered by a `client_id` of a current access token.
     + Attributes (`Response_OK`)
         + data (`User_Response`)
 
-### Request Password Recovery [POST /password_recovery_requests]
-
-This method will send password recovery email to a User. Token from this email should be used in
-[Reset User password]() method.
-
-+ Request (application/json)
-    + Attributes
-        + password_recovery (object)
-            + email (string)
-
-+ Response 201 (application/json)
-    + Attributes (`Response_OK`)
-        + meta (`Response__Meta`)
-            + code: 201 (number)
-        + data (object)
-            + id: `password_recovery-1380df72-275a-11e7-93ae-92361f002671` (string)
-            + type: `password_recovery`
-            + expires_at: `2017-04-20T19:14:13Z` (string) - Expiration datetime in ISO 8601 format
-
-### Reset User password [PATCH /users/{id}/actions/reset_password]
-
-+ Parameters
-    + id: `user-1380df72-275a-11e7-93ae-92361f002671` (string, required)
-
-+ Request (application/json)
-    + Attributes
-        + user (object)
-            + password: `notASecret1` (string, required) - User password. At least 6 characters.
-        + reset_token (string, required) - Token that was sent to email via [Request Password Recovery]().
-
-+ Response 200 (application/json)
-   + Attributes (`Response_OK`)
-        + data (`User_Response`)
-
 ### Change User password [PATCH /users/{id}/actions/change_password]
 
 + Parameters
@@ -425,9 +391,9 @@ This method will send password recovery email to a User. Token from this email s
 
 + Request (application/json)
     + Attributes
-        + user (object)
+        + user (object) - It is possible to change other User fiels by passing them along in this structure.
             + password: `notASecret1` (string, required) - User password. At least 6 characters.
-        + old_password: `notASecret0` (string, required) - User password. At least 6 characters.
+            + current_password: `notASecret0` (string, required) - User password. At least 6 characters.
 
 + Response 200 (application/json)
     + Attributes (`Response_OK`)
