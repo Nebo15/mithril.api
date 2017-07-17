@@ -3,11 +3,12 @@ defmodule Mithril.Web.UserRoleControllerTest do
 
   alias Mithril.UserAPI.User
   alias Mithril.UserRoleAPI
+  import Mithril.Fixtures
 
   def fixture(:user_role, user_id) do
     {:ok, user_role} =
       user_id
-      |> Mithril.Fixtures.user_role_attrs()
+      |> user_role_attrs()
       |> UserRoleAPI.create_user_role()
     user_role
   end
@@ -51,7 +52,7 @@ defmodule Mithril.Web.UserRoleControllerTest do
   end
 
   test "creates user_role and renders user_role when data is valid", %{user_id: user_id, conn: conn} do
-    create_attrs = Mithril.Fixtures.user_role_attrs()
+    create_attrs = user_role_attrs()
     conn = post conn, user_role_path(conn, :create, %User{id: user_id}), user_role: create_attrs
     assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -71,7 +72,7 @@ defmodule Mithril.Web.UserRoleControllerTest do
   end
 
   test "deletes chosen user_role", %{conn: conn} do
-    create_attrs = Mithril.Fixtures.user_role_attrs()
+    create_attrs = user_role_attrs()
     {:ok, user_role} = UserRoleAPI.create_user_role(create_attrs)
     conn = delete conn, user_role_path(conn, :delete, user_role.user_id, user_role.id)
     assert response(conn, 204)
@@ -94,5 +95,20 @@ defmodule Mithril.Web.UserRoleControllerTest do
 
     conn = get conn, user_role_path(conn, :index, %User{id: user.id})
     assert 1 == length(json_response(conn, 200)["data"])
+  end
+
+  test "deletes user_roles by user_id and client_id", %{user_id: user_id, conn: conn} do
+    %{id: role_id_admin} = create_role(%{name: "ADMIN", user_id: user_id})
+    %{id: role_id_doctor} = create_role(%{name: "DOCTOR", user_id: user_id})
+    create_user_role(%{role_id: role_id_admin, user_id: user_id})
+    create_user_role(%{role_id: role_id_admin, user_id: user_id})
+    %{id: user_role_id} = create_user_role(%{role_id: role_id_doctor, user_id: user_id})
+
+    conn = delete conn, user_role_path(conn, :delete_by_user, user_id), [role_name: "ADMIN"]
+    assert response(conn, 204)
+
+    conn = get conn, user_role_path(conn, :index, %User{id: user_id})
+    assert [user_role] = json_response(conn, 200)["data"]
+    assert user_role_id == user_role["id"]
   end
 end
