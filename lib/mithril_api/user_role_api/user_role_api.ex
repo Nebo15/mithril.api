@@ -7,6 +7,7 @@ defmodule Mithril.UserRoleAPI do
   import Ecto.{Query, Changeset}, warn: false
 
   alias Mithril.Repo
+  alias Mithril.RoleAPI.Role
   alias Mithril.UserRoleAPI.UserRole
   alias Mithril.UserRoleAPI.UserRoleSearch
 
@@ -28,9 +29,25 @@ defmodule Mithril.UserRoleAPI do
     Repo.delete(user_role)
   end
 
-  def delete_user_roles_by_user(user_id) do
-    query = from(u in UserRole, where: u.user_id == ^user_id)
+  def delete_user_roles_by_params(%{"user_id" => user_id, "role_name" => role_name}) do
+    query = from u in UserRole,
+      inner_join: r in Role, on: [id: u.role_id],
+      where: u.user_id == ^user_id,
+      where: r.name == ^role_name
+
     Repo.delete_all(query)
+  end
+
+  def delete_user_roles_by_params(params) do
+    %UserRoleSearch{}
+    |> user_role_changeset(params)
+    |> case do
+         %Ecto.Changeset{valid?: true, changes: changes} ->
+           UserRole |> get_search_query(changes) |> Repo.delete_all()
+
+         changeset
+          -> changeset
+       end
   end
 
   defp user_role_changeset(%UserRole{} = user_role, attrs) do

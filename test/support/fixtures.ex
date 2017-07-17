@@ -36,6 +36,15 @@ defmodule Mithril.Fixtures do
     role
   end
 
+  def create_user_role(attrs \\ %{}) do
+    {:ok, role} =
+      user_role_attrs()
+      |> Map.merge(attrs)
+      |> Mithril.UserRoleAPI.create_user_role()
+
+    role
+  end
+
   def role_attrs do
     %{
       name: "some name",
