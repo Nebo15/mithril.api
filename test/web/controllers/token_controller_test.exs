@@ -141,17 +141,24 @@ defmodule Mithril.Web.TokenControllerTest do
     end
   end
 
-  test "deletes tokens by user", %{conn: conn} do
-    fixture(:token)
+  test "deletes tokens by user and client_id", %{conn: conn} do
+    %{id: id_1} = fixture(:token)
     user  = Mithril.Fixtures.create_user()
-    fixture(:token, "first", "a", %{}, user)
-    fixture(:token, "second", "b", %{}, user)
+    client_id = UUID.generate()
+    fixture(:token, "first", "a", %{"client_id" => client_id}, user)
+    fixture(:token, "second", "b", %{"client_id" => client_id}, user)
+    %{id: id_2} = fixture(:token, "third", "c", %{"client_id" => UUID.generate()}, user)
 
-    conn = delete conn, user_token_path(conn, :delete_by_user, user.id)
+    conn = delete conn, user_token_path(conn, :delete_by_user, user.id), [client_id: client_id]
     assert response(conn, 204)
 
     conn = get conn, token_path(conn, :index)
-    assert 1 == length(json_response(conn, 200)["data"])
+    data = json_response(conn, 200)["data"]
+    assert 2 == length(data)
+    Enum.each(data, fn(%{"id" => token_id}) ->
+      assert token_id in [id_1, id_2]
+    end)
+
   end
 
   test "render additional info about user", %{conn: conn} do
