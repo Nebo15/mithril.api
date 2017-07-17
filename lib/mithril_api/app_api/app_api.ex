@@ -39,14 +39,14 @@ defmodule Mithril.AppAPI do
   def delete_apps_by_params(params) do
     %AppSearch{}
     |> app_changeset(params)
-    |> make_delete_query()
-    |> Repo.delete_all()
-  end
+    |> case do
+         %Ecto.Changeset{valid?: true, changes: changes} ->
+           App |> get_search_query(changes) |> Repo.delete_all()
 
-  defp make_delete_query(%Ecto.Changeset{valid?: true, changes: changes}) do
-    get_search_query(App, changes)
+         changeset
+          -> changeset
+       end
   end
-  defp make_delete_query(changeset), do: changeset
 
   def change_app(%App{} = app) do
     app_changeset(app, %{})
