@@ -104,23 +104,27 @@ defmodule Mithril.Web.AppControllerTest do
     end
   end
 
-  test "deletes apps by user", %{conn: conn} do
+  test "deletes apps by client_id", %{conn: conn} do
     # app 1
-    fixture(:app)
+    %{id: id_1} = fixture(:app)
     # app 2
     user  = Mithril.Fixtures.create_user()
-    client = Mithril.Fixtures.create_client()
-    attrs = Map.merge(@create_attrs, %{user_id: user.id, client_id: client.id})
+    client_1 = Mithril.Fixtures.create_client()
+    attrs = Map.merge(@create_attrs, %{user_id: user.id, client_id: client_1.id})
     {:ok, _} = AppAPI.create_app(attrs)
     # app 3
-    client = Mithril.Fixtures.create_client()
-    attrs = Map.merge(@create_attrs, %{user_id: user.id, client_id: client.id})
-    {:ok, _} = AppAPI.create_app(attrs)
+    client_2 = Mithril.Fixtures.create_client()
+    attrs = Map.merge(@create_attrs, %{user_id: user.id, client_id: client_2.id})
+    {:ok, %{id: id_2}} = AppAPI.create_app(attrs)
 
-    conn = delete conn, user_app_path(conn, :delete_by_user, user.id)
+    conn = delete conn, user_app_path(conn, :delete_by_user, user.id), [client_id: client_1.id]
     assert response(conn, 204)
 
     conn = get conn, app_path(conn, :index)
-    assert 1 == length(json_response(conn, 200)["data"])
+    data = json_response(conn, 200)["data"]
+    assert 2 == length(data)
+    Enum.each(data, fn (%{"id" => app_id}) ->
+      assert app_id in [id_1, id_2]
+    end)
   end
 end
