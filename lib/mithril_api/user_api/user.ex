@@ -7,6 +7,7 @@ defmodule Mithril.UserAPI.User do
   schema "users" do
     field :email, :string
     field :password, :string
+    field :current_password, :string, virtual: true
     field :settings, :map, default: %{}
     field :priv_settings, :map, default: %{}
 

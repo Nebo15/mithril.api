@@ -55,9 +55,24 @@ defmodule Mithril.UserAPI do
     user_changeset(user, %{})
   end
 
+  def change_user_password(%User{} = user, user_params) do
+    changeset =
+      user
+      |> user_changeset(user_params)
+      |> validate_required([:current_password])
+      |> validate_changed(:password)
+      |> validate_passwords_match(:password, :current_password)
+
+    Repo.update(changeset)
+  end
+
+  defp get_password_hash(password) do
+    Comeonin.Bcrypt.hashpwsalt(password)
+  end
+
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :password, :settings])
+    |> cast(attrs, [:email, :password, :settings, :current_password])
     |> validate_required([:email, :password])
     |> unique_constraint(:email)
     |> put_password()
@@ -65,11 +80,34 @@ defmodule Mithril.UserAPI do
 
   defp put_password(changeset) do
     if password = get_change(changeset, :password) do
-      secured_password = Comeonin.Bcrypt.hashpwsalt(password)
-
-      put_change(changeset, :password, secured_password)
+      put_change(changeset, :password, get_password_hash(password))
     else
       changeset
+    end
+  end
+
+  defp validate_changed(changeset, field) do
+    case fetch_change(changeset, field) do
+      :error -> add_error(changeset, field, "is not changed", validation: :required)
+      {:ok, _change} -> changeset
+    end
+  end
+
+  defp validate_passwords_match(changeset, field1, field2) do
+    validate_change changeset, field1, :password, fn _, _new_value ->
+      %{data: data} = changeset
+      field1_hash = Map.get(data, field1)
+
+      with {:ok, value2} <- fetch_change(changeset, field2),
+           true <- Comeonin.Bcrypt.checkpw(value2, field1_hash) do
+        []
+      else
+        :error ->
+          []
+        false ->
+          [{field2,
+           {"#{to_string(field1)} does not match password in field #{to_string(field2)}", [validation: :password]}}]
+      end
     end
   end
 end
